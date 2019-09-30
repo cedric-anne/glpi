@@ -639,7 +639,7 @@ class DBmysql {
     *
     * @return DBmysqlIterator
     */
-   public function getMyIsamTables(): DBmysqlIterator {
+   public function getMyIsamTables() {
       $iterator = $this->listTables('glpi_%', ['engine' => 'MyIsam']);
       return $iterator;
    }
@@ -1532,7 +1532,7 @@ class DBmysql {
     *
     * @since 9.5.0
     */
-   public function areTimezonesAvailable(string &$msg = '') {
+   public function areTimezonesAvailable(&$msg = '') {
       $mysql_db_res = $this->request('SHOW DATABASES LIKE ' . $this->quoteValue('mysql'));
       if ($mysql_db_res->count() === 0) {
          $msg = __('Access to timezone database (mysql) is not allowed.');
