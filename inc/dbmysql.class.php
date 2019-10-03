@@ -1651,7 +1651,7 @@ class DBmysql {
     *
     * @since 9.5.0
     */
-   public function quote($value, int $type = 2/*\PDO::PARAM_STR*/) {
+   public function quote($value, $type = 2/*\PDO::PARAM_STR*/) {
       return "'" . $this->escape($value) . "'";
       //return $this->dbh->quote($value, $type);
    }
