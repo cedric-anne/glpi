@@ -5231,7 +5231,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return array
     */
-   public function getITILTickets(bool $count = false) {
+   public function getITILTickets($count = false) {
       $ticket = new Ticket();
       $problem = new Problem();
       $change = new Change();
