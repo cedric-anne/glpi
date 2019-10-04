@@ -49,6 +49,9 @@ if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SER
    if (array_key_exists('ci', $options) && true === $options['ci']) {
       $composer_command .= ' --prefer-dist --no-progress';
    }
+   if (array_key_exists('ignore-platform-reqs', $options) && true === $options['ignore-platform-reqs']) {
+      $composer_command .= ' --ignore-platform-reqs';
+   }
 
    chdir(dirname(__FILE__, 2));
 
