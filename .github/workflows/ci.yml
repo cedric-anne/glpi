@@ -70,6 +70,7 @@ jobs:
           - {db-image: "mysql:8.0", php-version: "7.4-rc"}
           - {db-image: "mysql:8.0", php-version: "8.0-dev"}
         include:
+          # some components requires php ^5.6 || ^7.0
           - php-version: "8.0-dev"
             dependencies-install-opt: "--ignore-platform-reqs"
     services:
@@ -106,7 +107,7 @@ jobs:
           docker exec ${{ job.services.app.id }} composer --version
           docker exec ${{ job.services.app.id }} echo "node version: $(node --version)"
           docker exec ${{ job.services.app.id }} echo "npm version: $(npm --version)"
-          docker exec ${{ job.services.app.id }} bin/console dependencies install --ci ${{ dependencies-install-opt }}
+          docker exec ${{ job.services.app.id }} bin/console dependencies install --ci ${{ matrix.dependencies-install-opt }}
       - name: "Update DB tests"
         run: |
           docker exec ${{ job.services.app.id }} bin/console glpi:database:configure --config-dir=./tests --no-interaction --reconfigure --db-name=glpitest0723 --db-host=db --db-user=root
