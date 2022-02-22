@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -39,40 +40,43 @@ use Twig\TwigFilter;
 /**
  * @since 10.0.0
  */
-class DocumentExtension extends AbstractExtension {
+class DocumentExtension extends AbstractExtension
+{
+    public function getFilters(): array
+    {
+        return [
+            new TwigFilter('document_icon', [$this, 'getDocumentIcon']),
+            new TwigFilter('document_size', [$this, 'getDocumentSize']),
+        ];
+    }
 
-   public function getFilters(): array {
-      return [
-         new TwigFilter('document_icon', [$this, 'getDocumentIcon']),
-         new TwigFilter('document_size', [$this, 'getDocumentSize']),
-      ];
-   }
+    /**
+     * Returns icon URL for given document filename.
+     *
+     * @param string $filename
+     *
+     * @return string
+     */
+    public function getDocumentIcon(string $filename): string
+    {
+        global $CFG_GLPI;
 
-   /**
-    * Returns icon URL for given document filename.
-    *
-    * @param string $filename
-    *
-    * @return string
-    */
-   public function getDocumentIcon(string $filename): string {
-      global $CFG_GLPI;
+        $icon = sprintf('/pics/icones/%s-dist.png', strtolower(pathinfo($filename, PATHINFO_EXTENSION)));
 
-      $icon = sprintf('/pics/icones/%s-dist.png', strtolower(pathinfo($filename, PATHINFO_EXTENSION)));
+        return $CFG_GLPI['root_doc'] . (file_exists(GLPI_ROOT . $icon) ? $icon : '/pics/timeline/file.png');
+    }
 
-      return $CFG_GLPI['root_doc'] . (file_exists(GLPI_ROOT . $icon) ? $icon : '/pics/timeline/file.png');
-   }
+    /**
+     * Returns human readable size of file matching given path (relative to GLPI_DOC_DIR).
+     *
+     * @param string $filepath
+     *
+     * @return null|string
+     */
+    public function getDocumentSize(string $filepath): ?string
+    {
+        $fullpath = GLPI_DOC_DIR . '/' . $filepath;
 
-   /**
-    * Returns human readable size of file matching given path (relative to GLPI_DOC_DIR).
-    *
-    * @param string $filepath
-    *
-    * @return null|string
-    */
-   public function getDocumentSize(string $filepath): ?string {
-      $fullpath = GLPI_DOC_DIR . '/' . $filepath;
-
-      return is_readable($fullpath) ? Toolbox::getSize(filesize($fullpath)) : null;
-   }
+        return is_readable($fullpath) ? Toolbox::getSize(filesize($fullpath)) : null;
+    }
 }

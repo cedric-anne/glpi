@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -37,8 +38,9 @@ namespace Glpi\Stat;
  */
 abstract class StatDataAlwaysDisplay extends StatData
 {
-   public function isEmpty(): bool {
-      // Force display even if no data
-      return false;
-   }
+    public function isEmpty(): bool
+    {
+       // Force display even if no data
+        return false;
+    }
 }

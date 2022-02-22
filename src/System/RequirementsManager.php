@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -49,126 +50,127 @@ use Glpi\System\Requirement\SessionsConfiguration;
 /**
  * @since 9.5.0
  */
-class RequirementsManager {
+class RequirementsManager
+{
+    /**
+     * Returns core requirement list.
+     *
+     * @param \DBmysql $db  DB instance (if null BD requirements will not be returned).
+     *
+     * @return RequirementsList
+     */
+    public function getCoreRequirementList(\DBmysql $db = null): RequirementsList
+    {
+        $requirements = [];
 
-   /**
-    * Returns core requirement list.
-    *
-    * @param \DBmysql $db  DB instance (if null BD requirements will not be returned).
-    *
-    * @return RequirementsList
-    */
-   public function getCoreRequirementList(\DBmysql $db = null): RequirementsList {
-      $requirements = [];
+        $requirements[] = new PhpVersion(GLPI_MIN_PHP, GLPI_MAX_PHP);
 
-      $requirements[] = new PhpVersion(GLPI_MIN_PHP);
+        $requirements[] = new SessionsConfiguration();
 
-      $requirements[] = new SessionsConfiguration();
+        $requirements[] = new MemoryLimit(64 * 1024 * 1024);
 
-      $requirements[] = new MemoryLimit(64 * 1024 *1024);
+        $requirements[] = new MysqliMysqlnd();
 
-      $requirements[] = new MysqliMysqlnd();
+       // Mandatory PHP extensions that are defaultly enabled
+        $requirements[] = new ExtensionGroup(__('PHP core extensions'), ['dom', 'fileinfo', 'json', 'simplexml']);
 
-      // Mandatory PHP extensions that are defaultly enabled
-      $requirements[] = new ExtensionGroup(__('PHP core extensions'), ['dom', 'fileinfo', 'json', 'simplexml']);
+       // Mandatory PHP extensions that are NOT defaultly enabled
+        $requirements[] = new Extension(
+            'curl',
+            false,
+            __('Required for remote access to resources (inventory agent requests, marketplace, RSS feeds, ...).')
+        );
+        $requirements[] = new Extension(
+            'gd',
+            false,
+            __('Required for images handling.')
+        );
+        $requirements[] = new Extension(
+            'intl',
+            false,
+            __('Required for internationalization.')
+        );
+        $requirements[] = new Extension(
+            'libxml',
+            false,
+            __('Required for XML handling.')
+        );
+        $requirements[] = new Extension(
+            'zlib',
+            false,
+            __('Required for handling of compressed communication with inventory agents, installation of gzip packages from marketplace and PDF generation.')
+        );
 
-      // Mandatory PHP extensions that are NOT defaultly enabled
-      $requirements[] = new Extension(
-         'curl',
-         false,
-         __('Required for remote access to resources (inventory agent requests, marketplace, RSS feeds, ...).')
-      );
-      $requirements[] = new Extension(
-         'gd',
-         false,
-         __('Required for images handling.')
-      );
-      $requirements[] = new Extension(
-         'intl',
-         false,
-         __('Required for internationalization.')
-      );
-      $requirements[] = new Extension(
-         'libxml',
-         false,
-         __('Required for XML handling.')
-      );
-      $requirements[] = new Extension(
-         'zlib',
-         false,
-         __('Required for handling of compressed communication with inventory agents, installation of gzip packages from marketplace and PDF generation.')
-      );
+        if ($db instanceof \DBmysql) {
+            $requirements[] = new DbEngine($db);
+        }
 
-      if ($db instanceof \DBmysql) {
-         $requirements[] = new DbEngine($db);
-      }
+        global $PHPLOGGER;
+        $requirements[] = new LogsWriteAccess($PHPLOGGER);
 
-      global $PHPLOGGER;
-      $requirements[] = new LogsWriteAccess($PHPLOGGER);
+        $requirements[] = new DirectoriesWriteAccess(
+            __('Permissions for GLPI var directories'),
+            array_filter(
+                Variables::getDataDirectories(),
+                function ($directory) {
+                    return $directory !== GLPI_LOG_DIR; // Specifically checked by LogsWriteAccess requirement
+                }
+            )
+        );
 
-      $requirements[] = new DirectoriesWriteAccess(
-         __('Permissions for GLPI var directories'),
-         array_filter(
-            Variables::getDataDirectories(),
-            function ($directory) {
-               return $directory !== GLPI_LOG_DIR; // Specifically checked by LogsWriteAccess requirement
-            }
-         )
-      );
+        $requirements[] = new ProtectedWebAccess(Variables::getDataDirectories());
 
-      $requirements[] = new ProtectedWebAccess(Variables::getDataDirectories());
+        $requirements[] = new SeLinux();
 
-      $requirements[] = new SeLinux();
+       // Below requirements are optionals
 
-      // Below requirements are optionals
+        $requirements[] = new Extension(
+            'exif',
+            true,
+            __('Enhance security on images validation.')
+        );
+        $requirements[] = new Extension(
+            'ldap',
+            true,
+            __('Enable usage of authentication through remote LDAP server.')
+        );
+        $requirements[] = new Extension(
+            'openssl',
+            true,
+            __('Enable email sending using SSL/TLS.')
+        );
+        $requirements[] = new Extension(
+            'zip',
+            true,
+            __('Enable installation of zip packages from marketplace.')
+        );
+        $requirements[] = new Extension(
+            'bz2',
+            true,
+            __('Enable installation of bz2 packages from marketplace.')
+        );
+        $requirements[] = new Extension(
+            'Zend OPcache',
+            true,
+            __('Enhance PHP engine performances.')
+        );
+        $requirements[] = new ExtensionGroup(
+            __('PHP emulated extensions'),
+            ['ctype', 'iconv', 'mbstring', 'sodium'],
+            true,
+            __('Slightly enhance performances.')
+        );
 
-      $requirements[] = new Extension(
-         'exif',
-         true,
-         __('Enhance security on images validation.')
-      );
-      $requirements[] = new Extension(
-         'ldap',
-         true,
-         __('Enable usage of authentication through remote LDAP server.')
-      );
-      $requirements[] = new Extension(
-         'openssl',
-         true,
-         __('Enable email sending using SSL/TLS.')
-      );
-      $requirements[] = new Extension(
-         'zip',
-         true,
-         __('Enable installation of zip packages from marketplace.')
-      );
-      $requirements[] = new Extension(
-         'bz2',
-         true,
-         __('Enable installation of bz2 packages from marketplace.')
-      );
-      $requirements[] = new Extension(
-         'Zend OPcache',
-         true,
-         __('Enhance PHP engine performances.')
-      );
-      $requirements[] = new ExtensionGroup(
-         __('PHP emulated extensions'),
-         ['ctype', 'iconv', 'mbstring', 'sodium'],
-         true,
-         __('Slightly enhance performances.')
-      );
+        $requirements[] = new DirectoryWriteAccess(
+            GLPI_MARKETPLACE_DIR,
+            true,
+            __('Enable installation of plugins from marketplace.')
+        );
 
-      $requirements[] = new DirectoryWriteAccess(
-         GLPI_MARKETPLACE_DIR,
-         true,
-         __('Enable installation of plugins from marketplace.')
-      );
+        if ($db instanceof \DBmysql) {
+            $requirements[] = new DbTimezones($db);
+        }
 
-      if ($db instanceof \DBmysql) {
-         $requirements[] = new DbTimezones($db);
-      }
-
-      return new RequirementsList($requirements);
-   }
+        return new RequirementsList($requirements);
+    }
 }

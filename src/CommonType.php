@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,15 +31,17 @@
  * ---------------------------------------------------------------------
  */
 
-abstract class CommonType extends CommonDropdown {
+abstract class CommonType extends CommonDropdown
+{
+    public static function getFieldLabel()
+    {
+        return _n('Type', 'Types', 1);
+    }
 
-   static function getFieldLabel() {
-      return _n('Type', 'Types', 1);
-   }
-
-   static function getIcon() {
-      $type_class  = get_called_class();
-      $device_class = str_replace('Type', '', $type_class);
-      return $device_class::getIcon();
-   }
+    public static function getIcon()
+    {
+        $type_class  = get_called_class();
+        $device_class = str_replace('Type', '', $type_class);
+        return $device_class::getIcon();
+    }
 }

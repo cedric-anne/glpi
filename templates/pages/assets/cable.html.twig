@@ -1,7 +1,7 @@
 {#
  # ---------------------------------------------------------------------
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2021 Teclib' and contributors.
+ # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
@@ -34,13 +34,6 @@
 {% set params  = params ?? [] %}
 
 {% block more_fields %}
-   {{ fields.dropdownField(
-      'CableType',
-      'cabletypes_id',
-      item.fields['cabletypes_id'],
-      'CableType'|itemtype_name,
-   ) }}
-
    {{ fields.dropdownField(
       'CableStrand',
       'cablestrands_id',
@@ -97,7 +90,7 @@
 
                   {{ fields.dropdownArrayField(
                      'itemtype_endpoint_' ~ side,
-                     item.fields['connectortypes_id_' ~ side],
+                     item.fields['itemtype_endpoint_' ~ side],
                      call('Glpi\\Socket::getSocketLinkTypes'),
                      _n('Asset', 'Assets', 1),
                      side_options|merge({
@@ -118,10 +111,10 @@
                   ]) %}
 
                   {{ fields.dropdownField(
-                     'SocketModel',
+                     'Glpi\\SocketModel',
                      'socketmodels_id_endpoint_' ~ side,
                      item.fields['socketmodels_id_endpoint_' ~ side],
-                     'SocketModel'|itemtype_name,
+                     'Glpi\\SocketModel'|itemtype_name,
                      side_options
                   ) }}
 

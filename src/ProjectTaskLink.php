@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -37,39 +38,41 @@
  * @since 9.5.4
  *
  */
-class ProjectTaskLink extends CommonDBRelation {
-
+class ProjectTaskLink extends CommonDBRelation
+{
    // From CommonDBRelation
-   static public $itemtype_1 = 'ProjectTask';
-   static public $items_id_1 = 'projecttasks_id_source';
+    public static $itemtype_1 = 'ProjectTask';
+    public static $items_id_1 = 'projecttasks_id_source';
 
-   static public $itemtype_2 = 'ProjectTask';
-   static public $items_id_2 = 'projecttasks_id_target';
+    public static $itemtype_2 = 'ProjectTask';
+    public static $items_id_2 = 'projecttasks_id_target';
 
-   public function getFromDBForItemIDs($projecttaskIds) {
-      global $DB;
+    public function getFromDBForItemIDs($projecttaskIds)
+    {
+        global $DB;
 
-      $iterator = $DB->request([
-         'SELECT' => ['glpi_projecttasklinks.*'],
-         'FROM' => 'glpi_projecttasklinks',
-         'WHERE' => "projecttasks_id_source IN (" . $projecttaskIds . ") AND projecttasks_id_target IN (" . $projecttaskIds . ")"
-      ]);
+        $iterator = $DB->request([
+            'SELECT' => ['glpi_projecttasklinks.*'],
+            'FROM' => 'glpi_projecttasklinks',
+            'WHERE' => "projecttasks_id_source IN (" . $projecttaskIds . ") AND projecttasks_id_target IN (" . $projecttaskIds . ")"
+        ]);
 
-      return $iterator;
-   }
+        return $iterator;
+    }
 
-   public function checkIfExist($taskLink) {
-      global $DB;
-      $iterator = $DB->request([
-         'SELECT' => 'id',
-         'FROM' => self::getTable(),
-         'WHERE' => [
-            'AND' => ['projecttasks_id_source' => $taskLink['projecttasks_id_source']
-            ],
-            ['projecttasks_id_target' => $taskLink['projecttasks_id_target']],
-            ['type' => $taskLink['type']]
-         ]
-      ]);
-      return count($iterator) > 0;
-   }
+    public function checkIfExist($taskLink)
+    {
+        global $DB;
+        $iterator = $DB->request([
+            'SELECT' => 'id',
+            'FROM' => self::getTable(),
+            'WHERE' => [
+                'AND' => ['projecttasks_id_source' => $taskLink['projecttasks_id_source']
+                ],
+                ['projecttasks_id_target' => $taskLink['projecttasks_id_target']],
+                ['type' => $taskLink['type']]
+            ]
+        ]);
+        return count($iterator) > 0;
+    }
 }

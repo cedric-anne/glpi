@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,12 +31,16 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("certificate", READ);
 
-Html::header(Certificate::getTypeName(Session::getPluralNumber()),
-             $_SERVER['PHP_SELF'], 'management', 'certificate');
+Html::header(
+    Certificate::getTypeName(Session::getPluralNumber()),
+    $_SERVER['PHP_SELF'],
+    'management',
+    'certificate'
+);
 
 Search::show('Certificate');
 

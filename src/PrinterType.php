@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,11 +32,10 @@
  */
 
 /// Class PrinterType
-class PrinterType extends CommonType {
-
-
-   static function getTypeName($nb = 0) {
-      return _n('Printer type', 'Printer types', $nb);
-   }
-
+class PrinterType extends CommonType
+{
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Printer type', 'Printer types', $nb);
+    }
 }

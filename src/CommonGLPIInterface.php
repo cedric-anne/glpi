@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -33,13 +34,13 @@
 /**
  * CommonGLPI interface.
  */
-interface CommonGLPIInterface {
-
-   /**
-    * Constructor.
-    *
-    * Declared in interface to ensure that `getItemForItemtype()` will be able to create an instance of CommonGLPI without
-    * having to pass any parameter.
-    */
-   public function __construct();
+interface CommonGLPIInterface
+{
+    /**
+     * Constructor.
+     *
+     * Declared in interface to ensure that `getItemForItemtype()` will be able to create an instance of CommonGLPI without
+     * having to pass any parameter.
+     */
+    public function __construct();
 }

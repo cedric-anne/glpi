@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -38,41 +39,44 @@ require_once __DIR__ . '/../Autoload.php';
 
 /* Test for inc/autoload.function.php */
 
-class Autoload extends DbTestCase {
+class Autoload extends DbTestCase
+{
+    public function dataItemType()
+    {
+        return [
+            ['Computer',                         false, false],
+            ['Glpi\\Event',                      false, false],
+            ['PluginFooBar',                     'Foo', 'Bar'],
+            ['GlpiPlugin\\Foo\\Bar',             'Foo', 'Bar'],
+            ['GlpiPlugin\\Foo\\Bar\\More',       'Foo', 'Bar\\More'],
+            ['PluginFooBar\Invalid',             false, false],
+            ['Glpi\Api\Deprecated\PluginFooBar', false, false],
+            ['Invalid\GlpiPlugin\Foo\Bar',       false, false],
+        ];
+    }
 
-   public function dataItemType() {
-      return [
-         ['Computer',                         false, false],
-         ['Glpi\\Event',                      false, false],
-         ['PluginFooBar',                     'Foo', 'Bar'],
-         ['GlpiPlugin\\Foo\\Bar',             'Foo', 'Bar'],
-         ['GlpiPlugin\\Foo\\Bar\\More',       'Foo', 'Bar\\More'],
-         ['PluginFooBar\Invalid',             false, false],
-         ['Glpi\Api\Deprecated\PluginFooBar', false, false],
-         ['Invalid\GlpiPlugin\Foo\Bar',       false, false],
-      ];
-   }
-
-   /**
-    * @dataProvider dataItemType
-    **/
-   public function testIsPluginItemType($type, $plug, $class) {
-      $res = isPluginItemType($type);
-      if ($plug) {
-         $this->array($res)
+    /**
+     * @dataProvider dataItemType
+     **/
+    public function testIsPluginItemType($type, $plug, $class)
+    {
+        $res = isPluginItemType($type);
+        if ($plug) {
+            $this->array($res)
             ->isIdenticalTo([
-               'plugin' => $plug,
-               'class'  => $class
+                'plugin' => $plug,
+                'class'  => $class
             ]);
-      } else {
-         $this->boolean($res)->isFalse;
-      }
-   }
+        } else {
+            $this->boolean($res)->isFalse;
+        }
+    }
 
-   /**
-    * Checks autoload of some class located in Glpi namespace.
-    */
-   public function testAutoloadGlpiEvent() {
-      $this->boolean(class_exists('Glpi\\Event'))->isTrue();
-   }
+    /**
+     * Checks autoload of some class located in Glpi namespace.
+     */
+    public function testAutoloadGlpiEvent()
+    {
+        $this->boolean(class_exists('Glpi\\Event'))->isTrue();
+    }
 }

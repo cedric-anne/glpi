@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -49,68 +50,74 @@
  *
  * php-errors.log will give you the URL of the result.
  */
-class XHProf {
-
+class XHProf
+{
    // this can be overloaded in config/local_define.php
-   const XHPROF_PATH = '/usr/share/xhprof/xhprof_lib';
-   const XHPROF_URL  = '/xhprof';
+    const XHPROF_PATH = '/usr/share/xhprof/xhprof_lib';
+    const XHPROF_URL  = '/xhprof';
 
 
-   static private $run = false;
+    private static $run = false;
 
 
-   /**
-    * @param $msg (default '')
-   **/
-   function __construct($msg = '') {
-      $this->start($msg);
-   }
+    /**
+     * @param $msg (default '')
+     **/
+    public function __construct($msg = '')
+    {
+        $this->start($msg);
+    }
 
 
-   function __destruct() {
-      $this->stop();
-   }
+    public function __destruct()
+    {
+        $this->stop();
+    }
 
 
-   /**
-    * @param $msg (default '')
-   **/
-   function start($msg = '') {
+    /**
+     * @param $msg (default '')
+     **/
+    public function start($msg = '')
+    {
 
-      if (!self::$run
-          && function_exists('xhprof_enable')) {
-         xhprof_enable(
-            XHPROF_FLAGS_NO_BUILTINS
-            | XHPROF_FLAGS_CPU
-            | XHPROF_FLAGS_MEMORY
-         );
+        if (
+            !self::$run
+            && function_exists('xhprof_enable')
+        ) {
+            xhprof_enable(
+                XHPROF_FLAGS_NO_BUILTINS
+                | XHPROF_FLAGS_CPU
+                | XHPROF_FLAGS_MEMORY
+            );
 
-         if (class_exists('Toolbox')) {
-            Toolbox::logDebug("Start profiling with XHProf", $msg);
-         }
-         self::$run = true;
-      }
-   }
+            if (class_exists('Toolbox')) {
+                Toolbox::logDebug("Start profiling with XHProf", $msg);
+            }
+            self::$run = true;
+        }
+    }
 
 
-   function stop() {
+    public function stop()
+    {
 
-      if (self::$run) {
-         $data = xhprof_disable();
+        if (self::$run) {
+            $data = xhprof_disable();
 
-         $incl = (defined('XHPROF_PATH') ? XHPROF_PATH : self::XHPROF_PATH);
-         include_once $incl.'/utils/xhprof_lib.php';
-         include_once $incl.'/utils/xhprof_runs.php';
+            $incl = (defined('XHPROF_PATH') ? XHPROF_PATH : self::XHPROF_PATH);
+            include_once $incl . '/utils/xhprof_lib.php';
+            include_once $incl . '/utils/xhprof_runs.php';
 
-         $runs = new XHProfRuns_Default();
-         $id   = $runs->save_run($data, 'glpi');
+            $runs = new XHProfRuns_Default();
+            $id   = $runs->save_run($data, 'glpi');
 
-         $url  = (defined('XHPROF_URL') ? XHPROF_URL : self::XHPROF_URL);
-         $host = (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost');
-         $link = "http://".$host."$url/index.php?run=$id&source=glpi";
-         Toolbox::logDebug("Stop profiling with XHProf, result URL", $link);
+            $url  = (defined('XHPROF_URL') ? XHPROF_URL : self::XHPROF_URL);
+            $host = (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost');
+            $link = "http://" . $host . "$url/index.php?run=$id&source=glpi";
+            Toolbox::logDebug("Stop profiling with XHProf, result URL", $link);
 
-         self::$run = false;
-      }
-   }
+            self::$run = false;
+        }
+    }
 }

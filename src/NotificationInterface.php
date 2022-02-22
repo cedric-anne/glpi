@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -33,31 +34,31 @@
 /**
  *  Interface to implement for each notification mode
  */
-interface NotificationInterface {
-
-   /**
-    * Send notifications
-    *
-    * @return 0|1
-   **/
-   function sendNotification();
-
-
-   /**
-    * Check data
-    *
-    * @param mixed $value   The data to check (may differ for every notification mode)
-    * @param array $options Optionnal special options (may be needed)
-    *
-    * @return boolean
-   **/
-   static function check($value, $options = []);
+interface NotificationInterface
+{
+    /**
+     * Send notifications
+     *
+     * @return 0|1
+     **/
+    public function sendNotification();
 
 
-   /**
-    * Method to test notification
-    *
-    * @return mixed
-   **/
-   static function testNotification();
+    /**
+     * Check data
+     *
+     * @param mixed $value   The data to check (may differ for every notification mode)
+     * @param array $options Optionnal special options (may be needed)
+     *
+     * @return boolean
+     **/
+    public static function check($value, $options = []);
+
+
+    /**
+     * Method to test notification
+     *
+     * @return mixed
+     **/
+    public static function testNotification();
 }

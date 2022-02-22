@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -35,26 +36,28 @@ namespace Glpi\System\Requirement;
 /**
  * @since 9.5.1
  */
-class MysqliMysqlnd extends Extension {
+class MysqliMysqlnd extends Extension
+{
+    public function __construct()
+    {
+        parent::__construct('mysqli');
+    }
 
-   public function __construct() {
-      parent::__construct('mysqli');
-   }
+    protected function check()
+    {
+        $extension_loaded = extension_loaded('mysqli');
+        $driver_is_mysqlnd = defined('MYSQLI_OPT_INT_AND_FLOAT_NATIVE');
 
-   protected function check() {
-      $extension_loaded = extension_loaded('mysqli');
-      $driver_is_mysqlnd = defined('MYSQLI_OPT_INT_AND_FLOAT_NATIVE');
+       // We check for "mysqli_fetch_all" function to be sure that the used driver is "mysqlnd".
+       // Indeed, it is mandatory to be able to use MYSQLI_OPT_INT_AND_FLOAT_NATIVE option.
+        $this->validated = $extension_loaded && $driver_is_mysqlnd;
 
-      // We check for "mysqli_fetch_all" function to be sure that the used driver is "mysqlnd".
-      // Indeed, it is mandatory to be able to use MYSQLI_OPT_INT_AND_FLOAT_NATIVE option.
-      $this->validated = $extension_loaded && $driver_is_mysqlnd;
-
-      if ($extension_loaded && $driver_is_mysqlnd) {
-         $this->validation_messages[] = sprintf(__('%s extension is installed.'), $this->name);
-      } else if ($extension_loaded && !$driver_is_mysqlnd) {
-         $this->validation_messages[] = sprintf(__('%s extension is installed but is not using mysqlnd driver.'), $this->name);
-      } else {
-         $this->validation_messages[] = sprintf(__('%s extension is missing.'), $this->name);
-      }
-   }
+        if ($extension_loaded && $driver_is_mysqlnd) {
+            $this->validation_messages[] = sprintf(__('%s extension is installed.'), $this->name);
+        } else if ($extension_loaded && !$driver_is_mysqlnd) {
+            $this->validation_messages[] = sprintf(__('%s extension is installed but is not using mysqlnd driver.'), $this->name);
+        } else {
+            $this->validation_messages[] = sprintf(__('%s extension is missing.'), $this->name);
+        }
+    }
 }

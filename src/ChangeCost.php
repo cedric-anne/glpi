@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -34,25 +35,28 @@
  * ChangeCost Class
  *
  * @since 0.85
-**/
-class ChangeCost extends CommonITILCost {
-
+ **/
+class ChangeCost extends CommonITILCost
+{
    // From CommonDBChild
-   static public $itemtype  = 'Change';
-   static public $items_id  = 'changes_id';
+    public static $itemtype  = 'Change';
+    public static $items_id  = 'changes_id';
 
 
-   static function canCreate() {
-      return Session::haveRight('change', UPDATE);
-   }
+    public static function canCreate()
+    {
+        return Session::haveRight('change', UPDATE);
+    }
 
 
-   static function canView() {
-      return Session::haveRightsOr('change', [Change::READALL, Change::READMY]);
-   }
+    public static function canView()
+    {
+        return Session::haveRightsOr('change', [Change::READALL, Change::READMY]);
+    }
 
 
-   static function canUpdate() {
-      return Session::haveRight('change', UPDATE);
-   }
+    public static function canUpdate()
+    {
+        return Session::haveRight('change', UPDATE);
+    }
 }

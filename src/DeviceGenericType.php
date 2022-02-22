@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,10 +32,10 @@
  */
 
 /// Class DeviceGenericType
-class DeviceGenericType extends CommonDeviceType {
-
-   static function getTypeName($nb = 0) {
-      return _n('Generic type', 'Generic types', $nb); //TODO : add this to locales (if don't exist)
-   }
-
+class DeviceGenericType extends CommonDeviceType
+{
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Generic type', 'Generic types', $nb); //TODO : add this to locales (if don't exist)
+    }
 }

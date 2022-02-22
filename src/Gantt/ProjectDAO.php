@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -35,60 +36,62 @@ namespace Glpi\Gantt;
 /**
  * DAO class for handling project records
  */
-class ProjectDAO {
+class ProjectDAO
+{
+    public function addProject($project)
+    {
 
-   function addProject($project) {
+        if (!\Project::canCreate()) {
+            throw new \Exception(__('Not enough rights'));
+        }
 
-      if (!\Project::canCreate()) {
-         throw new \Exception(__('Not enough rights'));
-      }
+        $input = [
+            'name' => $project->text,
+            'comment' => $project->comment,
+            'projects_id' => $project->parent,
+            'date' => $_SESSION['glpi_currenttime'],
+            'plan_start_date' => $project->start_date,
+            'plan_end_date' => $project->end_date,
+            'priority' => 3,  //medium
+            'projectstates_id' => 1,
+            'users_id' => \Session::getLoginUserID(),
+            'show_on_global_gantt' => 1
+        ];
+        $proj = new \Project();
+        $proj->add($input);
+        return $proj;
+    }
 
-      $input = [
-         'name' => $project->text,
-         'comment' => $project->comment,
-         'projects_id' => $project->parent,
-         'date' => $_SESSION['glpi_currenttime'],
-         'plan_start_date' => $project->start_date,
-         'plan_end_date' => $project->end_date,
-         'priority' => 3,  //medium
-         'projectstates_id' => 1,
-         'users_id' => \Session::getLoginUserID(),
-         'show_on_global_gantt' => 1
-      ];
-      $proj = new \Project();
-      $proj->add($input);
-      return $proj;
-   }
+    public function updateProject($project)
+    {
+        $p = new \Project();
+        $p->getFromDB($project->id);
 
-   function updateProject($project) {
-      $p = new \Project();
-      $p->getFromDB($project->id);
+        if (!$p::canUpdate() || !$p->canUpdateItem()) {
+            throw new \Exception(__('Not enough rights'));
+        }
 
-      if (!$p::canUpdate() || !$p->canUpdateItem()) {
-         throw new \Exception(__('Not enough rights'));
-      }
+        $p->update([
+            'id' => $project->id,
+            'percent_done' => ($project->progress * 100),
+            'name' => $project->text
+        ]);
+        return true;
+    }
 
-      $p->update([
-         'id' => $project->id,
-         'percent_done' => ($project->progress * 100),
-         'name' => $project->text
-      ]);
-      return true;
-   }
+    public function updateParent($project)
+    {
+        $p = new \Project();
+        $p->getFromDB($project->id);
 
-   function updateParent($project) {
-      $p = new \Project();
-      $p->getFromDB($project->id);
+        if (!$p::canUpdate() || !$p->canUpdateItem()) {
+            throw new \Exception(__('Not enough rights'));
+        }
 
-      if (!$p::canUpdate() || !$p->canUpdateItem()) {
-         throw new \Exception(__('Not enough rights'));
-      }
-
-      $input = [
-         'id' => $project->id,
-         'projects_id' => $project->parent
-      ];
-      $p->update($input);
-   }
-
+        $input = [
+            'id' => $project->id,
+            'projects_id' => $project->parent
+        ];
+        $p->update($input);
+    }
 }

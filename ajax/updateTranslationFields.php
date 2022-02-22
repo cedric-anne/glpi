@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -34,14 +35,14 @@
  * @since 0.85
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkRight("dropdown", UPDATE);
 if (isset($_POST['itemtype']) && isset($_POST['language'])) {
-   $item = new $_POST['itemtype'];
-   $item->getFromDB($_POST['items_id']);
-   DropdownTranslation::dropdownFields($item, $_POST['language']);
+    $item = new $_POST['itemtype']();
+    $item->getFromDB($_POST['items_id']);
+    DropdownTranslation::dropdownFields($item, $_POST['language']);
 }

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -43,19 +44,21 @@ use Glpi\Toolbox\Sanitizer;
  */
 abstract class TreeDropdownParameters extends DropdownParameters
 {
-   public function getAvailableParameters(): array {
-      $parameter = parent::getAvailableParameters();
-      $parameter[] = new AttributeParameter("completename", __('Complete name'));
-      return $parameter;
-   }
+    public function getAvailableParameters(): array
+    {
+        $parameter = parent::getAvailableParameters();
+        $parameter[] = new AttributeParameter("completename", __('Complete name'));
+        return $parameter;
+    }
 
-   protected function defineValues(CommonDBTM $item): array {
+    protected function defineValues(CommonDBTM $item): array
+    {
 
-      // Output "unsanitized" values
-      $fields = Sanitizer::unsanitize($item->fields);
+       // Output "unsanitized" values
+        $fields = Sanitizer::unsanitize($item->fields);
 
-      $values = parent::defineValues($item);
-      $values['completename'] = $fields['completename'];
-      return $values;
-   }
+        $values = parent::defineValues($item);
+        $values['completename'] = $fields['completename'];
+        return $values;
+    }
 }

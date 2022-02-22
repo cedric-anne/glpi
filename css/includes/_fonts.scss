@@ -1,7 +1,7 @@
-/**
+/*!
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,6 +30,11 @@
  */
 
 @font-face {
-   font-family: Inter;
-   src: url("../fonts/Inter-Variable/Inter-VariableFont.ttf");
+    font-family: Inter;
+    src: url("../fonts/Inter-Variable/Inter-VariableFont.ttf");
 }
+
+$font-family-sans-serif: inter, -apple-system, blinkmacsystemfont, san francisco, segoe ui, roboto, helvetica neue, sans-serif !default;
+$ti-font-path: "../css/lib/tabler/icons/iconfont/fonts";
+
+@import "~@tabler/icons/iconfont/tabler-icons";

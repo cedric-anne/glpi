@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,22 +31,21 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 if (!basename($_SERVER['SCRIPT_NAME']) == "helpdesk.faq.php") {
-   Session::checkLoginUser();
+    Session::checkLoginUser();
 }
 
 // Manage tabs
 if (isset($_GET['tab']) && isset($_GET['itemtype'])) {
-
-   $tabs = Toolbox::getAvailablesTabs($_UGET['itemtype'], $_GET['id'] ?? null);
-   $current      = 0;
-   foreach (array_keys($tabs) as $key) {
-      if ($current == $_GET['tab']) {
-         Session::setActiveTab($_UGET['itemtype'], $key);
-         break;
-      }
-      $current++;
-   }
+    $tabs = Toolbox::getAvailablesTabs($_UGET['itemtype'], $_GET['id'] ?? null);
+    $current      = 0;
+    foreach (array_keys($tabs) as $key) {
+        if ($current == $_GET['tab']) {
+            Session::setActiveTab($_UGET['itemtype'], $key);
+            break;
+        }
+        $current++;
+    }
 }

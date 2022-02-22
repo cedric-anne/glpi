@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -34,59 +35,66 @@
  * BlacklistedMailContent Class
  *
  * @since 0.85
-**/
-class BlacklistedMailContent extends CommonDropdown {
-
+ **/
+class BlacklistedMailContent extends CommonDropdown
+{
    // From CommonDBTM
-   public $dohistory       = false;
+    public $dohistory       = false;
 
-   static $rightname       = 'config';
+    public static $rightname       = 'config';
 
-   public $can_be_translated = false;
-
-
-   static function getTypeName($nb = 0) {
-      return __('Blacklisted mail content');
-   }
+    public $can_be_translated = false;
 
 
-   static function canCreate() {
-      return static::canUpdate();
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return __('Blacklisted mail content');
+    }
 
 
-   static function canPurge() {
-      return static::canUpdate();
-   }
+    public static function canCreate()
+    {
+        return static::canUpdate();
+    }
 
 
-   function getAdditionalFields() {
-
-      return [['name'  => 'content',
-                         'label' => __('Content'),
-                         'type'  => 'textarea',
-                         'rows'  => 20,
-                         'list'  => true]];
-   }
+    public static function canPurge()
+    {
+        return static::canUpdate();
+    }
 
 
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    public function getAdditionalFields()
+    {
 
-      $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'content',
-         'name'               => __('Content'),
-         'datatype'           => 'text',
-         'massiveaction'      => false
-      ];
+        return [['name'  => 'content',
+            'label' => __('Content'),
+            'type'  => 'textarea',
+            'rows'  => 20,
+            'list'  => true
+        ]
+        ];
+    }
 
-      return $tab;
-   }
 
-   static function getIcon() {
-      return "fas fa-envelope-square";
-   }
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
+        $tab[] = [
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'content',
+            'name'               => __('Content'),
+            'datatype'           => 'text',
+            'massiveaction'      => false
+        ];
+
+        return $tab;
+    }
+
+    public static function getIcon()
+    {
+        return "fas fa-envelope-square";
+    }
 }

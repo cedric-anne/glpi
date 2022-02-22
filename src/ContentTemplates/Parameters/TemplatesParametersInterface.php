@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -41,34 +42,34 @@ use CommonDBTM;
  */
 interface TemplatesParametersInterface
 {
-   /**
-    * Get default node name to use for this class.
-    *
-    * @return string
-    */
-   public static function getDefaultNodeName(): string;
+    /**
+     * Get default node name to use for this class.
+     *
+     * @return string
+     */
+    public static function getDefaultNodeName(): string;
 
-   /**
-    * Get object label to use for this class.
-    *
-    * @return string
-    */
-   public static function getObjectLabel(): string;
+    /**
+     * Get object label to use for this class.
+     *
+     * @return string
+     */
+    public static function getObjectLabel(): string;
 
-   /**
-    * Get values for a given item, used for template rendering
-    *
-    * @param CommonDBTM $item
-    *
-    * @return array
-    */
-   public function getValues(CommonDBTM $item): array;
+    /**
+     * Get values for a given item, used for template rendering
+     *
+     * @param CommonDBTM $item
+     *
+     * @return array
+     */
+    public function getValues(CommonDBTM $item): array;
 
-   /**
-    * To be defined in each subclasses, define all available parameters for one or more itemtypes.
-    * These parameters information are meant to be used for autocompletion on the client side.
-    *
-    * @return \Glpi\ContentTemplates\Parameters\ParametersTypes\ParameterTypeInterface[]
-    */
-   public function getAvailableParameters(): array;
+    /**
+     * To be defined in each subclasses, define all available parameters for one or more itemtypes.
+     * These parameters information are meant to be used for autocompletion on the client side.
+     *
+     * @return \Glpi\ContentTemplates\Parameters\ParametersTypes\ParameterTypeInterface[]
+     */
+    public function getAvailableParameters(): array;
 }

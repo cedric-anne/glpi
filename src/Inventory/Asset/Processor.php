@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -37,40 +38,43 @@ use Glpi\Inventory\Conf;
 
 class Processor extends Device
 {
-   public function __construct(CommonDBTM $item, array $data = null) {
-      parent::__construct($item, $data, 'Item_DeviceProcessor');
-   }
+    public function __construct(CommonDBTM $item, array $data = null)
+    {
+        parent::__construct($item, $data, 'Item_DeviceProcessor');
+    }
 
-   public function prepare() :array {
-      $mapping = [
-         'speed'        => 'frequency',
-         'manufacturer' => 'manufacturers_id',
-         'serial'       => 'serial',
-         'name'         => 'designation',
-         'core'         => 'nbcores',
-         'thread'       => 'nbthreads',
-         'id'           => 'internalid'
-      ];
-      foreach ($this->data as &$val) {
-         foreach ($mapping as $origin => $dest) {
-            if (property_exists($val, $origin)) {
-               $val->$dest = $val->$origin;
+    public function prepare(): array
+    {
+        $mapping = [
+            'speed'        => 'frequency',
+            'manufacturer' => 'manufacturers_id',
+            'serial'       => 'serial',
+            'name'         => 'designation',
+            'core'         => 'nbcores',
+            'thread'       => 'nbthreads',
+            'id'           => 'internalid'
+        ];
+        foreach ($this->data as &$val) {
+            foreach ($mapping as $origin => $dest) {
+                if (property_exists($val, $origin)) {
+                    $val->$dest = $val->$origin;
+                }
             }
-         }
-         if (property_exists($val, 'frequency')) {
-            $val->frequency_default = $val->frequency;
-            $val->frequence = $val->frequency;
-         }
-         if (property_exists($val, 'type')) {
-            $val->designation = $val->type;
-         }
-         unset($val->id);
-         $val->is_dynamic = 1;
-      }
-      return $this->data;
-   }
+            if (property_exists($val, 'frequency')) {
+                $val->frequency_default = $val->frequency;
+                $val->frequence = $val->frequency;
+            }
+            if (property_exists($val, 'type')) {
+                $val->designation = $val->type;
+            }
+            unset($val->id);
+            $val->is_dynamic = 1;
+        }
+        return $this->data;
+    }
 
-   public function checkConf(Conf $conf): bool {
-      return $conf->component_processor == 1;
-   }
+    public function checkConf(Conf $conf): bool
+    {
+        return $conf->component_processor == 1;
+    }
 }

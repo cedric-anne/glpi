@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -35,28 +36,30 @@ namespace tests\units\Glpi\Features;
 /**
  * Test for the {@link \Glpi\Features\Clonable} feature
  */
-class Clonable extends \DbTestCase {
+class Clonable extends \DbTestCase
+{
+    public function massiveActionTargetingProvider()
+    {
+        return [
+            [\Computer::class, true],
+            [\Monitor::class, true],
+            [\Software::class, true],
+            [\Ticket::class, true],
+            [\Plugin::class, false],
+            [\Config::class, false]
+        ];
+    }
 
-   public function massiveActionTargetingProvider() {
-      return [
-         [\Computer::class, true],
-         [\Monitor::class, true],
-         [\Software::class, true],
-         [\Ticket::class, true],
-         [\Plugin::class, false],
-         [\Config::class, false]
-      ];
-   }
-
-   /**
-    * @param $class
-    * @param $result
-    * @dataProvider massiveActionTargetingProvider
-    */
-   public function testMassiveActionTargeting($class, $result) {
-      $this->login();
-      $ma_prefix = 'MassiveAction' . \MassiveAction::CLASS_ACTION_SEPARATOR;
-      $actions = \MassiveAction::getAllMassiveActions($class);
-      $this->boolean(array_key_exists($ma_prefix . 'clone', $actions))->isIdenticalTo($result);
-   }
+    /**
+     * @param $class
+     * @param $result
+     * @dataProvider massiveActionTargetingProvider
+     */
+    public function testMassiveActionTargeting($class, $result)
+    {
+        $this->login();
+        $ma_prefix = 'MassiveAction' . \MassiveAction::CLASS_ACTION_SEPARATOR;
+        $actions = \MassiveAction::getAllMassiveActions($class);
+        $this->boolean(array_key_exists($ma_prefix . 'clone', $actions))->isIdenticalTo($result);
+    }
 }

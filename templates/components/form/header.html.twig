@@ -1,7 +1,7 @@
 {#
  # ---------------------------------------------------------------------
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2021 Teclib' and contributors.
+ # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
@@ -34,6 +34,7 @@
 {% set withtemplate = params['withtemplate'] ?? '' %}
 {% set rand         = random() %}
 {% set nametype     = params['formtitle'] ?? item.getTypeName(1) %}
+{% set friendlyname = params['friendlyname'] ?? item.getHeaderName() %}
 {% set no_id        = params['noid'] ?? false %}
 {% set id           = item.fields['id'] ?? -1 %}
 {% set formoptions  = params['formoptions'] ?? '' %}
@@ -41,7 +42,11 @@
 {% set entity_id = 0 %}
 {% set entity_name = '' %}
 {% if item.isEntityAssign() %}
-   {% set entity_id = params['entities_id'] ?? item.fields['entities_id'] ?? session('glpiactive_entity') %}
+   {% if item.getType() == 'Entity' and item.fields['id'] == 0 %}
+      {% set entity_id = null %}
+   {% else %}
+      {% set entity_id = params['entities_id'] ?? item.fields['entities_id'] ?? session('glpiactive_entity') %}
+   {% endif %}
 
    {% if is_multi_entities_mode() %}
       {% set entity_name = get_item_name('Entity', item.fields['entities_id']) %}
@@ -86,7 +91,11 @@
                   </div>
                {% endif %}
                <span>
-               {{ nametype }}
+               {% if item.id > 0 %}
+                  {{ nametype }} - {{ friendlyname }}
+               {% else %}
+                  {{ nametype }}
+               {% endif %}
                </span>
                {% if header_toolbar %}
                   <div class="d-inline-block toolbar ms-2">
@@ -97,15 +106,17 @@
                {% endif %}
             </h3>
 
-            {% if is_multi_entities_mode() and item is not instanceof('Entity') %}
-               <span class="badge entity-name mx-1 px-2 py-3 ms-auto">
+            {% set single_actions_ms_auto = true %}
+            {% if item.isEntityAssign() and is_multi_entities_mode() and item is not instanceof('Entity') %}
+               {% set single_actions_ms_auto = false %}
+               <span class="badge entity-name mx-1 px-2 py-3 ms-auto" title="{{ entity_name }}">
                   <i class="ti ti-stack me-2"></i>
                   {{ entity_name }}
                </span>
 
                {% if item.maybeRecursive() %}
-                  <span class="badge entity-name mx-1 px-2 py-3">
-                     <label class="form-check mt-1">
+                  <span class="badge is_recursive-toggle mx-1 px-2 py-3">
+                     <label class="form-check d-flex align-items-center mb-0">
                         {% set disabled = canedit == false %}
                         {% set checked  = item.fields['is_recursive'] ? true : false %}
                         {% set comment  = __('Change visibility in child entities.') %}
@@ -124,16 +135,16 @@
                         <input class="form-check-input" type="checkbox" name="is_recursive" value="1"
                               {% if checked %}checked="checked"{% endif %}
                               {% if disabled %}disabled="disabled"{% endif %} />
-                        <span class="form-check-label mt-1">
+                        <span class="form-check-label mb-0 mx-2">
                            {{ __('Child entities') }}
                            <i class="fas fa-info ms-1" title="{{ comment }}"></i>
                         </span>
                      </label>
                   </span>
                {% endif %}
-
-               {{ include('components/form/single-action.html.twig') }}
             {% endif %}
+
+            {{ include('components/form/single-action.html.twig') }}
          {% endif %}
       </div>
 

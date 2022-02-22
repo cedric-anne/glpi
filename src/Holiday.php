@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,126 +33,142 @@
 
 /**
  * Holiday Class
-**/
-class Holiday extends CommonDropdown {
+ **/
+class Holiday extends CommonDropdown
+{
+    public static $rightname = 'calendar';
 
-   static $rightname = 'calendar';
-
-   public $can_be_translated = false;
-
-
-   static function getTypeName($nb = 0) {
-      return _n('Close time', 'Close times', $nb);
-   }
+    public $can_be_translated = false;
 
 
-   function getAdditionalFields() {
-
-      return [['name'  => 'begin_date',
-                         'label' => __('Start'),
-                         'type'  => 'date'],
-                   ['name'  => 'end_date',
-                         'label' => __('End'),
-                         'type'  => 'date'],
-                   ['name'  => 'is_perpetual',
-                         'label' => __('Recurrent'),
-                         'type'  => 'bool']];
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Close time', 'Close times', $nb);
+    }
 
 
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    public function getAdditionalFields()
+    {
 
-      $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'begin_date',
-         'name'               => __('Start'),
-         'datatype'           => 'date'
-      ];
-
-      $tab[] = [
-         'id'                 => '12',
-         'table'              => $this->getTable(),
-         'field'              => 'end_date',
-         'name'               => __('End'),
-         'datatype'           => 'date'
-      ];
-
-      $tab[] = [
-         'id'                 => '13',
-         'table'              => $this->getTable(),
-         'field'              => 'is_perpetual',
-         'name'               => __('Recurrent'),
-         'datatype'           => 'bool'
-      ];
-
-      return $tab;
-   }
+        return [['name'  => 'begin_date',
+            'label' => __('Start'),
+            'type'  => 'date'
+        ],
+            ['name'  => 'end_date',
+                'label' => __('End'),
+                'type'  => 'date'
+            ],
+            ['name'  => 'is_perpetual',
+                'label' => __('Recurrent'),
+                'type'  => 'bool'
+            ]
+        ];
+    }
 
 
-   function prepareInputForAdd($input) {
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      $input = parent::prepareInputForAdd($input);
+        $tab[] = [
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'begin_date',
+            'name'               => __('Start'),
+            'datatype'           => 'date'
+        ];
 
-      if (empty($input['end_date'])
-          || ($input['end_date'] == 'NULL')
-          || ($input['end_date'] < $input['begin_date'])) {
+        $tab[] = [
+            'id'                 => '12',
+            'table'              => $this->getTable(),
+            'field'              => 'end_date',
+            'name'               => __('End'),
+            'datatype'           => 'date'
+        ];
 
-         $input['end_date'] = $input['begin_date'];
-      }
-      return $input;
-   }
+        $tab[] = [
+            'id'                 => '13',
+            'table'              => $this->getTable(),
+            'field'              => 'is_perpetual',
+            'name'               => __('Recurrent'),
+            'datatype'           => 'bool'
+        ];
+
+        return $tab;
+    }
 
 
-   function prepareInputForUpdate($input) {
+    public function prepareInputForAdd($input)
+    {
 
-      $input = parent::prepareInputForUpdate($input);
+        $input = parent::prepareInputForAdd($input);
 
-      if (isset($input['begin_date']) && (empty($input['end_date'])
-          || ($input['end_date'] == 'NULL')
-          || ($input['end_date'] < $input['begin_date']))) {
+        if (
+            empty($input['end_date'])
+            || ($input['end_date'] == 'NULL')
+            || ($input['end_date'] < $input['begin_date'])
+        ) {
+            $input['end_date'] = $input['begin_date'];
+        }
+        return $input;
+    }
 
-         $input['end_date'] = $input['begin_date'];
-      }
 
-      return $input;
-   }
+    public function prepareInputForUpdate($input)
+    {
 
-   function post_updateItem($history = 1) {
+        $input = parent::prepareInputForUpdate($input);
 
-      $this->invalidateCalendarHolidayCache();
+        if (
+            isset($input['begin_date']) && (empty($input['end_date'])
+            || ($input['end_date'] == 'NULL')
+            || ($input['end_date'] < $input['begin_date']))
+        ) {
+            $input['end_date'] = $input['begin_date'];
+        }
 
-      parent::post_updateItem($history);
-   }
+        return $input;
+    }
 
-   function post_deleteFromDB() {
+    public function post_updateItem($history = 1)
+    {
 
-      $this->invalidateCalendarHolidayCache();
+        $this->invalidateCalendarHolidayCache();
 
-      parent::post_deleteFromDB();
-   }
+        parent::post_updateItem($history);
+    }
 
-   function cleanDBonPurge() {
+    public function post_deleteFromDB()
+    {
 
-      $this->deleteChildrenAndRelationsFromDb(
-         [
-            Calendar_Holiday::class,
-         ]
-      );
-   }
+        $this->invalidateCalendarHolidayCache();
 
-   /**
-    * Invalidate holidays cache on linked calendars.
-    *
-    * @return void
-    */
-   private function invalidateCalendarHolidayCache(): void {
-      $calendar_holiday = new Calendar_Holiday();
-      $calendar_holiday->invalidateHolidayCache($this->fields['id']);
-   }
+        parent::post_deleteFromDB();
+    }
 
-   static function getIcon() {
-      return "far fa-calendar-times";
-   }
+    public function cleanDBonPurge()
+    {
+
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                Calendar_Holiday::class,
+            ]
+        );
+    }
+
+    /**
+     * Invalidate holidays cache on linked calendars.
+     *
+     * @return void
+     */
+    private function invalidateCalendarHolidayCache(): void
+    {
+        $calendar_holiday = new Calendar_Holiday();
+        $calendar_holiday->invalidateHolidayCache($this->fields['id']);
+    }
+
+    public static function getIcon()
+    {
+        return "far fa-calendar-times";
+    }
 }

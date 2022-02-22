@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -34,15 +35,16 @@ namespace tests\units\Glpi\ContentTemplates\Parameters;
 
 class EntityParameters extends AbstractParameters
 {
-   public function testGetValues(): void {
-      $parameters = $this->newTestedInstance();
-      $values = $parameters->getValues(getItemByTypeName('Entity', '_test_child_2'));
-      $this->array($values)->isEqualTo([
-         'id'   => getItemByTypeName('Entity', '_test_child_2', true),
-         'name' => '_test_child_2',
-         'completename' => 'Root entity > _test_root_entity > _test_child_2',
-      ]);
+    public function testGetValues(): void
+    {
+        $parameters = $this->newTestedInstance();
+        $values = $parameters->getValues(getItemByTypeName('Entity', '_test_child_2'));
+        $this->array($values)->isEqualTo([
+            'id'   => getItemByTypeName('Entity', '_test_child_2', true),
+            'name' => '_test_child_2',
+            'completename' => 'Root entity > _test_root_entity > _test_child_2',
+        ]);
 
-      $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
-   }
+        $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
+    }
 }

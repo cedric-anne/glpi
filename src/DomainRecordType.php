@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,371 +33,383 @@
 
 class DomainRecordType extends CommonDropdown
 {
-   static $rightname = 'dropdown';
+    public static $rightname = 'dropdown';
 
-   static public $knowtypes = [
-      [
-         'id'        => 1,
-         'name'      => 'A',
-         'comment'   => 'Host address',
-         'fields'    => [],
-      ], [
-         'id'        => 2,
-         'name'      => 'AAAA',
-         'comment'   => 'IPv6 host address',
-         'fields'    => [],
-      ], [
-         'id'        => 3,
-         'name'      => 'ALIAS',
-         'comment'   => 'Auto resolved alias',
-         'fields'    => [],
-      ], [
-         'id'        => 4,
-         'name'      => 'CNAME',
-         'comment'   => 'Canonical name for an alias',
-         'fields'    => [
-            [
-               'key'         => 'target',
-               'label'       => 'Target',
-               'placeholder' => 'sip.example.com.',
-               'is_fqdn'     => true
+    public static $knowtypes = [
+        [
+            'id'        => 1,
+            'name'      => 'A',
+            'comment'   => 'Host address',
+            'fields'    => [],
+        ], [
+            'id'        => 2,
+            'name'      => 'AAAA',
+            'comment'   => 'IPv6 host address',
+            'fields'    => [],
+        ], [
+            'id'        => 3,
+            'name'      => 'ALIAS',
+            'comment'   => 'Auto resolved alias',
+            'fields'    => [],
+        ], [
+            'id'        => 4,
+            'name'      => 'CNAME',
+            'comment'   => 'Canonical name for an alias',
+            'fields'    => [
+                [
+                    'key'         => 'target',
+                    'label'       => 'Target',
+                    'placeholder' => 'sip.example.com.',
+                    'is_fqdn'     => true
+                ],
             ],
-         ],
-      ], [
-         'id'        => 5,
-         'name'      => 'MX',
-         'comment'   => 'Mail eXchange',
-         'fields'    => [
-            [
-               'key'         => 'priority',
-               'label'       => 'Priority',
-               'placeholder' => '10',
+        ], [
+            'id'        => 5,
+            'name'      => 'MX',
+            'comment'   => 'Mail eXchange',
+            'fields'    => [
+                [
+                    'key'         => 'priority',
+                    'label'       => 'Priority',
+                    'placeholder' => '10',
+                ],
+                [
+                    'key'         => 'server',
+                    'label'       => 'Server',
+                    'placeholder' => 'mail.example.com.',
+                    'is_fqdn'     => true
+                ],
             ],
-            [
-               'key'         => 'server',
-               'label'       => 'Server',
-               'placeholder' => 'mail.example.com.',
-               'is_fqdn'     => true
+        ], [
+            'id'        => 6,
+            'name'      => 'NS',
+            'comment'   => 'Name Server',
+            'fields'    => [],
+        ], [
+            'id'        => 7,
+            'name'      => 'PTR',
+            'comment'   => 'Pointer',
+            'fields'    => [],
+        ], [
+            'id'        => 8,
+            'name'      => 'SOA',
+            'comment'   => 'Start Of Authority',
+            'fields'    => [
+                [
+                    'key'         => 'primary_name_server',
+                    'label'       => 'Primary name server',
+                    'placeholder' => 'ns1.example.com.',
+                    'is_fqdn'     => true
+                ],
+                [
+                    'key'         => 'primary_contact',
+                    'label'       => 'Primary contact',
+                    'placeholder' => 'admin.example.com.',
+                    'is_fqdn'     => true
+                ],
+                [
+                    'key'         => 'serial',
+                    'label'       => 'Serial',
+                    'placeholder' => '2020010101',
+                ],
+                [
+                    'key'         => 'zone_refresh_timer',
+                    'label'       => 'Zone refresh timer',
+                    'placeholder' => '86400',
+                ],
+                [
+                    'key'         => 'failed_refresh_retry_timer',
+                    'label'       => 'Failed refresh retry timer',
+                    'placeholder' => '7200',
+                ],
+                [
+                    'key'         => 'zone_expiry_timer',
+                    'label'       => 'Zone expiry timer',
+                    'placeholder' => '1209600',
+                ],
+                [
+                    'key'         => 'minimum_ttl',
+                    'label'       => 'Minimum TTL',
+                    'placeholder' => '300',
+                ],
             ],
-         ],
-      ], [
-         'id'        => 6,
-         'name'      => 'NS',
-         'comment'   => 'Name Server',
-         'fields'    => [],
-      ], [
-         'id'        => 7,
-         'name'      => 'PTR',
-         'comment'   => 'Pointer',
-         'fields'    => [],
-      ], [
-         'id'        => 8,
-         'name'      => 'SOA',
-         'comment'   => 'Start Of Authority',
-         'fields'    => [
-            [
-               'key'         => 'primary_name_server',
-               'label'       => 'Primary name server',
-               'placeholder' => 'ns1.example.com.',
-               'is_fqdn'     => true
+        ], [
+            'id'        => 9,
+            'name'      => 'SRV',
+            'comment'   => 'Location of service',
+            'fields'    => [
+                [
+                    'key'         => 'priority',
+                    'label'       => 'Priority',
+                    'placeholder' => '0',
+                ],
+                [
+                    'key'         => 'weight',
+                    'label'       => 'Weight',
+                    'placeholder' => '10',
+                ],
+                [
+                    'key'         => 'port',
+                    'label'       => 'Port',
+                    'placeholder' => '5060',
+                ],
+                [
+                    'key'         => 'target',
+                    'label'       => 'Target',
+                    'placeholder' => 'sip.example.com.',
+                    'is_fqdn'     => true
+                ],
             ],
-            [
-               'key'         => 'primary_contact',
-               'label'       => 'Primary contact',
-               'placeholder' => 'admin.example.com.',
-               'is_fqdn'     => true
+        ], [
+            'id'        => 10,
+            'name'      => 'TXT',
+            'comment'   => 'Descriptive text',
+            'fields'    => [
+                [
+                    'key'         => 'data',
+                    'label'       => 'TXT record data',
+                    'placeholder' => 'Your TXT record data',
+                    'quote_value' => true,
+                ],
             ],
-            [
-               'key'         => 'serial',
-               'label'       => 'Serial',
-               'placeholder' => '2020010101',
+        ], [
+            'id'        => 11,
+            'name'      => 'CAA',
+            'comment'   => 'Certification Authority Authorization',
+            'fields'    => [
+                [
+                    'key'         => 'flag',
+                    'label'       => 'Flag',
+                    'placeholder' => '0',
+                ],
+                [
+                    'key'         => 'tag',
+                    'label'       => 'Tag',
+                    'placeholder' => 'issue',
+                ],
+                [
+                    'key'         => 'value',
+                    'label'       => 'Value',
+                    'placeholder' => 'letsencrypt.org',
+                    'quote_value' => true,
+                ],
             ],
-            [
-               'key'         => 'zone_refresh_timer',
-               'label'       => 'Zone refresh timer',
-               'placeholder' => '86400',
-            ],
-            [
-               'key'         => 'failed_refresh_retry_timer',
-               'label'       => 'Failed refresh retry timer',
-               'placeholder' => '7200',
-            ],
-            [
-               'key'         => 'zone_expiry_timer',
-               'label'       => 'Zone expiry timer',
-               'placeholder' => '1209600',
-            ],
-            [
-               'key'         => 'minimum_ttl',
-               'label'       => 'Minimum TTL',
-               'placeholder' => '300',
-            ],
-         ],
-      ], [
-         'id'        => 9,
-         'name'      => 'SRV',
-         'comment'   => 'Location of service',
-         'fields'    => [
-            [
-               'key'         => 'priority',
-               'label'       => 'Priority',
-               'placeholder' => '0',
-            ],
-            [
-               'key'         => 'weight',
-               'label'       => 'Weight',
-               'placeholder' => '10',
-            ],
-            [
-               'key'         => 'port',
-               'label'       => 'Port',
-               'placeholder' => '5060',
-            ],
-            [
-               'key'         => 'target',
-               'label'       => 'Target',
-               'placeholder' => 'sip.example.com.',
-               'is_fqdn'     => true
-            ],
-         ],
-      ], [
-         'id'        => 10,
-         'name'      => 'TXT',
-         'comment'   => 'Descriptive text',
-         'fields'    => [
-            [
-               'key'         => 'data',
-               'label'       => 'TXT record data',
-               'placeholder' => 'Your TXT record data',
-               'quote_value' => true,
-            ],
-         ],
-      ], [
-         'id'        => 11,
-         'name'      => 'CAA',
-         'comment'   => 'Certification Authority Authorization',
-         'fields'    => [
-            [
-               'key'         => 'flag',
-               'label'       => 'Flag',
-               'placeholder' => '0',
-            ],
-            [
-               'key'         => 'tag',
-               'label'       => 'Tag',
-               'placeholder' => 'issue',
-            ],
-            [
-               'key'         => 'value',
-               'label'       => 'Value',
-               'placeholder' => 'letsencrypt.org',
-               'quote_value' => true,
-            ],
-         ],
-      ]
-   ];
+        ]
+    ];
 
 
-   function getAdditionalFields() {
-      return [
-         [
-            'name'  => 'fields',
-            'label' => __('Fields'),
-            'type'  => 'fields',
-         ]
-      ];
-   }
+    public function getAdditionalFields()
+    {
+        return [
+            [
+                'name'  => 'fields',
+                'label' => __('Fields'),
+                'type'  => 'fields',
+            ]
+        ];
+    }
 
-   public function displaySpecificTypeField($ID, $field = [], array $options = []) {
-      $field_name  = $field['name'];
-      $field_type  = $field['type'];
-      $field_value = $this->fields[$field_name];
+    public function displaySpecificTypeField($ID, $field = [], array $options = [])
+    {
+        $field_name  = $field['name'];
+        $field_type  = $field['type'];
+        $field_value = $this->fields[$field_name];
 
-      switch ($field_type) {
-         case 'fields':
-            $printable = json_encode(json_decode($field_value), JSON_PRETTY_PRINT);
-            echo '<textarea name="' . $field_name . '" cols="75" rows="25">' . $printable . '</textarea >';
-            break;
-      }
-   }
+        switch ($field_type) {
+            case 'fields':
+                $printable = json_encode(json_decode($field_value), JSON_PRETTY_PRINT);
+                echo '<textarea name="' . $field_name . '" cols="75" rows="25">' . $printable . '</textarea >';
+                break;
+        }
+    }
 
-   public function prepareInputForAdd($input) {
-      if (!array_key_exists('fields', $input)) {
-         $input['fields'] = '[]';
-      } else {
-         $input['fields'] = Toolbox::cleanNewLines($input['fields']);
-      }
+    public function prepareInputForAdd($input)
+    {
+        if (!array_key_exists('fields', $input)) {
+            $input['fields'] = '[]';
+        } else {
+            $input['fields'] = Toolbox::cleanNewLines($input['fields']);
+        }
 
-      if (!$this->validateFieldsDescriptor($input['fields'])) {
-         return false;
-      }
-
-      return parent::prepareInputForAdd($input);
-   }
-
-   public function prepareInputForUpdate($input) {
-      if (array_key_exists('fields', $input)) {
-         $input['fields'] = Toolbox::cleanNewLines($input['fields']);
-         if (!$this->validateFieldsDescriptor($input['fields'])) {
+        if (!$this->validateFieldsDescriptor($input['fields'])) {
             return false;
-         }
-      }
+        }
 
-      return parent::prepareInputForUpdate($input);
-   }
+        return parent::prepareInputForAdd($input);
+    }
 
-   public function post_updateItem($history = 1) {
-      global $DB;
+    public function prepareInputForUpdate($input)
+    {
+        if (array_key_exists('fields', $input)) {
+            $input['fields'] = Toolbox::cleanNewLines($input['fields']);
+            if (!$this->validateFieldsDescriptor($input['fields'])) {
+                return false;
+            }
+        }
 
-      if (in_array('fields', $this->updates)) {
-         $old_fields = self::decodeFields($this->oldvalues['fields']);
-         $new_fields = self::decodeFields($this->fields['fields']);
+        return parent::prepareInputForUpdate($input);
+    }
 
-         // Checks only for keys changes as fields order, label, placeholder or quote_value properties changes
-         // should have no impact on object representation.
-         $old_keys = array_column($old_fields, 'key');
-         $new_keys = array_column($new_fields, 'key');
-         sort($old_keys);
-         sort($new_keys);
+    public function post_updateItem($history = 1)
+    {
+        global $DB;
 
-         if ($old_keys != $new_keys) {
-            // Remove data stored as obj as properties changed.
-            // Do not remove data stored as string as this representation may still be valid.
-            $DB->update(
-               DomainRecord::getTable(),
-               ['data_obj' => null],
-               [self::getForeignKeyField() => $this->fields['id']]
-            );
-         }
-      }
-   }
+        if (in_array('fields', $this->updates)) {
+            $old_fields = self::decodeFields($this->oldvalues['fields']);
+            $new_fields = self::decodeFields($this->fields['fields']);
 
-   /**
-    * Validate fields descriptor.
-    *
-    * @param string $fields_str  Value of "fields" field (should be a JSON encoded string).
-    *
-    * @return bool
-    */
-   private function validateFieldsDescriptor($fields_str): bool {
-      if (!is_string($fields_str)) {
-         Session::addMessageAfterRedirect(__('Invalid JSON used to define fields.'), true, ERROR);
-         return false;
-      }
+           // Checks only for keys changes as fields order, label, placeholder or quote_value properties changes
+           // should have no impact on object representation.
+            $old_keys = array_column($old_fields, 'key');
+            $new_keys = array_column($new_fields, 'key');
+            sort($old_keys);
+            sort($new_keys);
 
-      $fields = self::decodeFields($fields_str);
-      if (!is_array($fields)) {
-         Session::addMessageAfterRedirect(__('Invalid JSON used to define fields.'), true, ERROR);
-         return false;
-      }
+            if ($old_keys != $new_keys) {
+                // Remove data stored as obj as properties changed.
+                // Do not remove data stored as string as this representation may still be valid.
+                $DB->update(
+                    DomainRecord::getTable(),
+                    ['data_obj' => null],
+                    [self::getForeignKeyField() => $this->fields['id']]
+                );
+            }
+        }
+    }
 
-      foreach ($fields as $field) {
-         if (!is_array($field)
-             || !array_key_exists('key', $field) || !is_string($field['key'])
-             || !array_key_exists('label', $field) || !is_string($field['label'])
-             || (array_key_exists('placeholder', $field) && !is_string($field['placeholder']))
-             || (array_key_exists('quote_value', $field) && !is_bool($field['quote_value']))
-             || (array_key_exists('is_fqdn', $field) && !is_bool($field['is_fqdn']))
-             || count(array_diff(array_keys($field), ['key', 'label', 'placeholder', 'quote_value', 'is_fqdn'])) > 0) {
-            Session::addMessageAfterRedirect(
-               __('Valid field descriptor properties are: key (string, mandatory), label (string, mandatory), placeholder (string, optionnal), quote_value (boolean, optional), is_fqdn (boolean, optional).'),
-               true,
-               ERROR
-            );
+    /**
+     * Validate fields descriptor.
+     *
+     * @param string $fields_str  Value of "fields" field (should be a JSON encoded string).
+     *
+     * @return bool
+     */
+    private function validateFieldsDescriptor($fields_str): bool
+    {
+        if (!is_string($fields_str)) {
+            Session::addMessageAfterRedirect(__('Invalid JSON used to define fields.'), true, ERROR);
             return false;
-         }
-      }
+        }
 
-      return true;
-   }
+        $fields = self::decodeFields($fields_str);
+        if (!is_array($fields)) {
+            Session::addMessageAfterRedirect(__('Invalid JSON used to define fields.'), true, ERROR);
+            return false;
+        }
 
-   /**
-    * Decode JSON encoded fields.
-    * Handle decoding of sanitized value.
-    * Returns null if unable to decode.
-    *
-    * @param string $json_encoded_fields
-    *
-    * @return array|null
-    */
-   public static function decodeFields(string $json_encoded_fields): ?array {
-      $fields = json_decode($json_encoded_fields, true);
-      if (json_last_error() !== JSON_ERROR_NONE) {
-         $fields_str = stripslashes(preg_replace('/(\\\r|\\\n)/', '', $json_encoded_fields));
-         $fields = json_decode($fields_str, true);
-      }
-      if (json_last_error() !== JSON_ERROR_NONE || !is_array($fields)) {
-         return null;
-      }
+        foreach ($fields as $field) {
+            if (
+                !is_array($field)
+                || !array_key_exists('key', $field) || !is_string($field['key'])
+                || !array_key_exists('label', $field) || !is_string($field['label'])
+                || (array_key_exists('placeholder', $field) && !is_string($field['placeholder']))
+                || (array_key_exists('quote_value', $field) && !is_bool($field['quote_value']))
+                || (array_key_exists('is_fqdn', $field) && !is_bool($field['is_fqdn']))
+                || count(array_diff(array_keys($field), ['key', 'label', 'placeholder', 'quote_value', 'is_fqdn'])) > 0
+            ) {
+                Session::addMessageAfterRedirect(
+                    __('Valid field descriptor properties are: key (string, mandatory), label (string, mandatory), placeholder (string, optionnal), quote_value (boolean, optional), is_fqdn (boolean, optional).'),
+                    true,
+                    ERROR
+                );
+                return false;
+            }
+        }
 
-      return $fields;
-   }
+        return true;
+    }
 
-   static function getTypeName($nb = 0) {
-      return _n('Record type', 'Records types', $nb);
-   }
+    /**
+     * Decode JSON encoded fields.
+     * Handle decoding of sanitized value.
+     * Returns null if unable to decode.
+     *
+     * @param string $json_encoded_fields
+     *
+     * @return array|null
+     */
+    public static function decodeFields(string $json_encoded_fields): ?array
+    {
+        $fields = json_decode($json_encoded_fields, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $fields_str = stripslashes(preg_replace('/(\\\r|\\\n)/', '', $json_encoded_fields));
+            $fields = json_decode($fields_str, true);
+        }
+        if (json_last_error() !== JSON_ERROR_NONE || !is_array($fields)) {
+            return null;
+        }
 
-   public static function getDefaults() {
-      return array_map(
-         function($e) {
-            $e['is_recursive'] = 1;
-            $e['fields'] = json_encode($e['fields']);
-            return $e;
-         },
-         self::$knowtypes
-      );
-   }
+        return $fields;
+    }
 
-   /**
-    * Display ajax form used to fill record data.
-    *
-    * @param string $str_input_id    Id of input used to get/store record data as string.
-    * @param string $obj_input_id    Id of input used to get/store record data as object.
-    */
-   function showDataAjaxForm(string $str_input_id, string $obj_input_id) {
-      $rand = mt_rand();
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Record type', 'Records types', $nb);
+    }
 
-      echo '<form id="domain_record_data' . $rand . '">';
-      echo '<table class="tab_cadre_fixe">';
+    public static function getDefaults()
+    {
+        return array_map(
+            function ($e) {
+                $e['is_recursive'] = 1;
+                $e['fields'] = json_encode($e['fields']);
+                return $e;
+            },
+            self::$knowtypes
+        );
+    }
 
-      $fields = json_decode($this->fields['fields'] ?? '[]', true);
-      if (empty($fields)) {
-         $fields = [
-            [
-               'key'   => 'data',
-               'label' => __('Data'),
-            ],
-         ];
-      }
+    /**
+     * Display ajax form used to fill record data.
+     *
+     * @param string $str_input_id    Id of input used to get/store record data as string.
+     * @param string $obj_input_id    Id of input used to get/store record data as object.
+     */
+    public function showDataAjaxForm(string $str_input_id, string $obj_input_id)
+    {
+        $rand = mt_rand();
 
-      foreach ($fields as $field) {
-         $placeholder = Html::entities_deep($field['placeholder'] ?? '');
-         $quote_value = $field['quote_value'] ?? false;
-         $is_fqdn = $field['is_fqdn'] ?? false;
+        echo '<form id="domain_record_data' . $rand . '">';
+        echo '<table class="tab_cadre_fixe">';
 
-         echo '<tr class="tab_bg_1">';
-         echo '<td>' . $field['label'] . '</td>';
-         echo '<td>';
-         echo '<input name="' . $field['key'] . '" '
+        $fields = json_decode($this->fields['fields'] ?? '[]', true);
+        if (empty($fields)) {
+            $fields = [
+                [
+                    'key'   => 'data',
+                    'label' => __('Data'),
+                ],
+            ];
+        }
+
+        foreach ($fields as $field) {
+            $placeholder = Html::entities_deep($field['placeholder'] ?? '');
+            $quote_value = $field['quote_value'] ?? false;
+            $is_fqdn = $field['is_fqdn'] ?? false;
+
+            echo '<tr class="tab_bg_1">';
+            echo '<td>' . $field['label'] . '</td>';
+            echo '<td>';
+            echo '<input name="' . $field['key'] . '" '
             . 'placeholder="' . $placeholder . '" '
             . 'data-quote-value="' . ($quote_value ? 'true' : 'false') . '" '
             . (!$quote_value ? 'pattern="[^\s]+" ' : '') // prevent usage of spaces in unquoted values
             . 'data-is-fqdn="' . ($is_fqdn ? 'true' : 'false') . '" '
             . ' />';
-         echo '</td>';
-         echo '</tr>';
-      }
+            echo '</td>';
+            echo '</tr>';
+        }
 
-      echo '<tr class="tab_bg_2">';
-      echo '<td colspan="2" class="right">';
-      echo Html::submit('<i class="fas fa-save"></i> ' . _x('button', 'Save'));
-      echo '</td>';
-      echo '</tr>';
+        echo '<tr class="tab_bg_2">';
+        echo '<td colspan="2" class="right">';
+        echo Html::submit('<i class="fas fa-save"></i> ' . _x('button', 'Save'));
+        echo '</td>';
+        echo '</tr>';
 
-      echo '</table>';
-      echo '</form>';
+        echo '</table>';
+        echo '</form>';
 
-      $js = <<<JAVASCRIPT
+        $js = <<<JAVASCRIPT
          $(
             function () {
                var form = $('#domain_record_data{$rand}');
@@ -466,6 +479,6 @@ class DomainRecordType extends CommonDropdown
             }
          );
 JAVASCRIPT;
-      echo Html::scriptBlock($js);
-   }
+        echo Html::scriptBlock($js);
+    }
 }

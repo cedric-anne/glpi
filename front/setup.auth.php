@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,17 +33,17 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("config", READ);
 
 Html::header(__('External authentication sources'), $_SERVER['PHP_SELF'], "config", "auth", -1);
 
 echo TemplateRenderer::getInstance()->render(
-   'pages/setup/authentication.html.twig',
-   [
-      'can_use_ldap' => Toolbox::canUseLdap(),
-   ]
+    'pages/setup/authentication.html.twig',
+    [
+        'can_use_ldap' => Toolbox::canUseLdap(),
+    ]
 );
 
 Html::footer();

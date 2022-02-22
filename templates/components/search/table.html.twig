@@ -1,7 +1,7 @@
 {#
  # ---------------------------------------------------------------------
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2021 Teclib' and contributors.
+ # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
@@ -32,7 +32,7 @@
 {% set searchform_id = data['searchform_id']|default('search_' ~ rand) %}
 
 <div class="table-responsive-md">
-   <table class="search-results table  card-table table-hover {{ data['search']['is_deleted'] ? "table-danger deleted-results" : "table-striped" }}"
+   <table class="search-results table card-table table-hover {{ data['search']['is_deleted'] ? "table-danger deleted-results" : "table-striped" }}"
           id="{{ searchform_id }}">
       <thead>
          <tr {% if count == 0 %}style="display: none;"{% endif %}>

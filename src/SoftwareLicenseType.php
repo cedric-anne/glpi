@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,20 +32,22 @@
  */
 
 /// Class SoftwareLicenseType
-class SoftwareLicenseType extends CommonTreeDropdown {
+class SoftwareLicenseType extends CommonTreeDropdown
+{
+    public $can_be_translated       = true;
 
-   public $can_be_translated       = true;
+    public static function getTypeName($nb = 0)
+    {
+        return _n('License type', 'License types', $nb);
+    }
 
-   static function getTypeName($nb = 0) {
-      return _n('License type', 'License types', $nb);
-   }
+    public static function getFieldLabel()
+    {
+        return _n('Type', 'Types', 1);
+    }
 
-   static function getFieldLabel() {
-      return _n('Type', 'Types', 1);
-   }
-
-   static function getIcon() {
-      return SoftwareLicense::getIcon();
-   }
-
+    public static function getIcon()
+    {
+        return SoftwareLicense::getIcon();
+    }
 }

@@ -1,7 +1,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,11 +30,12 @@
  */
 
 module.exports = {
-   setupFilesAfterEnv: ["jest-extended/all"],
-   setupFiles: ['<rootDir>/bootstrap.js'],
-   transform: {
-      '^.+\\.js$': 'babel-jest',
-   },
-   testEnvironment: 'jsdom',
-   slowTestThreshold: 10,
+    setupFilesAfterEnv: ["jest-extended/all"],
+    setupFiles: ['<rootDir>/bootstrap.js'],
+    transformIgnorePatterns: [
+        // Change MODULE_NAME_HERE to your module that isn't being compiled
+        "/node_modules/(?!@tabler).+\\.js$"
+    ],
+    testEnvironment: 'jsdom',
+    slowTestThreshold: 10,
 };

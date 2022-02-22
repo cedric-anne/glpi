@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,44 +32,46 @@
  */
 
 /** @file
-* @brief
-*/
+ * @brief
+ */
 
 /**
  * Update from 9.2.1 to 9.2.2
  *
  * @return bool for success (will die for most error)
-**/
-function update921to922() {
-   global $DB, $migration;
+ **/
+function update921to922()
+{
+    global $DB, $migration;
 
-   $current_config   = Config::getConfigurationValues('core');
-   $updateresult     = true;
-   $ADDTODISPLAYPREF = [];
+    $current_config   = Config::getConfigurationValues('core');
+    $updateresult     = true;
+    $ADDTODISPLAYPREF = [];
 
    //TRANS: %s is the number of new version
-   $migration->displayTitle(sprintf(__('Update to %s'), '9.2.2'));
-   $migration->setVersion('9.2.2');
+    $migration->displayTitle(sprintf(__('Update to %s'), '9.2.2'));
+    $migration->setVersion('9.2.2');
 
-   $migration->addConfig([
-      'smtp_retry_time' => 5,
-   ]);
+    $migration->addConfig([
+        'smtp_retry_time' => 5,
+    ]);
 
-   $migration->addPostQuery(
-      $DB->buildDelete("glpi_configs", [
-         'context'   => "core",
-         'name'      => "default_graphtype"
-      ])
-   );
+    $migration->addPostQuery(
+        $DB->buildDelete("glpi_configs", [
+            'context'   => "core",
+            'name'      => "default_graphtype"
+        ])
+    );
 
-   $migration->addPostQuery(
-      $DB->buildDelete("glpi_crontasks",
-         ['name' => "optimize"]
-      )
-   );
+    $migration->addPostQuery(
+        $DB->buildDelete(
+            "glpi_crontasks",
+            ['name' => "optimize"]
+        )
+    );
 
    // ************ Keep it at the end **************
-   $migration->executeMigration();
+    $migration->executeMigration();
 
-   return $updateresult;
+    return $updateresult;
 }

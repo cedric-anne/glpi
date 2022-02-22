@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,9 +32,10 @@
  */
 
 /// Class RackType
-class RackType extends CommonType {
-
-   static function getTypeName($nb = 0) {
-      return _n('Rack type', 'Rack types', $nb);
-   }
+class RackType extends CommonType
+{
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Rack type', 'Rack types', $nb);
+    }
 }

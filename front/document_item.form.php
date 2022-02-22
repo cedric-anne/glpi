@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -36,21 +37,25 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkCentralAccess();
 
 $document_item   = new Document_Item();
 
 if (isset($_POST["add"])) {
-   $document_item->check(-1, CREATE, $_POST);
-   if ($document_item->add($_POST)) {
-      Event::log($_POST["documents_id"], "documents", 4, "document",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
-   }
-   Html::back();
-
+    $document_item->check(-1, CREATE, $_POST);
+    if ($document_item->add($_POST)) {
+        Event::log(
+            $_POST["documents_id"],
+            "documents",
+            4,
+            "document",
+            //TRANS: %s is the user login
+            sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"])
+        );
+    }
+    Html::back();
 }
 
 Html::displayErrorAndDie("lost");

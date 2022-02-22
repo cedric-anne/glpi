@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -37,29 +38,32 @@ use Glpi\Inventory\Conf;
 
 class PowerSupply extends Device
 {
-   public function __construct(CommonDBTM $item, array $data = null) {
-      parent::__construct($item, $data, \Item_DevicePowerSupply::class);
-   }
+    public function __construct(CommonDBTM $item, array $data = null)
+    {
+        parent::__construct($item, $data, \Item_DevicePowerSupply::class);
+    }
 
-   public function prepare() :array {
-      $mapping = [
-         'serialnumber'  => 'serial',
-         'partnum'       => 'designation',
-         'manufacturer'  => 'manufacturers_id',
-         'power_max'     => 'power'
-      ];
-      foreach ($this->data as &$val) {
-         foreach ($mapping as $origin => $dest) {
-            if (property_exists($val, $origin)) {
-               $val->$dest = $val->$origin;
+    public function prepare(): array
+    {
+        $mapping = [
+            'serialnumber'  => 'serial',
+            'partnum'       => 'designation',
+            'manufacturer'  => 'manufacturers_id',
+            'power_max'     => 'power'
+        ];
+        foreach ($this->data as &$val) {
+            foreach ($mapping as $origin => $dest) {
+                if (property_exists($val, $origin)) {
+                    $val->$dest = $val->$origin;
+                }
             }
-         }
-         $val->is_dynamic = 1;
-      }
-      return $this->data;
-   }
+            $val->is_dynamic = 1;
+        }
+        return $this->data;
+    }
 
-   public function checkConf(Conf $conf): bool {
-      return $conf->component_powersupply == 1;
-   }
+    public function checkConf(Conf $conf): bool
+    {
+        return $conf->component_powersupply == 1;
+    }
 }

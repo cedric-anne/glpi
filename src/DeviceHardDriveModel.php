@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,12 +32,13 @@
  */
 
 /// Class DeviceHardDriveModel
-class DeviceHardDriveModel extends CommonDeviceModel {
+class DeviceHardDriveModel extends CommonDeviceModel
+{
+    public $additional_fields_for_dictionnary = ['manufacturer'];
 
-   var $additional_fields_for_dictionnary = ['manufacturer'];
 
-
-   static function getTypeName($nb = 0) {
-      return _n('Device hard drive model', 'Device hard drive models', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Device hard drive model', 'Device hard drive models', $nb);
+    }
 }

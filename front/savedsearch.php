@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,22 +32,24 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   include ('../inc/includes.php');
+    include('../inc/includes.php');
 }
 
 if (Session::getCurrentInterface() == "helpdesk") {
-   Html::helpHeader(SavedSearch::getTypeName(Session::getPluralNumber()));
+    Html::helpHeader(SavedSearch::getTypeName(Session::getPluralNumber()));
 } else {
-   Html::header(SavedSearch::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'tools', 'savedsearch');
+    Html::header(SavedSearch::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'tools', 'savedsearch');
 }
 
 $savedsearch = new SavedSearch();
 
-if (isset($_GET['action']) && $_GET["action"] == "load"
-   && isset($_GET["id"]) && ($_GET["id"] > 0)) {
-   $savedsearch->check($_GET["id"], READ);
-   $savedsearch->load($_GET["id"]);
-   return;
+if (
+    isset($_GET['action']) && $_GET["action"] == "load"
+    && isset($_GET["id"]) && ($_GET["id"] > 0)
+) {
+    $savedsearch->check($_GET["id"], READ);
+    $savedsearch->load($_GET["id"]);
+    return;
 }
 
 Search::show('SavedSearch');

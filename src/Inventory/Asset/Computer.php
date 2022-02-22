@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -37,12 +38,13 @@ use ComputerType;
 
 class Computer extends MainAsset
 {
+    protected function getModelsFieldName(): string
+    {
+        return ComputerModel::getForeignKeyField();
+    }
 
-   protected function getModelsFieldName(): string {
-      return ComputerModel::getForeignKeyField();
-   }
-
-   protected function getTypesFieldName(): string {
-      return ComputerType::getForeignKeyField();
-   }
+    protected function getTypesFieldName(): string
+    {
+        return ComputerType::getForeignKeyField();
+    }
 }

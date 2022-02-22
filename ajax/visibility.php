@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,110 +33,118 @@
 
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'], "visibility.php")) {
-   $AJAX_INCLUDE = 1;
-   include ('../inc/includes.php');
-   header("Content-Type: text/html; charset=UTF-8");
-   Html::header_nocache();
+    $AJAX_INCLUDE = 1;
+    include('../inc/includes.php');
+    header("Content-Type: text/html; charset=UTF-8");
+    Html::header_nocache();
 }
 
 Session::checkLoginUser();
 
-if (isset($_POST['type']) && !empty($_POST['type'])
-    && isset($_POST['right'])) {
-   $display = false;
-   $rand    = mt_rand();
-   $prefix = '';
-   $suffix = '';
-   if (isset($_POST['prefix']) && !empty($_POST['prefix'])) {
-      $prefix = $_POST['prefix'].'[';
-      $suffix = ']';
-   } else {
-      $_POST['prefix'] = '';
-   }
+if (
+    isset($_POST['type']) && !empty($_POST['type'])
+    && isset($_POST['right'])
+) {
+    $display = false;
+    $rand    = mt_rand();
+    $prefix = '';
+    $suffix = '';
+    if (isset($_POST['prefix']) && !empty($_POST['prefix'])) {
+        $prefix = $_POST['prefix'] . '[';
+        $suffix = ']';
+    } else {
+        $_POST['prefix'] = '';
+    }
 
-   echo "<table class='tab_format'><tr>";
-   switch ($_POST['type']) {
-      case 'User' :
-         echo "<td>";
-         $params = [
-            'right' => isset($_POST['allusers']) ? 'all' : $_POST['right'],
-            'name' => $prefix.'users_id'.$suffix
-         ];
-         User::dropdown($params);
-         echo "</td>";
-         $display = true;
-         break;
+    echo "<table class='tab_format'><tr>";
+    switch ($_POST['type']) {
+        case 'User':
+            echo "<td>";
+            $params = [
+                'right' => isset($_POST['allusers']) ? 'all' : $_POST['right'],
+                'name' => $prefix . 'users_id' . $suffix
+            ];
+            User::dropdown($params);
+            echo "</td>";
+            $display = true;
+            break;
 
-      case 'Group' :
-         echo "<td>";
-         $params             = ['rand' => $rand,
-                                     'name' => $prefix.'groups_id'.$suffix];
-         $params['toupdate'] = ['value_fieldname'
+        case 'Group':
+            echo "<td>";
+            $params             = ['rand' => $rand,
+                'name' => $prefix . 'groups_id' . $suffix
+            ];
+            $params['toupdate'] = ['value_fieldname'
                                                   => 'value',
-                                     'to_update'  => "subvisibility$rand",
-                                     'url'        => $CFG_GLPI["root_doc"]."/ajax/subvisibility.php",
-                                     'moreparams' => ['items_id' => '__VALUE__',
-                                                           'type'     => $_POST['type'],
-                                                           'prefix'   => $_POST['prefix']]];
+                'to_update'  => "subvisibility$rand",
+                'url'        => $CFG_GLPI["root_doc"] . "/ajax/subvisibility.php",
+                'moreparams' => ['items_id' => '__VALUE__',
+                    'type'     => $_POST['type'],
+                    'prefix'   => $_POST['prefix']
+                ]
+            ];
 
-         Group::dropdown($params);
-         echo "</td><td>";
-         echo "<span id='subvisibility$rand'></span>";
-         echo "</td>";
-         $display = true;
-         break;
+            Group::dropdown($params);
+            echo "</td><td>";
+            echo "<span id='subvisibility$rand'></span>";
+            echo "</td>";
+            $display = true;
+            break;
 
-      case 'Entity' :
-         echo "<td>";
-         Entity::dropdown(['entity' => $_SESSION['glpiactiveentities'],
-                                'value'  => $_SESSION['glpiactive_entity'],
-                                'name'   => $prefix.'entities_id'.$suffix]);
-         echo "</td><td>";
-         echo __('Child entities');
-         echo "</td><td>";
-         Dropdown::showYesNo($prefix.'is_recursive'.$suffix);
-         echo "</td>";
-         $display = true;
-         break;
+        case 'Entity':
+            echo "<td>";
+            Entity::dropdown(['entity' => $_SESSION['glpiactiveentities'],
+                'value'  => $_SESSION['glpiactive_entity'],
+                'name'   => $prefix . 'entities_id' . $suffix
+            ]);
+            echo "</td><td>";
+            echo __('Child entities');
+            echo "</td><td>";
+            Dropdown::showYesNo($prefix . 'is_recursive' . $suffix);
+            echo "</td>";
+            $display = true;
+            break;
 
-      case 'Profile' :
-         echo "<td>";
-         $checkright   = (READ | CREATE | UPDATE | PURGE);
-         $righttocheck = $_POST['right'];
-         if ($_POST['right'] == 'faq') {
-            $righttocheck = 'knowbase';
-            $checkright   = KnowbaseItem::READFAQ;
-         }
-         $params             = [
-            'rand'      => $rand,
-            'name'      => $prefix.'profiles_id'.$suffix,
-            'condition' => [
-               'glpi_profilerights.name'     => $righttocheck,
-               'glpi_profilerights.rights'   => ['&', $checkright]
-            ]
-         ];
-         $params['toupdate'] = ['value_fieldname'
+        case 'Profile':
+            echo "<td>";
+            $checkright   = (READ | CREATE | UPDATE | PURGE);
+            $righttocheck = $_POST['right'];
+            if ($_POST['right'] == 'faq') {
+                $righttocheck = 'knowbase';
+                $checkright   = KnowbaseItem::READFAQ;
+            }
+            $params             = [
+                'rand'      => $rand,
+                'name'      => $prefix . 'profiles_id' . $suffix,
+                'condition' => [
+                    'glpi_profilerights.name'     => $righttocheck,
+                    'glpi_profilerights.rights'   => ['&', $checkright]
+                ]
+            ];
+            $params['toupdate'] = ['value_fieldname'
                                                   => 'value',
-                                     'to_update'  => "subvisibility$rand",
-                                     'url'        => $CFG_GLPI["root_doc"]."/ajax/subvisibility.php",
-                                     'moreparams' => ['items_id' => '__VALUE__',
-                                                           'type'     => $_POST['type'],
-                                                           'prefix'   => $_POST['prefix']]];
+                'to_update'  => "subvisibility$rand",
+                'url'        => $CFG_GLPI["root_doc"] . "/ajax/subvisibility.php",
+                'moreparams' => ['items_id' => '__VALUE__',
+                    'type'     => $_POST['type'],
+                    'prefix'   => $_POST['prefix']
+                ]
+            ];
 
-         Profile::dropdown($params);
-         echo "</td><td>";
-         echo "<span id='subvisibility$rand'></span>";
-         echo "</td>";
-         $display = true;
-         break;
-   }
+            Profile::dropdown($params);
+            echo "</td><td>";
+            echo "<span id='subvisibility$rand'></span>";
+            echo "</td>";
+            $display = true;
+            break;
+    }
 
-   if ($display && (!isset($_POST['nobutton']) || !$_POST['nobutton'])) {
-      echo "<td><input type='submit' name='addvisibility' value=\""._sx('button', 'Add')."\"
+    if ($display && (!isset($_POST['nobutton']) || !$_POST['nobutton'])) {
+        echo "<td><input type='submit' name='addvisibility' value=\"" . _sx('button', 'Add') . "\"
                    class='btn btn-primary'></td>";
-   } else {
-      // For table w3c
-      echo "<td>&nbsp;</td>";
-   }
-   echo "</tr></table>";
+    } else {
+       // For table w3c
+        echo "<td>&nbsp;</td>";
+    }
+    echo "</tr></table>";
 }

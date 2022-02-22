@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -34,7 +35,13 @@
  * @since 9.2
  */
 
-include ('../inc/includes.php');
+use Glpi\Application\ErrorHandler;
+
+include('../inc/includes.php');
 
 Session::checkLoginUser();
+
+// Ensure warnings will not break ajax output.
+ErrorHandler::getInstance()->disableOutput();
+
 GLPIUploadHandler::uploadFiles($_POST);

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -36,12 +37,12 @@
  */
 
 if (!($dropdown instanceof CommonDropdown)) {
-   Html::displayErrorAndDie('');
+    Html::displayErrorAndDie('');
 }
 if (!$dropdown->canView()) {
    // Gestion timeout session
-   Session::redirectIfNotLoggedIn();
-   Html::displayRightError();
+    Session::redirectIfNotLoggedIn();
+    Html::displayRightError();
 }
 
 $dropdown->displayHeader();

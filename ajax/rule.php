@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,15 +32,15 @@
  */
 
 $AJAX_INCLUDE = 1;
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkLoginUser();
 
 switch ($_REQUEST['action']) {
-   case "move_rule":
-      if (is_subclass_of($_POST['collection_classname'], RuleCollection::getType())) {
-         $rule_collection = new $_POST['collection_classname'];
-         $rule_collection->moveRule((int) $_POST['rule_id'], (int) $_POST['ref_id'], $_POST['sort_action']);
-      }
-      break;
+    case "move_rule":
+        if (is_subclass_of($_POST['collection_classname'], RuleCollection::getType())) {
+            $rule_collection = new $_POST['collection_classname']();
+            $rule_collection->moveRule((int) $_POST['rule_id'], (int) $_POST['ref_id'], $_POST['sort_action']);
+        }
+        break;
 }

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -43,154 +44,161 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class FrontEndAssetsExtension extends AbstractExtension {
+class FrontEndAssetsExtension extends AbstractExtension
+{
+    public function getFunctions(): array
+    {
+        return [
+            new TwigFunction('asset_path', [$this, 'assetPath']),
+            new TwigFunction('css_path', [$this, 'cssPath']),
+            new TwigFunction('js_path', [$this, 'jsPath']),
+            new TwigFunction('custom_css', [$this, 'customCss'], ['is_safe' => ['html']]),
+            new TwigFunction('locales_js', [$this, 'localesJs'], ['is_safe' => ['html']]),
+        ];
+    }
 
-   public function getFunctions(): array {
-      return [
-         new TwigFunction('asset_path', [$this, 'assetPath']),
-         new TwigFunction('css_path', [$this, 'cssPath']),
-         new TwigFunction('js_path', [$this, 'jsPath']),
-         new TwigFunction('custom_css', [$this, 'customCss'], ['is_safe' => ['html']]),
-         new TwigFunction('locales_js', [$this, 'localesJs'], ['is_safe' => ['html']]),
-      ];
-   }
+    /**
+     * Return domain-relative path of an asset.
+     *
+     * @param string $path
+     *
+     * @return string
+     */
+    public function assetPath(string $path): string
+    {
+        return Html::getPrefixedUrl($path);
+    }
 
-   /**
-    * Return domain-relative path of an asset.
-    *
-    * @param string $path
-    *
-    * @return string
-    */
-   public function assetPath(string $path): string {
-      return Html::getPrefixedUrl($path);
-   }
+    /**
+     * Return domain-relative path of a CSS file.
+     *
+     * @param string $path
+     *
+     * @return string
+     */
+    public function cssPath(string $path): string
+    {
+        $is_debug = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE;
 
-   /**
-    * Return domain-relative path of a CSS file.
-    *
-    * @param string $path
-    *
-    * @return string
-    */
-   public function cssPath(string $path): string {
-      $is_debug = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE;
+        if (preg_match('/\.scss$/', $path)) {
+            $compiled_file = Html::getScssCompilePath($path);
 
-      if (preg_match('/\.scss$/', $path)) {
-         $compiled_file = Html::getScssCompilePath($path);
+            if (!$is_debug && file_exists($compiled_file)) {
+                $path = str_replace(GLPI_ROOT, '', $compiled_file);
+            } else {
+                $path = '/front/css.php?file=' . $path . ($is_debug ? '&debug=1' : '');
+            }
+        } else {
+            $minified_path = str_replace('.css', '.min.css', $path);
 
-         if (!$is_debug && file_exists($compiled_file)) {
-            $path = str_replace(GLPI_ROOT, '', $compiled_file);
-         } else {
-            $path = '/front/css.php?file=' . $path . ($is_debug ? '&debug=1' : '');
-         }
-      } else {
-         $minified_path = str_replace('.css', '.min.css', $path);
+            if (!$is_debug && file_exists(GLPI_ROOT . '/' . $minified_path)) {
+                $path = $minified_path;
+            }
+        }
 
-         if (!$is_debug && file_exists(GLPI_ROOT . '/' . $minified_path)) {
+        $path = Html::getPrefixedUrl($path);
+        $path = $this->getVersionnedPath($path);
+
+        return $path;
+    }
+
+    /**
+     * Return domain-relative path of a JS file.
+     *
+     * @param string $path
+     *
+     * @return string
+     */
+    public function jsPath(string $path): string
+    {
+        $is_debug = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE;
+
+        $minified_path = str_replace('.js', '.min.js', $path);
+
+        if (!$is_debug && file_exists(GLPI_ROOT . '/' . $minified_path)) {
             $path = $minified_path;
-         }
-      }
+        }
 
-      $path = Html::getPrefixedUrl($path);
-      $path = $this->getVersionnedPath($path);
+        $path = Html::getPrefixedUrl($path);
+        $path = $this->getVersionnedPath($path);
 
-      return $path;
-   }
+        return $path;
+    }
 
-   /**
-    * Return domain-relative path of a JS file.
-    *
-    * @param string $path
-    *
-    * @return string
-    */
-   public function jsPath(string $path): string {
-      $is_debug = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE;
+    /**
+     * Get path suffixed with asset version.
+     *
+     * @param string $path
+     *
+     * @return string
+     */
+    private function getVersionnedPath(string $path): string
+    {
+       // @TODO Adapt version to plugin version if path is related to a specific plugin
+        $version = GLPI_VERSION;
+        $path .= (strpos($path, '?') !== false ? '&' : '?') . 'v=' . $version;
 
-      $minified_path = str_replace('.js', '.min.js', $path);
+        return $path;
+    }
 
-      if (!$is_debug && file_exists(GLPI_ROOT . '/' . $minified_path)) {
-         $path = $minified_path;
-      }
+    /**
+     * Return custom CSS for active entity.
+     *
+     * @return string
+     */
+    public function customCss(): string
+    {
+        global $DB;
 
-      $path = Html::getPrefixedUrl($path);
-      $path = $this->getVersionnedPath($path);
+        $css = '';
 
-      return $path;
-   }
+        if ($DB instanceof DBmysql && $DB->connected) {
+            $entity = new Entity();
+            if (isset($_SESSION['glpiactive_entity'])) {
+                // Apply active entity styles
+                $entity->getFromDB($_SESSION['glpiactive_entity']);
+            } else {
+               // Apply root entity styles
+                $entity->getFromDB('0');
+            }
+            $css = $entity->getCustomCssTag();
+        }
 
-   /**
-    * Get path suffixed with asset version.
-    *
-    * @param string $path
-    *
-    * @return string
-    */
-   private function getVersionnedPath(string $path): string {
-      // @TODO Adapt version to plugin version if path is related to a specific plugin
-      $version = GLPI_VERSION;
-      $path .= (strpos($path, '?') !== false ? '&' : '?') . 'v=' . $version;
+        return $css;
+    }
 
-      return $path;
-   }
+    /**
+     * Return locales JS code.
+     *
+     * @return string
+     */
+    public function localesJs(): string
+    {
+        if (!isset($_SESSION['glpilanguage'])) {
+            return '';
+        }
 
-   /**
-    * Return custom CSS for active entity.
-    *
-    * @return string
-    */
-   public function customCss(): string {
-      global $DB;
+       // Compute available translation domains
+        $locales_domains = ['glpi' => GLPI_VERSION];
+        $plugins = Plugin::getPlugins();
+        foreach ($plugins as $plugin) {
+            $locales_domains[$plugin] = Plugin::getInfo($plugin, 'version');
+        }
 
-      $css = '';
-
-      if ($DB instanceof DBmysql && $DB->connected) {
-         $entity = new Entity();
-         if (isset($_SESSION['glpiactive_entity'])) {
-            // Apply active entity styles
-            $entity->getFromDB($_SESSION['glpiactive_entity']);
-         } else {
-            // Apply root entity styles
-            $entity->getFromDB('0');
-         }
-         $css = $entity->getCustomCssTag();
-      }
-
-      return $css;
-   }
-
-   /**
-    * Return locales JS code.
-    *
-    * @return string
-    */
-   public function localesJs(): string {
-      if (!isset($_SESSION['glpilanguage'])) {
-         return '';
-      }
-
-      // Compute available translation domains
-      $locales_domains = ['glpi' => GLPI_VERSION];
-      $plugins = Plugin::getPlugins();
-      foreach ($plugins as $plugin) {
-         $locales_domains[$plugin] = Plugin::getInfo($plugin, 'version');
-      }
-
-      $script = <<<JAVASCRIPT
+        $script = <<<JAVASCRIPT
          $(function() {
             i18n.setLocale('{$_SESSION['glpilanguage']}');
          });
 JAVASCRIPT;
 
-      foreach ($locales_domains as $locale_domain => $locale_version) {
-         $locales_path = Html::getPrefixedUrl(
-            '/front/locale.php'
-            . '?domain=' . $locale_domain
-            . '&version=' . $locale_version
-            . ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? '&debug' : '')
-         );
-         $script .= <<<JAVASCRIPT
+        foreach ($locales_domains as $locale_domain => $locale_version) {
+            $locales_path = Html::getPrefixedUrl(
+                '/front/locale.php'
+                . '?domain=' . $locale_domain
+                . '&version=' . $locale_version
+                . ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? '&debug' : '')
+            );
+            $script .= <<<JAVASCRIPT
             $(function() {
                $.ajax({
                   type: 'GET',
@@ -201,8 +209,8 @@ JAVASCRIPT;
                });
             });
 JAVASCRIPT;
-      }
+        }
 
-      return Html::scriptBlock($script);
-   }
+        return Html::scriptBlock($script);
+    }
 }

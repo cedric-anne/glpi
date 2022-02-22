@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,103 +31,107 @@
  * ---------------------------------------------------------------------
  */
 
-class InventoryTestCase extends \DbTestCase {
-   protected const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
+class InventoryTestCase extends \DbTestCase
+{
+    protected const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
 
-   /**
-    * Path to use to test inventory archive manipulations.
-    * File will be removed before/after tests.
-    * @var string
-    */
-   protected const INVENTORY_ARCHIVE_PATH = GLPI_TMP_DIR . '/to_inventory.zip';
+    /**
+     * Path to use to test inventory archive manipulations.
+     * File will be removed before/after tests.
+     * @var string
+     */
+    protected const INVENTORY_ARCHIVE_PATH = GLPI_TMP_DIR . '/to_inventory.zip';
 
-   /** @var int */
-   protected int $nblogs;
+    /** @var int */
+    protected int $nblogs;
 
-   public function beforeTestMethod($method) {
-      parent::beforeTestMethod($method);
+    public function beforeTestMethod($method)
+    {
+        parent::beforeTestMethod($method);
 
-      $this->nblogs = countElementsInTable(\Log::getTable());
+        $this->nblogs = countElementsInTable(\Log::getTable());
 
-      if (file_exists(self::INVENTORY_ARCHIVE_PATH)) {
-         unlink(self::INVENTORY_ARCHIVE_PATH);
-      }
-   }
+        if (file_exists(self::INVENTORY_ARCHIVE_PATH)) {
+            unlink(self::INVENTORY_ARCHIVE_PATH);
+        }
+    }
 
-   public function afterTestMethod($method) {
-      global $DB;
+    public function afterTestMethod($method)
+    {
+        global $DB;
 
-      parent::afterTestMethod($method);
-      if (str_starts_with($method, 'testImport')) {
-         //$this->dump('Checking for unexpected logs');
-         $nblogsnow = countElementsInTable(\Log::getTable());
-         $logs = $DB->request([
-            'FROM' => \Log::getTable(),
-            'LIMIT' => $nblogsnow,
-            'OFFSET' => $this->nblogs,
-            'WHERE' => [
-               'NOT' => [
-                  'linked_action' => [
-                     \Log::HISTORY_ADD_DEVICE,
-                     \Log::HISTORY_ADD_RELATION,
-                     \Log::HISTORY_ADD_SUBITEM,
-                     \Log::HISTORY_CREATE_ITEM
-                  ]
-               ]
-            ]
-         ]);
-         $this->integer(count($logs))->isIdenticalTo(0, print_r(iterator_to_array($logs), true));
-      }
+        parent::afterTestMethod($method);
+        if (str_starts_with($method, 'testImport')) {
+           //$this->dump('Checking for unexpected logs');
+            $nblogsnow = countElementsInTable(\Log::getTable());
+            $logs = $DB->request([
+                'FROM' => \Log::getTable(),
+                'LIMIT' => $nblogsnow,
+                'OFFSET' => $this->nblogs,
+                'WHERE' => [
+                    'NOT' => [
+                        'linked_action' => [
+                            \Log::HISTORY_ADD_DEVICE,
+                            \Log::HISTORY_ADD_RELATION,
+                            \Log::HISTORY_ADD_SUBITEM,
+                            \Log::HISTORY_CREATE_ITEM
+                        ]
+                    ]
+                ]
+            ]);
+            $this->integer(count($logs))->isIdenticalTo(0, print_r(iterator_to_array($logs), true));
+        }
 
-      if (str_starts_with($method, 'testUpdate')) {
-         $nblogsnow = countElementsInTable(\Log::getTable());
-         $logs = $DB->request([
-            'FROM' => \Log::getTable(),
-            'LIMIT' => $nblogsnow,
-            'OFFSET' => $this->nblogs,
-         ]);
-         $this->integer(count($logs))->isIdenticalTo(0/*, print_r(iterator_to_array($logs), true)*/);
-      }
+        if (str_starts_with($method, 'testUpdate')) {
+            $nblogsnow = countElementsInTable(\Log::getTable());
+            $logs = $DB->request([
+                'FROM' => \Log::getTable(),
+                'LIMIT' => $nblogsnow,
+                'OFFSET' => $this->nblogs,
+            ]);
+            $this->integer(count($logs))->isIdenticalTo(0/*, print_r(iterator_to_array($logs), true)*/);
+        }
 
-      $files = new \RecursiveIteratorIterator(
-         new \RecursiveDirectoryIterator(GLPI_INVENTORY_DIR, \RecursiveDirectoryIterator::SKIP_DOTS),
-         \RecursiveIteratorIterator::CHILD_FIRST
-      );
+        $files = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator(GLPI_INVENTORY_DIR, \RecursiveDirectoryIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
 
-      foreach ($files as $fileinfo) {
-         $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
-         $todo($fileinfo->getRealPath());
-      }
+        foreach ($files as $fileinfo) {
+            $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
+            $todo($fileinfo->getRealPath());
+        }
 
-      if (file_exists(self::INVENTORY_ARCHIVE_PATH)) {
-         unlink(self::INVENTORY_ARCHIVE_PATH);
-      }
-   }
+        if (file_exists(self::INVENTORY_ARCHIVE_PATH)) {
+            unlink(self::INVENTORY_ARCHIVE_PATH);
+        }
+    }
 
-   /**
-    * Execute an inventory
-    *
-    * @param mixed   $source Source as JSON or XML
-    * @param boolean $is_xml XML or JSON
-    *
-    * @return \Glpi\Inventory\Inventory
-    */
-   protected function doInventory($source, bool $is_xml = false) {
-      if ($is_xml === true) {
-         $converter = new \Glpi\Inventory\Converter;
-         $source = $converter->convert($source);
-      }
+    /**
+     * Execute an inventory
+     *
+     * @param mixed   $source Source as JSON or XML
+     * @param boolean $is_xml XML or JSON
+     *
+     * @return \Glpi\Inventory\Inventory
+     */
+    protected function doInventory($source, bool $is_xml = false)
+    {
+        if ($is_xml === true) {
+            $converter = new \Glpi\Inventory\Converter();
+            $source = $converter->convert($source);
+        }
 
-      $CFG_GLPI["is_contact_autoupdate"] = 0;
-      $inventory = new \Glpi\Inventory\Inventory($source);
-      $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($source);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
-      if ($inventory->inError()) {
-         $this->dump($inventory->getErrors());
-      }
-      $this->boolean($inventory->inError())->isFalse();
-      $this->array($inventory->getErrors())->isEmpty();
+        if ($inventory->inError()) {
+            $this->dump($inventory->getErrors());
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isEmpty();
 
-      return $inventory;
-   }
+        return $inventory;
+    }
 }

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -37,61 +38,65 @@ use Glpi\Inventory\Conf;
 
 class Controller extends Device
 {
-   protected $extra_data = ['ignored' => null];
+    protected $extra_data = ['ignored' => null];
 
-   public function __construct(CommonDBTM $item, array $data = null) {
-      parent::__construct($item, $data, 'Item_DeviceControl');
-   }
+    public function __construct(CommonDBTM $item, array $data = null)
+    {
+        parent::__construct($item, $data, 'Item_DeviceControl');
+    }
 
-   public function prepare() :array {
-      $mapping = [
-         'name'          => 'designation',
-         'manufacturer'  => 'manufacturers_id',
-         'type'          => 'interfacetypes_id'
-      ];
-      $pcivendor = new \PCIVendor();
+    public function prepare(): array
+    {
+        $mapping = [
+            'name'          => 'designation',
+            'manufacturer'  => 'manufacturers_id',
+            'type'          => 'interfacetypes_id'
+        ];
+        $pcivendor = new \PCIVendor();
 
-      foreach ($this->data as $k => &$val) {
-         if (property_exists($val, 'name')) {
-            foreach ($mapping as $origin => $dest) {
-               if (property_exists($val, $origin)) {
-                  $val->$dest = $val->$origin;
-               }
+        foreach ($this->data as $k => &$val) {
+            if (property_exists($val, 'name')) {
+                foreach ($mapping as $origin => $dest) {
+                    if (property_exists($val, $origin)) {
+                        $val->$dest = $val->$origin;
+                    }
+                }
+                if (property_exists($val, 'vendorid')) {
+                   //manufacturer
+                    if ($pci_manufacturer = $pcivendor->getManufacturer($val->vendorid)) {
+                        $val->manufacturers_id = $pci_manufacturer;
+                        if (property_exists($val, 'productid')) {
+                          //product name
+                            if ($pci_product = $pcivendor->getProductName($val->vendorid, $val->productid)) {
+                                $val->designation = $pci_product;
+                            }
+                        }
+                    }
+                }
+                $val->is_dynamic = 1;
+            } else {
+                unset($this->data[$k]);
             }
-            if (property_exists($val, 'vendorid')) {
-               //manufacturer
-               if ($pci_manufacturer = $pcivendor->getManufacturer($val->vendorid)) {
-                  $val->manufacturers_id = $pci_manufacturer;
-                  if (property_exists($val, 'productid')) {
-                     //product name
-                     if ($pci_product = $pcivendor->getProductName($val->vendorid, $val->productid)) {
-                        $val->designation = $pci_product;
-                     }
-                  }
-               }
+        }
+        return $this->data;
+    }
+
+    public function handle()
+    {
+        $data = $this->data;
+
+        foreach ($data as $k => $asset) {
+            if (property_exists($asset, 'name') && isset($this->extra_data['ignored'][$asset->name])) {
+                unset($data[$k]);
             }
-            $val->is_dynamic = 1;
-         } else {
-            unset($this->data[$k]);
-         }
-      }
-      return $this->data;
-   }
+        }
 
-   public function handle() {
-      $data = $this->data;
+        $this->data = $data;
+        parent::handle();
+    }
 
-      foreach ($data as $k => $asset) {
-         if (property_exists($asset, 'name') && isset($this->extra_data['ignored'][$asset->name])) {
-            unset($data[$k]);
-         }
-      }
-
-      $this->data = $data;
-      parent::handle();
-   }
-
-   public function checkConf(Conf $conf): bool {
-      return $conf->component_control == 1;
-   }
+    public function checkConf(Conf $conf): bool
+    {
+        return $conf->component_control == 1;
+    }
 }

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,18 +32,18 @@
  */
 
 if (strpos($_SERVER['PHP_SELF'], "dropdownUnicityFields.php")) {
-   include ('../inc/includes.php');
-   header("Content-Type: text/html; charset=UTF-8");
-   Html::header_nocache();
+    include('../inc/includes.php');
+    header("Content-Type: text/html; charset=UTF-8");
+    Html::header_nocache();
 }
 
 Session::checkRight("config", UPDATE);
 
 $field = new FieldUnicity();
 if ($_POST['id'] > 0) {
-   $field->getFromDB($_POST['id']);
+    $field->getFromDB($_POST['id']);
 } else {
-   $field->getEmpty();
-   $field->fields['itemtype'] = $_POST['itemtype'];
+    $field->getEmpty();
+    $field->fields['itemtype'] = $_POST['itemtype'];
 }
 FieldUnicity::selectCriterias($field);

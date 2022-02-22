@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -36,61 +37,66 @@ require_once 'CommonDropdown.php';
 
 /* Test for inc/operatingsystemkernelversion.class.php */
 
-class OperatingSystemKernelVersion extends CommonDropdown {
+class OperatingSystemKernelVersion extends CommonDropdown
+{
+    public function getObjectClass()
+    {
+        return '\OperatingSystemKernelVersion';
+    }
 
-   public function getObjectClass() {
-      return '\OperatingSystemKernelVersion';
-   }
+    public function typenameProvider()
+    {
+        return [
+            [\OperatingSystemKernelVersion::getTypeName(), 'Kernel versions'],
+            [\OperatingSystemKernelVersion::getTypeName(0), 'Kernel versions'],
+            [\OperatingSystemKernelVersion::getTypeName(10), 'Kernel versions'],
+            [\OperatingSystemKernelVersion::getTypeName(1), 'Kernel version']
+        ];
+    }
 
-   public function typenameProvider() {
-      return [
-         [\OperatingSystemKernelVersion::getTypeName(), 'Kernel versions'],
-         [\OperatingSystemKernelVersion::getTypeName(0), 'Kernel versions'],
-         [\OperatingSystemKernelVersion::getTypeName(10), 'Kernel versions'],
-         [\OperatingSystemKernelVersion::getTypeName(1), 'Kernel version']
-      ];
-   }
-
-   public function testGetAdditionalFields() {
-      $this
+    public function testGetAdditionalFields()
+    {
+        $this
          ->given($this->newTestedInstance)
             ->then
                ->array($this->testedInstance->getAdditionalFields())->isIdenticalTo([
-                  [
-                     'label'  => 'Kernel',
-                     'name'   => 'Kernels',
-                     'list'   => true,
-                     'type'   => 'oskernel'
-                  ]
+                   [
+                       'label'  => 'Kernel',
+                       'name'   => 'Kernels',
+                       'list'   => true,
+                       'type'   => 'oskernel'
+                   ]
                ]);
-   }
+    }
 
-   protected function getTabs() {
-      return [
-         'OperatingSystemKernelVersion$main' =>'Kernel version',
-         'Log$1'                             => 'Historical'
-      ];
-   }
+    protected function getTabs()
+    {
+        return [
+            'OperatingSystemKernelVersion$main' => 'Kernel version',
+            'Log$1'                             => 'Historical'
+        ];
+    }
 
-   /**
-    * Create new kernel version in database
-    *
-    * @return void
-    */
-   protected function newInstance() {
-      $kernel = new \OperatingSystemKernel();
-      $this->integer(
-         (int)$kernel->add([
-            'name'   => 'linux'
-         ])
-      );
-      $this->newTestedInstance();
-      $this->integer(
-         (int)$this->testedInstance->add([
-            'name'                        => 'Version name ' . $this->getUniqueString(),
-            'operatingsystemkernels_id'   => $kernel->getID()
-         ])
-      )->isGreaterThan(0);
-      $this->boolean($this->testedInstance->getFromDB($this->testedInstance->getID()))->isTrue();
-   }
+    /**
+     * Create new kernel version in database
+     *
+     * @return void
+     */
+    protected function newInstance()
+    {
+        $kernel = new \OperatingSystemKernel();
+        $this->integer(
+            (int)$kernel->add([
+                'name'   => 'linux'
+            ])
+        );
+        $this->newTestedInstance();
+        $this->integer(
+            (int)$this->testedInstance->add([
+                'name'                        => 'Version name ' . $this->getUniqueString(),
+                'operatingsystemkernels_id'   => $kernel->getID()
+            ])
+        )->isGreaterThan(0);
+        $this->boolean($this->testedInstance->getFromDB($this->testedInstance->getID()))->isTrue();
+    }
 }

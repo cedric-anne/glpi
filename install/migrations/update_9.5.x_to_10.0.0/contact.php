@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,7 +32,7 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
+    die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -40,12 +41,12 @@ if (!defined('GLPI_ROOT')) {
  */
 
 if (!$DB->fieldExists("glpi_contacts", "registration_number")) {
-   $migration->addField(
-      "glpi_contacts",
-      "registration_number",
-      "string",
-      [
-         'after'     => "firstname",
-      ]
-   );
+    $migration->addField(
+        "glpi_contacts",
+        "registration_number",
+        "string",
+        [
+            'after'     => "firstname",
+        ]
+    );
 }

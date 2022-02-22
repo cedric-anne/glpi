@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -36,14 +37,15 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/computer.class.php */
 
-class Computer extends AbstractInventoryAsset {
+class Computer extends AbstractInventoryAsset
+{
+    const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
 
-   const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
-
-   protected function assetProvider() :array {
-      return [
-         [ //both bios and hardware
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+    protected function assetProvider(): array
+    {
+        return [
+            [ //both bios and hardware
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <BIOS>
@@ -86,9 +88,9 @@ class Computer extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'asset'  => '{"chassis_type":"Laptop","datelastloggeduser":"Wed Oct 3 06:56","defaultgateway":"192.168.1.1","dns":"192.168.1.1\\/172.28.200.20","lastloggeduser":"trasher","memory":7822,"name":"glpixps","swap":7951,"uuid":"4c4c4544-0034-3010-8048-b6c04f503732","vmsystem":"Physical","workgroup":"teclib.infra","domains_id":"teclib.infra","users_id":0,"contact":"trasher","manufacturers_id":"Dell Inc.","computermodels_id":"XPS 13 9350","serial":"640HP72","mserial":"\\/640HP72\\/CN129636460078\\/","computertypes_id":"Laptop","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW"}'
-         ], [ //only hardware
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'asset'  => '{"chassis_type":"Laptop","datelastloggeduser":"Wed Oct 3 06:56","defaultgateway":"192.168.1.1","dns":"192.168.1.1\\/172.28.200.20","lastloggeduser":"trasher","memory":7822,"name":"glpixps","swap":7951,"uuid":"4c4c4544-0034-3010-8048-b6c04f503732","vmsystem":"Physical","workgroup":"teclib.infra","domains_id":"teclib.infra","users_id":0,"contact":"trasher","manufacturers_id":"Dell Inc.","computermodels_id":"XPS 13 9350","serial":"640HP72","mserial":"\\/640HP72\\/CN129636460078\\/","computertypes_id":"Laptop","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW"}'
+            ], [ //only hardware
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <HARDWARE>
@@ -119,9 +121,9 @@ class Computer extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'asset'  => '{"chassis_type":"Laptop","datelastloggeduser":"Wed Oct 3 06:56","defaultgateway":"192.168.1.1","dns":"192.168.1.1\\/172.28.200.20","lastloggeduser":"trasher","memory":7822,"name":"glpixps","swap":7951,"uuid":"4c4c4544-0034-3010-8048-b6c04f503732","vmsystem":"Physical","workgroup":"teclib.infra","domains_id":"teclib.infra","users_id":0,"contact":"trasher","computertypes_id":"Laptop","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW"}'
-         ], [ //only bios
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'asset'  => '{"chassis_type":"Laptop","datelastloggeduser":"Wed Oct 3 06:56","defaultgateway":"192.168.1.1","dns":"192.168.1.1\\/172.28.200.20","lastloggeduser":"trasher","memory":7822,"name":"glpixps","swap":7951,"uuid":"4c4c4544-0034-3010-8048-b6c04f503732","vmsystem":"Physical","workgroup":"teclib.infra","domains_id":"teclib.infra","users_id":0,"contact":"trasher","computertypes_id":"Laptop","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW"}'
+            ], [ //only bios
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <BIOS>
@@ -141,9 +143,9 @@ class Computer extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'asset'  => '{"manufacturers_id":"Dell Inc.","computermodels_id":"XPS 13 9350","serial":"640HP72","mserial":"\\/640HP72\\/CN129636460078\\/","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW"}'
-         ], [ //only bios - with otherserial
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'asset'  => '{"manufacturers_id":"Dell Inc.","computermodels_id":"XPS 13 9350","serial":"640HP72","mserial":"\\/640HP72\\/CN129636460078\\/","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW"}'
+            ], [ //only bios - with otherserial
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <BIOS>
@@ -164,48 +166,50 @@ class Computer extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'asset'  => '{"manufacturers_id":"Dell Inc.","computermodels_id":"XPS 13 9350","serial":"640HP72","mserial":"\\/640HP72\\/CN129636460078\\/","otherserial":"SER1234","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW"}'
-         ]
-      ];
-   }
+                'asset'  => '{"manufacturers_id":"Dell Inc.","computermodels_id":"XPS 13 9350","serial":"640HP72","mserial":"\\/640HP72\\/CN129636460078\\/","otherserial":"SER1234","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW"}'
+            ]
+        ];
+    }
 
-   /**
-    * @dataProvider assetProvider
-    */
-   public function testPrepare($xml, $asset) {
-      $date_now = date('Y-m-d H:i:s');
-      $_SESSION['glpi_currenttime'] = $date_now;
-      $asset = str_replace('DATE_NOW', $date_now, $asset);
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($xml);
-      $json = json_decode($data);
+    /**
+     * @dataProvider assetProvider
+     */
+    public function testPrepare($xml, $asset)
+    {
+        $date_now = date('Y-m-d H:i:s');
+        $_SESSION['glpi_currenttime'] = $date_now;
+        $asset = str_replace('DATE_NOW', $date_now, $asset);
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $main = new \Glpi\Inventory\Asset\Computer($computer, $json);
-      $main->setExtraData((array)$json->content);
-      $result = $main->prepare();
-      $this->object($result[0])->isEqualTo(json_decode($asset));
-   }
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $main = new \Glpi\Inventory\Asset\Computer($computer, $json);
+        $main->setExtraData((array)$json->content);
+        $result = $main->prepare();
+        $this->object($result[0])->isEqualTo(json_decode($asset));
+    }
 
-   public function testHandle() {
-      $json_str = file_get_contents(self::INV_FIXTURES . 'computer_1.json');
-      $json = json_decode($json_str);
+    public function testHandle()
+    {
+        $json_str = file_get_contents(self::INV_FIXTURES . 'computer_1.json');
+        $json = json_decode($json_str);
 
-      $computer = new \Computer();
+        $computer = new \Computer();
 
-      $data = (array)$json->content;
-      $inventory = new \Glpi\Inventory\Inventory();
-      $this->boolean($inventory->setData($json_str))->isTrue();
+        $data = (array)$json->content;
+        $inventory = new \Glpi\Inventory\Inventory();
+        $this->boolean($inventory->setData($json_str))->isTrue();
 
-      $agent = new \Agent();
-      $this->integer($agent->handleAgent($inventory->extractMetadata()))->isGreaterThan(0);
+        $agent = new \Agent();
+        $this->integer($agent->handleAgent($inventory->extractMetadata()))->isGreaterThan(0);
 
-      $main = new \Glpi\Inventory\Asset\Computer($computer, $json);
-      $main->setAgent($agent)->setExtraData($data);
-      $result = $main->prepare();
-      $this->array($result)->hasSize(1);
+        $main = new \Glpi\Inventory\Asset\Computer($computer, $json);
+        $main->setAgent($agent)->setExtraData($data);
+        $result = $main->prepare();
+        $this->array($result)->hasSize(1);
 
-      $main->handle();
-      $this->boolean($main->areLinksHandled())->isTrue();
-   }
+        $main->handle();
+        $this->boolean($main->areLinksHandled())->isTrue();
+    }
 }

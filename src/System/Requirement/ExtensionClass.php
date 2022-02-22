@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -35,28 +36,29 @@ namespace Glpi\System\Requirement;
 /**
  * @since 9.5.0
  */
-class ExtensionClass extends Extension {
+class ExtensionClass extends Extension
+{
+    /**
+     * Required class or interface name.
+     *
+     * @var string
+     */
+    private $class_name;
 
-   /**
-    * Required class or interface name.
-    *
-    * @var string
-    */
-   private $class_name;
+    /**
+     * @param string $name        Extension name.
+     * @param string $class_name  Required class or interface name.
+     * @param bool $optional      Indicated if extension is optional.
+     */
+    public function __construct(string $name, string $class_name, bool $optional = false)
+    {
+        parent::__construct($name, $optional);
+        $this->class_name = $class_name;
+    }
 
-   /**
-    * @param string $name        Extension name.
-    * @param string $class_name  Required class or interface name.
-    * @param bool $optional      Indicated if extension is optional.
-    */
-   public function __construct(string $name, string $class_name, bool $optional = false) {
-      parent::__construct($name, $optional);
-      $this->class_name = $class_name;
-   }
-
-   protected function check() {
-      $this->validated = class_exists($this->class_name) || interface_exists($this->class_name);
-      $this->buildValidationMessage();
-   }
-
+    protected function check()
+    {
+        $this->validated = class_exists($this->class_name) || interface_exists($this->class_name);
+        $this->buildValidationMessage();
+    }
 }

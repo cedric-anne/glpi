@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,17 +32,20 @@
  */
 
 /// Class Cabletype
-class CableType extends CommonDropdown {
+class CableType extends CommonDropdown
+{
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Cable type', 'Cable types', $nb);
+    }
 
-   static function getTypeName($nb = 0) {
-      return _n('Cable type', 'Cable types', $nb);
-   }
+    public static function getFieldLabel()
+    {
+        return self::getTypeName(1);
+    }
 
-   static function getFieldLabel() {
-      return self::getTypeName(1);
-   }
-
-   static function getIcon() {
-      return Cable::getIcon();
-   }
+    public static function getIcon()
+    {
+        return Cable::getIcon();
+    }
 }

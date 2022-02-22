@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,12 +33,12 @@
 
 namespace Glpi\Console\Command;
 
-interface ForceNoPluginsOptionCommandInterface {
-
-   /**
-    * Defines whether or not command prevents plugins to be loaded.
-    *
-    * @return boolean
-    */
-   public function getNoPluginsOptionValue();
+interface ForceNoPluginsOptionCommandInterface
+{
+    /**
+     * Defines whether or not command prevents plugins to be loaded.
+     *
+     * @return boolean
+     */
+    public function getNoPluginsOptionValue();
 }

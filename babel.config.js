@@ -1,10 +1,7 @@
-<?php
-
-
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,34 +29,18 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
-
-echo "Usage of this script is deprecated, please use 'php bin/console rules:process_software_category_rules' command.\n";
-
-// COMPUTER ONLY UNDEF CATEGORIES
-$ONLY_UNDEFINED = true;
-
-
-$softcatrule = new RuleSoftwareCategoryCollection();
-$soft        = new Software();
-
-$query = "SELECT `id`, `softwarecategories_id`
-          FROM `glpi_softwares`";
-
-if ($result=$DB->query($query)) {
-   if ($DB->numrows($result)>0) {
-      while ($data=$DB->fetchArray($result)) {
-         if (!$ONLY_UNDEFINED || $data['softwarecategories_id']==0) {
-            $params = [];
-
-            //Get software name and manufacturer
-            $soft->getFromDB($data['id']);
-            $params["name"]             = $soft->fields["name"];
-            $params["manufacturers_id"] = $soft->fields["manufacturers_id"];
-
-            //Process rules
-            $soft->update($softcatrule->processAllRules(null, $soft->fields, $params));
-         }
-      }
-   }
-}
+module.exports = {
+    "presets": ["@babel/env"],
+    "plugins": [
+        "@babel/plugin-transform-runtime"
+    ],
+    "env": {
+        "test": {
+            "presets": ["@babel/env"],
+            "plugins": [
+                "@babel/plugin-proposal-class-properties",
+                "@babel/plugin-transform-modules-commonjs"
+            ]
+        }
+    }
+};

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -29,6 +30,7 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+
 /**
  * @var DB $DB
  * @var Migration $migration
@@ -36,16 +38,17 @@
 
 $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 if (!$DB->tableExists('glpi_manuallinks')) {
-   $query = "CREATE TABLE `glpi_manuallinks` (
-      `id` int NOT NULL AUTO_INCREMENT,
+    $query = "CREATE TABLE `glpi_manuallinks` (
+      `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
       `name` varchar(255) DEFAULT NULL,
       `url` varchar(8096) NOT NULL,
       `open_window` tinyint NOT NULL DEFAULT '1',
       `icon` varchar(255) DEFAULT NULL,
       `comment` text,
-      `items_id` int NOT NULL DEFAULT '0',
+      `items_id` int {$default_key_sign} NOT NULL DEFAULT '0',
       `itemtype` varchar(255) DEFAULT NULL,
       `date_creation` timestamp NULL DEFAULT NULL,
       `date_mod` timestamp NULL DEFAULT NULL,
@@ -55,5 +58,5 @@ if (!$DB->tableExists('glpi_manuallinks')) {
       KEY `date_creation` (`date_creation`),
       KEY `date_mod` (`date_mod`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "10.0 add table glpi_manuallinks");
+    $DB->queryOrDie($query, "10.0 add table glpi_manuallinks");
 }

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -39,45 +40,49 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class PluginExtension extends AbstractExtension {
-   public function getFunctions(): array {
-      return [
-         new TwigFunction('call_plugin_hook', [$this, 'callPluginHook']),
-         new TwigFunction('call_plugin_hook_func', [$this, 'callPluginHookFunction']),
-      ];
-   }
+class PluginExtension extends AbstractExtension
+{
+    public function getFunctions(): array
+    {
+        return [
+            new TwigFunction('call_plugin_hook', [$this, 'callPluginHook']),
+            new TwigFunction('call_plugin_hook_func', [$this, 'callPluginHookFunction']),
+        ];
+    }
 
-   /**
-    * Call plugin hook with given params.
-    *
-    * @param string  $name          Hook name.
-    * @param mixed   $params        Hook parameters.
-    * @param bool    $return_result Indicates that the result should be returned.
-    *
-    * @return mixed|void
-    */
-   public function callPluginHook(string $name, $params = null, bool $return_result = false) {
-      $result = Plugin::doHook($name, $params);
+    /**
+     * Call plugin hook with given params.
+     *
+     * @param string  $name          Hook name.
+     * @param mixed   $params        Hook parameters.
+     * @param bool    $return_result Indicates that the result should be returned.
+     *
+     * @return mixed|void
+     */
+    public function callPluginHook(string $name, $params = null, bool $return_result = false)
+    {
+        $result = Plugin::doHook($name, $params);
 
-      if ($return_result) {
-         return $result;
-      }
-   }
+        if ($return_result) {
+            return $result;
+        }
+    }
 
-   /**
-    * Call plugin hook function with given params.
-    *
-    * @param string  $name          Hook name.
-    * @param mixed   $params        Hook parameters.
-    * @param bool    $return_result Indicates that the result should be returned.
-    *
-    * @return mixed|void
-    */
-   public function callPluginHookFunction(string $name, $params = null, bool $return_result = false) {
-      $result = Plugin::doHookFunction($name, $params);
+    /**
+     * Call plugin hook function with given params.
+     *
+     * @param string  $name          Hook name.
+     * @param mixed   $params        Hook parameters.
+     * @param bool    $return_result Indicates that the result should be returned.
+     *
+     * @return mixed|void
+     */
+    public function callPluginHookFunction(string $name, $params = null, bool $return_result = false)
+    {
+        $result = Plugin::doHookFunction($name, $params);
 
-      if ($return_result) {
-         return $result;
-      }
-   }
+        if ($return_result) {
+            return $result;
+        }
+    }
 }

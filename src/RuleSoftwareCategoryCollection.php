@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,44 +31,47 @@
  * ---------------------------------------------------------------------
  */
 
-class RuleSoftwareCategoryCollection extends RuleCollection {
-
+class RuleSoftwareCategoryCollection extends RuleCollection
+{
    // From RuleCollection
-   public $stop_on_first_match = true;
-   static $rightname   = 'rule_softwarecategories';
-   public $menu_option = 'softwarecategories';
+    public $stop_on_first_match = true;
+    public static $rightname   = 'rule_softwarecategories';
+    public $menu_option = 'softwarecategories';
 
 
-   function getTitle() {
-      return __('Rules for assigning a category to software');
-   }
+    public function getTitle()
+    {
+        return __('Rules for assigning a category to software');
+    }
 
 
-   /**
-    * Get the attributes needed for processing the rules
-    *
-    * @see RuleCollection::prepareInputDataForProcess()
-    *
-    * @param $input     input data
-    * @param $software  software data array
-    *
-    * @return an array of attributes
-   **/
-   function prepareInputDataForProcess($input, $software) {
+    /**
+     * Get the attributes needed for processing the rules
+     *
+     * @see RuleCollection::prepareInputDataForProcess()
+     *
+     * @param $input     input data
+     * @param $software  software data array
+     *
+     * @return an array of attributes
+     **/
+    public function prepareInputDataForProcess($input, $software)
+    {
 
-      $params["name"] = $software["name"];
-      if (isset($software["comment"])) {
-         $params["comment"] = $software["comment"];
-      }
-      if (isset($software["_system_category"])) {
-         $params["_system_category"] = $software["_system_category"];
-      }
+        $params["name"] = $software["name"];
+        if (isset($software["comment"])) {
+            $params["comment"] = $software["comment"];
+        }
+        if (isset($software["_system_category"])) {
+            $params["_system_category"] = $software["_system_category"];
+        }
 
-      if (isset($software["manufacturers_id"])) {
-         $params["manufacturer"] = Dropdown::getDropdownName("glpi_manufacturers",
-                                                             $software["manufacturers_id"]);
-      }
-      return $params;
-   }
-
+        if (isset($software["manufacturers_id"])) {
+            $params["manufacturer"] = Dropdown::getDropdownName(
+                "glpi_manufacturers",
+                $software["manufacturers_id"]
+            );
+        }
+        return $params;
+    }
 }

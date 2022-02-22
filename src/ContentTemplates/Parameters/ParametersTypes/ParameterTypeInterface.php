@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -41,41 +42,41 @@ use Glpi\ContentTemplates\Parameters\TemplatesParametersInterface;
  */
 interface ParameterTypeInterface
 {
-   /**
-    * To be defined in each subclasses, convert the parameter data into an array
-    * that can be shared to the client side code as json and used for autocompletion.
-    *
-    * @return array
-    */
-   public function compute(): array;
+    /**
+     * To be defined in each subclasses, convert the parameter data into an array
+     * that can be shared to the client side code as json and used for autocompletion.
+     *
+     * @return array
+     */
+    public function compute(): array;
 
-   /**
-    * Label to use for this parameter's documentation
-    *
-    * @return string
-    */
-   public function getDocumentationLabel(): string;
+    /**
+     * Label to use for this parameter's documentation
+     *
+     * @return string
+     */
+    public function getDocumentationLabel(): string;
 
-   /**
-    * Recommended usage (twig code) to use for this parameter's documentation
-    *
-    * @param string|null $parent
-    *
-    * @return string
-    */
-   public function getDocumentationUsage(?string $parent = null): string;
+    /**
+     * Recommended usage (twig code) to use for this parameter's documentation
+     *
+     * @param string|null $parent
+     *
+     * @return string
+     */
+    public function getDocumentationUsage(?string $parent = null): string;
 
-   /**
-    * Reference to others parameters for this parameter's documentation
-    *
-    * @return TemplatesParametersInterface|null
-    */
-   public function getDocumentationReferences(): ?TemplatesParametersInterface;
+    /**
+     * Reference to others parameters for this parameter's documentation
+     *
+     * @return TemplatesParametersInterface|null
+     */
+    public function getDocumentationReferences(): ?TemplatesParametersInterface;
 
-   /**
-    * Field name for this parameter's documentation
-    *
-    * @return string
-    */
-   public function getDocumentationField(): string;
+    /**
+     * Field name for this parameter's documentation
+     *
+     * @return string
+     */
+    public function getDocumentationField(): string;
 }

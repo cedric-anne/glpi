@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,9 +31,10 @@
  * ---------------------------------------------------------------------
  */
 
-class LineType extends CommonType {
-
-   static function getTypeName($nb = 0) {
-      return _n('Line type', 'Line types', $nb);
-   }
+class LineType extends CommonType
+{
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Line type', 'Line types', $nb);
+    }
 }

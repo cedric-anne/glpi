@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -41,8 +42,8 @@ use Plugin;
 use Toolbox;
 
 class View extends CommonGLPI {
-   static $rightname = 'config';
-   static $api       = null;
+  public static  $rightname = 'config';
+  public static  $api       = null;
 
    public $get_item_to_display_tab = true;
 
@@ -54,27 +55,27 @@ class View extends CommonGLPI {
     *
     * @return PluginsApi
     */
-   static function getAPI(): PluginsApi {
+   public static function getAPI(): PluginsApi {
       return self::$api ?? (self::$api = new PluginsApi());
    }
 
 
-   static function getTypeName($nb = 0) {
+   public static function getTypeName($nb = 0) {
       return __('Marketplace');
    }
 
 
-   static function canCreate() {
+   public static function canCreate() {
       return self::canUpdate();
    }
 
 
-   static function getIcon() {
+   public static function getIcon() {
       return "ti ti-building-store";
    }
 
 
-   static function getSearchURL($full = true) {
+   public static function getSearchURL($full = true) {
       global $CFG_GLPI;
 
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');
@@ -82,7 +83,7 @@ class View extends CommonGLPI {
    }
 
 
-   function defineTabs($options = []) {
+   public function defineTabs($options = []) {
       $tabs = [
          'no_all_tab' => true
       ];
@@ -92,7 +93,7 @@ class View extends CommonGLPI {
    }
 
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+   public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       if ($item->getType() == __CLASS__) {
          return [
             self::createTabEntry(__("Installed")),
@@ -103,7 +104,7 @@ class View extends CommonGLPI {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
+   public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       if ($item->getType() == __CLASS__) {
          switch ($tabnum) {
             case 0:
@@ -125,7 +126,7 @@ class View extends CommonGLPI {
     *
     * @return bool
     */
-   static function checkRegistrationStatus() {
+   public static function checkRegistrationStatus() {
       global $CFG_GLPI;
 
       $messages   = [];
@@ -190,7 +191,7 @@ class View extends CommonGLPI {
     *
     * @return void display things
     */
-   static function installed(
+   public static function installed(
       bool $force_refresh = false,
       bool $only_lis = false,
       string $string_filter = ""
@@ -248,7 +249,7 @@ class View extends CommonGLPI {
     *
     * @return void display things
     */
-   static function discover(
+   public static function discover(
       bool $force = false,
       bool $only_lis = false,
       string $tag_filter = "",
@@ -286,7 +287,7 @@ class View extends CommonGLPI {
     *
     * @return string tags list
     */
-   static function getTagsHtml() {
+   public static function getTagsHtml() {
       $api  = self::getAPI();
       $tags = $api->getTopTags();
 
@@ -312,7 +313,7 @@ class View extends CommonGLPI {
     *
     * @return false|void displays things
     */
-   static function displayList(
+   public static function displayList(
       array $plugins = [],
       string $tab = "",
       bool $only_lis = false,
@@ -461,7 +462,7 @@ JS;
     *
     * @return string the plugin card
     */
-   static function getPluginCard(array $plugin = [], string $tab = "discover"):string {
+   public static function getPluginCard(array $plugin = [], string $tab = "discover"):string {
       $plugin_key   = $plugin['key'];
       $plugin_inst  = new Plugin;
       $plugin_inst->getFromDBbyDir($plugin_key);
@@ -585,7 +586,7 @@ HTML;
     *
     * @return string plugins stars html
     */
-   static function getStarsHtml(float $value = 0):string {
+   public static function getStarsHtml(float $value = 0):string {
       $value = min(floor($value * 2) / 2, 5);
 
       $stars = "";
@@ -610,7 +611,7 @@ HTML;
     *
     * @return string the buttons html
     */
-   static function getButtons(string $plugin_key = ""): string {
+   public static function getButtons(string $plugin_key = ""): string {
       global $CFG_GLPI, $PLUGIN_HOOKS;
 
       $plugin_inst        = new Plugin;
@@ -672,7 +673,7 @@ HTML;
                <button class='modify_plugin'
                      data-action='download_plugin'
                      title='".__s("Download again")."'>
-                  <i class='fas fa-cloud-download-alt'></i>
+                  <i class='ti ti-cloud-download'></i>
                </button>";
          }
       } else if (!$is_available) {
@@ -715,7 +716,7 @@ HTML;
             $buttons .="<button class='modify_plugin'
                                 data-action='download_plugin'
                                 title='".__s("Download")."'>
-               <i class='ti ti-alert-triangle'></i>
+               <i class='ti ti-cloud-download'></i>
             </button>";
          } else if ($can_be_updated) {
             $update_title = sprintf(
@@ -804,7 +805,7 @@ HTML;
     *
     * @return string the jtml for plugin logo
     */
-   static function getPluginIcon(array $plugin = []) {
+   public static function getPluginIcon(array $plugin = []) {
       $icon = "";
 
       $logo_url = Html::entities_deep($plugin['logo_url'] ?? "");
@@ -834,7 +835,7 @@ HTML;
     *                      if check agains plugin key if we need some subscription to use it
     * @return string the subscription information html
     */
-   static function getNetworkInformations(array $plugin = []): string {
+   public static function getNetworkInformations(array $plugin = []): string {
       $mk_controller  = new Controller($plugin['key']);
       $require_offers = $mk_controller->getRequiredOffers();
 
@@ -872,7 +873,7 @@ HTML;
     *
     * @return string the localized description
     */
-   static function getLocalizedDescription(array $plugin = [], string $version = 'short_description'): string {
+   public static function getLocalizedDescription(array $plugin = [], string $version = 'short_description'): string {
       global $CFG_GLPI;
 
       $userlang = $CFG_GLPI['languages'][$_SESSION['glpilanguage']][3] ?? "en";
@@ -911,7 +912,7 @@ HTML;
     *
     * @return string the pagination html
     */
-   static function getPaginationHtml(int $current_page = 1, int $total = 1, bool $only_li = false): string {
+   public static function getPaginationHtml(int $current_page = 1, int $total = 1, bool $only_li = false): string {
       if ($total <= self::COL_PAGE) {
          return "";
       }
@@ -967,7 +968,7 @@ HTML;
     *
     * @return void display things
     */
-   static function showFeatureSwitchDialog() {
+   public static function showFeatureSwitchDialog() {
       global $CFG_GLPI;
 
       if (isset($_POST['marketplace_replace'])) {

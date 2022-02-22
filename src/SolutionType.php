@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,15 +32,15 @@
  */
 
 /// SolutionType class
-class SolutionType extends CommonDropdown {
+class SolutionType extends CommonDropdown
+{
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Solution type', 'Solution types', $nb);
+    }
 
-
-   static function getTypeName($nb = 0) {
-      return _n('Solution type', 'Solution types', $nb);
-   }
-
-   static function getIcon() {
-      return "fas fa-check";
-   }
-
+    public static function getIcon()
+    {
+        return "fas fa-check";
+    }
 }

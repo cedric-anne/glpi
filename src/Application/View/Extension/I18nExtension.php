@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -40,20 +41,22 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class I18nExtension extends AbstractExtension {
+class I18nExtension extends AbstractExtension
+{
+    public function getFunctions(): array
+    {
+        return [
+            new TwigFunction('__', '__'),
+            new TwigFunction('_n', '_n'),
+            new TwigFunction('_x', '_x'),
+            new TwigFunction('_nx', '_nx'),
+            new TwigFunction('get_current_locale', [$this, 'getCurrentLocale']),
+            new TwigFunction('get_plural_number', [Session::class, 'getPluralNumber']),
+        ];
+    }
 
-   public function getFunctions(): array {
-      return [
-         new TwigFunction('__', '__'),
-         new TwigFunction('_n', '_n'),
-         new TwigFunction('_x', '_x'),
-         new TwigFunction('_nx', '_nx'),
-         new TwigFunction('get_current_locale', [$this, 'getCurrentLocale']),
-         new TwigFunction('get_plural_number', [Session::class, 'getPluralNumber']),
-      ];
-   }
-
-   public function getCurrentLocale(): array {
-      return Locale::parseLocale($_SESSION['glpilanguage'] ?? 'en_GB');
-   }
+    public function getCurrentLocale(): array
+    {
+        return Locale::parseLocale($_SESSION['glpilanguage'] ?? 'en_GB');
+    }
 }

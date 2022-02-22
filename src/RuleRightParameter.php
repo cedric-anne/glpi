@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,51 +32,56 @@
  */
 
 /// LDAP criteria class
-class RuleRightParameter extends CommonDropdown {
+class RuleRightParameter extends CommonDropdown
+{
+    public static $rightname         = 'rule_ldap';
 
-   static $rightname         = 'rule_ldap';
-
-   public $can_be_translated = false;
-
-
-   /**
-    * @see CommonDBTM::prepareInputForAdd()
-   **/
-   function prepareInputForAdd($input) {
-
-      //LDAP parameters MUST be in lower case
-      //because the are retieved in lower case  from the directory
-      $input["value"] = Toolbox::strtolower($input["value"]);
-      return $input;
-   }
+    public $can_be_translated = false;
 
 
-   function getAdditionalFields() {
+    /**
+     * @see CommonDBTM::prepareInputForAdd()
+     **/
+    public function prepareInputForAdd($input)
+    {
 
-      return [['name'  => 'value',
-                         'label' => _n('Criterion', 'Criteria', 1),
-                         'type'  => 'text',
-                         'list'  => false]];
-   }
-
-
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
-
-      $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'value',
-         'name'               => _n('Criterion', 'Criteria', 1),
-         'datatype'           => 'string',
-      ];
-
-      return $tab;
-   }
+       //LDAP parameters MUST be in lower case
+       //because the are retieved in lower case  from the directory
+        $input["value"] = Toolbox::strtolower($input["value"]);
+        return $input;
+    }
 
 
-   static function getTypeName($nb = 0) {
-      return _n('LDAP criterion', 'LDAP criteria', $nb);
-   }
+    public function getAdditionalFields()
+    {
 
+        return [['name'  => 'value',
+            'label' => _n('Criterion', 'Criteria', 1),
+            'type'  => 'text',
+            'list'  => false
+        ]
+        ];
+    }
+
+
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
+
+        $tab[] = [
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'value',
+            'name'               => _n('Criterion', 'Criteria', 1),
+            'datatype'           => 'string',
+        ];
+
+        return $tab;
+    }
+
+
+    public static function getTypeName($nb = 0)
+    {
+        return _n('LDAP criterion', 'LDAP criteria', $nb);
+    }
 }

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,10 +33,10 @@
 
 class DomainType extends CommonDropdown
 {
-   static $rightname = 'dropdown';
+    public static $rightname = 'dropdown';
 
-   static function getTypeName($nb = 0) {
-      return _n('Domain type', 'Domain types', $nb);
-   }
-
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Domain type', 'Domain types', $nb);
+    }
 }

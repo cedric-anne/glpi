@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -34,79 +35,127 @@ namespace tests\units\Glpi\Inventory;
 
 use GuzzleHttp;
 
-class Request extends \GLPITestCase {
-   private $http_client;
-   private $base_uri;
+class Request extends \GLPITestCase
+{
+    private $http_client;
+    private $base_uri;
 
-   public function beforeTestMethod($method) {
-      global $CFG_GLPI;
+    public function beforeTestMethod($method)
+    {
+        global $CFG_GLPI;
 
-      $this->http_client = new GuzzleHttp\Client();
-      $this->base_uri    = trim($CFG_GLPI['url_base'], "/")."/";
+        $this->http_client = new GuzzleHttp\Client();
+        $this->base_uri    = trim($CFG_GLPI['url_base'], "/") . "/";
 
-      parent::beforeTestMethod($method);
-   }
+        parent::beforeTestMethod($method);
+    }
 
-   /**
-    * Check a response
-    *
-    * @param Response $res   Request response
-    * @param string   $reply Reply tag contents
-    *
-    * @return void
-    */
-   private function checkResponse (GuzzleHttp\Psr7\Response $res, $reply) {
-      $this->integer($res->getStatusCode())->isIdenticalTo(200);
-      $this->string($res->getHeader('content-type')[0])->isIdenticalTo('application/xml');
-      $this->string((string)$res->getBody())
+    /**
+     * Check a XML response
+     *
+     * @param Response $res   Request response
+     * @param string   $reply Reply tag contents
+     * @param integer  $reply Reply HTTP code
+     *
+     * @return void
+     */
+    private function checkXmlResponse(GuzzleHttp\Psr7\Response $res, $reply, $code)
+    {
+        $this->integer($res->getStatusCode())->isIdenticalTo($code);
+        $this->string($res->getHeader('content-type')[0])->isIdenticalTo('application/xml');
+        $this->string((string)$res->getBody())
          ->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY>$reply</REPLY>\n");
+    }
 
-   }
+    public function testUnsupportedHttpMethod()
+    {
+        $this->exception(
+            function () {
+                $res = $this->http_client->request(
+                    'GET',
+                    $this->base_uri . 'front/inventory.php'
+                );
+            }
+        )->hasCode(405)->message->contains('405 Method Not Allowed');
+    }
 
-   public function testWrongHttpMethod() {
-      $res = $this->http_client->request(
-         'GET',
-         $this->base_uri . 'front/inventory.php',
-         [
-            'headers' => [
-               'Content-Type' => 'application/xml'
-            ]
-         ]
-      );
-      $this->checkResponse($res, '<ERROR>Method not allowed</ERROR>');
-   }
+    public function testUnsupportedLegacyRequest()
+    {
+        $this->exception(
+            function () {
+                $res = $this->http_client->request(
+                    'GET',
+                    $this->base_uri . 'front/inventory.php?action=getConfig'
+                );
+            }
+        )->hasCode(400)->message->contains('{"status":"error","message":"Protocol not supported","expiration":24}');
+    }
 
-   public function testRequestInvalidContent() {
-      $res = $this->http_client->request(
-         'POST',
-         $this->base_uri . 'front/inventory.php',
-         [
-            'headers' => [
-               'Content-Type' => 'application/xml'
-            ]
-         ]
-      );
-      $this->checkResponse($res, '<ERROR>XML not well formed!</ERROR>');
-   }
+    public function testRequestInvalidContent()
+    {
+        $this->exception(
+            function () {
+                $res = $this->http_client->request(
+                    'POST',
+                    $this->base_uri . 'front/inventory.php',
+                    [
+                        'headers' => [
+                            'Content-Type' => 'application/xml'
+                        ]
+                    ]
+                );
+            }
+        )->hasCode(400)->message->contains('<ERROR>XML not well formed!</ERROR>');
+    }
 
-   public function testPrologRequest() {
-      $res = $this->http_client->request(
-         'POST',
-         $this->base_uri . 'front/inventory.php',
-         [
-            'headers' => [
-               'Content-Type' => 'application/xml'
-            ],
-            'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
-               '<REQUEST>' .
+    public function testRequestInvalidJSONContent()
+    {
+        $this->exception(
+            function () {
+                $res = $this->http_client->request(
+                    'POST',
+                    $this->base_uri . 'front/inventory.php',
+                    [
+                        'headers' => [
+                            'Content-Type' => 'application/json'
+                        ]
+                    ]
+                );
+            }
+        )->hasCode(400)->message->contains('{"status":"error","message":"JSON not well formed!","expiration":24}');
+        $this->exception(
+            function () {
+                $res = $this->http_client->request(
+                    'POST',
+                    $this->base_uri . 'front/inventory.php',
+                    [
+                        'headers' => [
+                            'Content-Type' => 'application/x-compress-zlib',
+                            'GLPI-Agent-ID' => 'a31ff7b5-4d8d-4e39-891e-0cca91d9df13'
+                        ],
+                        'body'   => gzcompress('{ bad content')
+                    ]
+                );
+            }
+        )->hasCode(400)->message->contains(gzcompress('{"status":"error","message":"JSON not well formed!","expiration":24}'));
+    }
+
+    public function testPrologRequest()
+    {
+        $res = $this->http_client->request(
+            'POST',
+            $this->base_uri . 'front/inventory.php',
+            [
+                'headers' => [
+                    'Content-Type' => 'application/xml'
+                ],
+                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
+                '<REQUEST>' .
                   '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
                   '<QUERY>PROLOG</QUERY>' .
-               '</REQUEST>'
-         ]
-      );
-      $this->integer($res->getStatusCode())->isIdenticalTo(200);
-      $this->string($res->getHeader('content-type')[0])->isIdenticalTo('application/xml');
-      $this->string((string)$res->getBody())
-         ->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE></REPLY>\n");
-   }
+                '</REQUEST>'
+            ]
+        );
+        $this->checkXmlResponse($res, '<PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE>', 200);
+    }
 }

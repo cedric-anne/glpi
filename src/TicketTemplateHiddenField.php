@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,10 +33,10 @@
 
 /// Hidden fields for ticket template class
 /// since version 0.83
-class TicketTemplateHiddenField extends ITILTemplateHiddenField {
-
+class TicketTemplateHiddenField extends ITILTemplateHiddenField
+{
    // From CommonDBChild
-   static public $itemtype  = 'TicketTemplate';
-   static public $items_id  = 'tickettemplates_id';
-   static public $itiltype = 'Ticket';
+    public static $itemtype  = 'TicketTemplate';
+    public static $items_id  = 'tickettemplates_id';
+    public static $itiltype = 'Ticket';
 }

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,19 +31,19 @@
  * ---------------------------------------------------------------------
  */
 
-class RuleDictionnaryComputerModelCollection extends RuleDictionnaryDropdownCollection {
-
+class RuleDictionnaryComputerModelCollection extends RuleDictionnaryDropdownCollection
+{
    // From RuleCollection
    //public $rule_class_name = 'RuleDictionnaryComputerModel';
 
-   public $item_table  = "glpi_computermodels";
-   public $menu_option = "model.computer";
+    public $item_table  = "glpi_computermodels";
+    public $menu_option = "model.computer";
 
-   /**
-    * @see RuleCollection::getTitle()
-   **/
-   function getTitle() {
-      return __('Dictionnary of computer models');
-   }
-
+    /**
+     * @see RuleCollection::getTitle()
+     **/
+    public function getTitle()
+    {
+        return __('Dictionnary of computer models');
+    }
 }

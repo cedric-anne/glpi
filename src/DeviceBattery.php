@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,139 +31,155 @@
  * ---------------------------------------------------------------------
  */
 
-class DeviceBattery extends CommonDevice {
+class DeviceBattery extends CommonDevice
+{
+    protected static $forward_entity_to = ['Item_DeviceBattery', 'Infocom'];
 
-   static protected $forward_entity_to = ['Item_DeviceBattery', 'Infocom'];
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Battery', 'Batteries', $nb);
+    }
 
-   static function getTypeName($nb = 0) {
-      return _n('Battery', 'Batteries', $nb);
-   }
 
-
-   function getAdditionalFields() {
-      return array_merge(
-         parent::getAdditionalFields(),
-         [
+    public function getAdditionalFields()
+    {
+        return array_merge(
+            parent::getAdditionalFields(),
             [
-               'name'  => 'devicebatterytypes_id',
-               'label' => _n('Type', 'Types', 1),
-               'type'  => 'dropdownValue'
-            ],
-            [
-               'name'   => 'capacity',
-               'label'  => __('Capacity'),
-               'type'   => 'text',
-               'unit'   => __('mWh')
-            ],
-            [
-               'name'   => 'voltage',
-               'label'  => __('Voltage'),
-               'type'   => 'text',
-               'unit'   => __('mV')
+                [
+                    'name'  => 'devicebatterytypes_id',
+                    'label' => _n('Type', 'Types', 1),
+                    'type'  => 'dropdownValue'
+                ],
+                [
+                    'name'   => 'capacity',
+                    'label'  => __('Capacity'),
+                    'type'   => 'integer',
+                    'min'    => 0,
+                    'unit'   => __('mWh')
+                ],
+                [
+                    'name'   => 'voltage',
+                    'label'  => __('Voltage'),
+                    'type'   => 'integer',
+                    'min'    => 0,
+                    'unit'   => __('mV')
+                ]
             ]
-         ]
-      );
-   }
+        );
+    }
 
 
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'capacity',
-         'name'               => __('Capacity'),
-         'datatype'           => 'string',
-      ];
+        $tab[] = [
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'capacity',
+            'name'               => __('Capacity'),
+            'datatype'           => 'string',
+        ];
 
-      $tab[] = [
-         'id'                 => '12',
-         'table'              => $this->getTable(),
-         'field'              => 'voltage',
-         'name'               => __('Voltage'),
-         'datatype'           => 'string',
-      ];
+        $tab[] = [
+            'id'                 => '12',
+            'table'              => $this->getTable(),
+            'field'              => 'voltage',
+            'name'               => __('Voltage'),
+            'datatype'           => 'string',
+        ];
 
-      $tab[] = [
-         'id'                 => '13',
-         'table'              => 'glpi_devicebatterytypes',
-         'field'              => 'name',
-         'name'               => _n('Type', 'Types', 1),
-         'datatype'           => 'dropdown'
-      ];
+        $tab[] = [
+            'id'                 => '13',
+            'table'              => 'glpi_devicebatterytypes',
+            'field'              => 'name',
+            'name'               => _n('Type', 'Types', 1),
+            'datatype'           => 'dropdown'
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
-   static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super = null,
-                                      HTMLTableHeader $father = null, array $options = []) {
+    public static function getHTMLTableHeader(
+        $itemtype,
+        HTMLTableBase $base,
+        HTMLTableSuperHeader $super = null,
+        HTMLTableHeader $father = null,
+        array $options = []
+    ) {
 
-      $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
+        $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
-      if ($column == $father) {
-         return $father;
-      }
+        if ($column == $father) {
+            return $father;
+        }
 
-      Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-      $base->addHeader('devicebattery_type', _n('Type', 'Types', 1), $super, $father);
-      $base->addHeader('voltage', sprintf('%1$s (%2$s)', __('Voltage'), __('mV')), $super, $father);
-      $base->addHeader('capacity', sprintf('%1$s (%2$s)', __('Capacity'), __('mWh')), $super, $father);
-   }
+        Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+        $base->addHeader('devicebattery_type', _n('Type', 'Types', 1), $super, $father);
+        $base->addHeader('voltage', sprintf('%1$s (%2$s)', __('Voltage'), __('mV')), $super, $father);
+        $base->addHeader('capacity', sprintf('%1$s (%2$s)', __('Capacity'), __('mWh')), $super, $father);
+    }
 
-   function getHTMLTableCellForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
-                                    HTMLTableCell $father = null, array $options = []) {
+    public function getHTMLTableCellForItem(
+        HTMLTableRow $row = null,
+        CommonDBTM $item = null,
+        HTMLTableCell $father = null,
+        array $options = []
+    ) {
 
-      $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
+        $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
-      if ($column == $father) {
-         return $father;
-      }
+        if ($column == $father) {
+            return $father;
+        }
 
-      Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
+        Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
 
-      if ($this->fields["devicebatterytypes_id"]) {
-         $row->addCell(
-            $row->getHeaderByName('devicebattery_type'),
-            Dropdown::getDropdownName("glpi_devicebatterytypes",
-            $this->fields["devicebatterytypes_id"]),
-            $father
-         );
-      }
+        if ($this->fields["devicebatterytypes_id"]) {
+            $row->addCell(
+                $row->getHeaderByName('devicebattery_type'),
+                Dropdown::getDropdownName(
+                    "glpi_devicebatterytypes",
+                    $this->fields["devicebatterytypes_id"]
+                ),
+                $father
+            );
+        }
 
-      if ($this->fields["voltage"]) {
-         $row->addCell(
-            $row->getHeaderByName('voltage'),
-            $this->fields['voltage'],
-            $father
-         );
-      }
+        if ($this->fields["voltage"]) {
+            $row->addCell(
+                $row->getHeaderByName('voltage'),
+                $this->fields['voltage'],
+                $father
+            );
+        }
 
-      if ($this->fields["capacity"]) {
-         $row->addCell(
-            $row->getHeaderByName('capacity'),
-            $this->fields['capacity'],
-            $father
-         );
-      }
-
-   }
-
-
-   function getImportCriteria() {
-
-      return [
-         'designation'           => 'equal',
-         'devicebatterytypes_id' => 'equal',
-         'manufacturers_id'      => 'equal',
-         'capacity'              => 'delta:10',
-         'voltage'               => 'delta:10'
-      ];
-   }
+        if ($this->fields["capacity"]) {
+            $row->addCell(
+                $row->getHeaderByName('capacity'),
+                $this->fields['capacity'],
+                $father
+            );
+        }
+    }
 
 
-   static function getIcon() {
-      return "ti ti-battery-2";
-   }
+    public function getImportCriteria()
+    {
+
+        return [
+            'designation'           => 'equal',
+            'devicebatterytypes_id' => 'equal',
+            'manufacturers_id'      => 'equal',
+            'capacity'              => 'delta:10',
+            'voltage'               => 'delta:10'
+        ];
+    }
+
+
+    public static function getIcon()
+    {
+        return "ti ti-battery-2";
+    }
 }

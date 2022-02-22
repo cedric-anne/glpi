@@ -1,7 +1,7 @@
 {#
  # ---------------------------------------------------------------------
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2021 Teclib' and contributors.
+ # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
@@ -89,8 +89,10 @@
       <input type="{{ options.type }}" id="%id%"
              class="form-control"
              name="{{ name }}" value="{{ value|verbatim_value }}"
+             {{ options.maxlenght ? 'maxlenght=' ~ options.maxlenght : '' }}
              {{ options.readonly ? 'readonly' : '' }}
              {{ options.disabled ? 'disabled' : '' }}
+             {{ options.multiple ? 'multiple' : '' }} {# Only for emailField #}
              {{ options.required ? 'required' : '' }} />
    {% endset %}
 
@@ -142,7 +144,7 @@
 {% macro numberField(name, value, label = '', options = {}) %}
    {% if options.step|round(0, 'floor') != options.step %}
       {# Only format number if not a whole number #}
-      {% set value = call('formatNumber', [value, true]) %}
+      {% set value = call('Html::formatNumber', [value, true]) %}
    {% endif %}
 
    {% if value == "" %}
@@ -213,11 +215,22 @@
    {% set add_html = '' %}
    {% if options.enable_fileupload %}
       {% set add_html %}
-         {% do call('Html::file', [{'editor_id': id, 'multiple': true, 'uploads': options.uploads}]) %}
+         {% do call('Html::file', [{
+             'editor_id': id,
+             'multiple': true,
+             'uploads': options.uploads,
+             'required': options.fields_template.isMandatoryField('_documents_id')
+         }]) %}
       {% endset %}
    {% elseif not options.enable_fileupload and options.enable_richtext and options.enable_images %}
       {% set add_html %}
-         {% do call('Html::file', [{'editor_id': id, 'name': name, 'only_uploaded_files': true, 'uploads': options.uploads}]) %}
+         {% do call('Html::file', [{
+             'editor_id': id,
+             'name': name,
+             'only_uploaded_files': true,
+             'uploads': options.uploads,
+             'required': options.fields_template.isMandatoryField('_documents_id')
+         }]) %}
       {% endset %}
    {% endif %}
 
@@ -276,7 +289,10 @@
             locale: getFlatPickerLocale("{{ locale['language'] }}", "{{ locale['region'] }}"),
             onClose(dates, currentdatestring, picker) {
                picker.setDate(picker.altInput.value, true, picker.config.altFormat)
-            }
+            },
+            plugins: [
+               CustomFlatpickrButtons()
+            ]
          });
       });
       </script>
@@ -306,7 +322,10 @@
             locale: getFlatPickerLocale('{{ locale['language'] }}', '{{ locale['region'] }}'),
             onClose(dates, currentdatestring, picker) {
                picker.setDate(picker.altInput.value, true, picker.config.altFormat)
-            }
+            },
+            plugins: [
+               CustomFlatpickrButtons()
+            ]
          });
       });
       </script>
@@ -343,6 +362,11 @@
          {{ options.required ? 'required' : '' }} />
    {% endset %}
    {{ _self.field(name, field, label, options) }}
+{% endmacro %}
+
+{% macro emailField(name, value, label = '', options = {}) %}
+   {% set options = {'type': 'email'}|merge(options) %}
+   {{ _self.textField(name, value, label, options) }}
 {% endmacro %}
 
 {% macro fileField(name, value, label = '', options = {}) %}
@@ -583,6 +607,14 @@
 {% endmacro %}
 
 {% macro dropdownField(itemtype, name, value, label = '', options = {}) %}
+   {% if options.multiple %}
+      {# Needed for empty value as the input wont be sent in this case... we need something to know the input was displayed AND empty #}
+      {% set defined_input_name = "_#{name}_defined" %}
+      <input type="hidden" name="{{ defined_input_name }}" value="1"></input>
+
+      {# Multiple values will be set, input need to be an array #}
+      {% set name = "#{name}[]" %}
+   {% endif %}
    {% set options = {'rand': random()}|merge(options) %}
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'specific_tags': {'required': true}}|merge(options) %}
@@ -672,7 +704,7 @@
       'mb': 'mb-3',
    }|merge(options) %}
 
-   {% set class = 'col-12 col-sm-6' %}
+   {% set class = options.field_class ?? 'col-12 col-sm-6' %}
    {% if options.full_width %}
       {% set class = 'col-12' %}
    {% endif %}
@@ -694,6 +726,8 @@
       'label_class': 'col-xxl-5',
       'input_class': 'col-xxl-7',
       'add_field_class': '',
+      'add_field_attribs': {},
+      'center': false,
    }|merge(options) %}
 
    {% if options.full_width %}
@@ -722,9 +756,18 @@
       }) %}
    {% endif %}
 
-   <div class="form-field row {{ options.field_class }} {{ options.add_field_class }} {{ options.mb }}">
+   {% if options.add_field_attribs is not empty %}
+      {% set extra_attribs = call('Html::parseAttributes', {options: options.add_field_attribs}) %}
+   {% else %}
+      {% set extra_attribs = '' %}
+   {% endif %}
+
+   <div class="form-field row {{ options.field_class }} {{ options.add_field_class }} {{ options.mb }}" {{ extra_attribs|raw }}>
       {{ _self.label(label, id, options, 'col-form-label ' ~ options.label_class) }}
-      <div class="{{ options.input_class }} field-container">
+      {% if options.center %}
+         {% set flex_class = "d-flex align-items-center" %}
+      {% endif %}
+      <div class="{{ options.input_class }} {{ flex_class }} field-container">
          {{ field|raw }}
          {{ add_field_html|raw }}
       </div>
@@ -738,6 +781,7 @@
       'mb': 'mb-2',
       'field_class': 'col-12 col-sm-6',
       'add_field_class': '',
+      'add_field_attribs': {},
    }|merge(options) %}
 
    {% if options.full_width %}
@@ -746,7 +790,13 @@
       }) %}
    {% endif %}
 
-   <div class="form-field {{ options.field_class }} {{ options.add_field_class }} {{ options.mb }}">
+   {% if options.add_field_attribs is not empty %}
+      {% set extra_attribs = call('Html::parseAttributes', {options: options.add_field_attribs}) %}
+   {% else %}
+      {% set extra_attribs = '' %}
+   {% endif %}
+
+   <div class="form-field {{ options.field_class }} {{ options.add_field_class }} {{ options.mb }}" {{ extra_attribs|raw }}>
       {{ _self.label(label, id, options, 'col-form-label ' ~ options.label_class) }}
       <div class="{{ options.input_class }} field-container">
          {{ field|raw }}

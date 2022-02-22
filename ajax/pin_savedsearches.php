@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 header('Content-Type: application/json; charset=UTF-8');
 Html::header_nocache();
@@ -44,10 +45,10 @@ $_SESSION['glpisavedsearches_pinned'] = exportArrayToDB($all_pinned);
 
 $user = new User();
 $success = $user->update(
-   [
-      'id'                   => Session::getLoginUserID(),
-      'savedsearches_pinned' => $_SESSION['glpisavedsearches_pinned'],
-   ]
+    [
+        'id'                   => Session::getLoginUserID(),
+        'savedsearches_pinned' => $_SESSION['glpisavedsearches_pinned'],
+    ]
 );
 
 echo json_encode(['success' => $success]);

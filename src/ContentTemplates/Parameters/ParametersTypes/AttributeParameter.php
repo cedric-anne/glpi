@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -43,42 +44,46 @@ use Glpi\ContentTemplates\Parameters\TemplatesParametersInterface;
  */
 class AttributeParameter extends AbstractParameterType
 {
-   /**
-    * Suggested twig filter to use when displaying the value of this parameter
-    * This may be a 'raw" filter when the value is raw html, a 'date' filter
-    * when dealing with timestamp so the user know how to reformat the date as
-    * needed, ...
-    *
-    * @var string
-    */
-   protected $filter;
+    /**
+     * Suggested twig filter to use when displaying the value of this parameter
+     * This may be a 'raw" filter when the value is raw html, a 'date' filter
+     * when dealing with timestamp so the user know how to reformat the date as
+     * needed, ...
+     *
+     * @var string
+     */
+    protected $filter;
 
-   /**
-    * @param string $key    Key to access this value
-    * @param string $label  Label to display in the autocompletion widget
-    * @param string $filter Recommanded twig filter to apply on this value
-    */
-   public function __construct(string $key, string $label, string $filter = "") {
-      parent::__construct($key, $label);
-      $this->filter = $filter;
-   }
+    /**
+     * @param string $key    Key to access this value
+     * @param string $label  Label to display in the autocompletion widget
+     * @param string $filter Recommanded twig filter to apply on this value
+     */
+    public function __construct(string $key, string $label, string $filter = "")
+    {
+        parent::__construct($key, $label);
+        $this->filter = $filter;
+    }
 
-   public function compute(): array {
-      return [
-         'type'   => "AttributeParameter",
-         'key'    => $this->key,
-         'label'  => $this->label,
-         'filter' => $this->filter,
-      ];
-   }
+    public function compute(): array
+    {
+        return [
+            'type'   => "AttributeParameter",
+            'key'    => $this->key,
+            'label'  => $this->label,
+            'filter' => $this->filter,
+        ];
+    }
 
-   public function getDocumentationUsage(?string $parent = null): string {
-      $parent = !empty($parent)       ? "$parent."          : "";
-      $filter = !empty($this->filter) ? "| {$this->filter}" : "";
-      return "{{ {$parent}{$this->key} $filter }}";
-   }
+    public function getDocumentationUsage(?string $parent = null): string
+    {
+        $parent = !empty($parent)       ? "$parent."          : "";
+        $filter = !empty($this->filter) ? "| {$this->filter}" : "";
+        return "{{ {$parent}{$this->key} $filter }}";
+    }
 
-   public function getDocumentationReferences(): ?TemplatesParametersInterface {
-      return null;
-   }
+    public function getDocumentationReferences(): ?TemplatesParametersInterface
+    {
+        return null;
+    }
 }

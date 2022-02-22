@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -35,40 +36,41 @@ namespace Glpi\System\Diagnostic;
 /**
  * @since 10.0.0
  */
-class DatabaseSchemaConsistencyChecker extends AbstractDatabaseChecker {
+class DatabaseSchemaConsistencyChecker extends AbstractDatabaseChecker
+{
+    /**
+     * Get list of missing fields, basing detection on other fields.
+     *
+     * @param string $table_name
+     *
+     * @return array
+     */
+    public function getMissingFields(string $table_name): array
+    {
+        $missing_columns = [];
 
-   /**
-    * Get list of missing fields, basing detection on other fields.
-    *
-    * @param string $table_name
-    *
-    * @return array
-    */
-   public function getMissingFields(string $table_name): array {
-      $missing_columns = [];
+        $columns = $this->getColumnsNames($table_name);
+        foreach ($columns as $column_name) {
+            switch ($column_name) {
+                case 'date_creation':
+                    if (!in_array('date_mod', $columns)) {
+                        $missing_columns[] = 'date_mod';
+                    }
+                    break;
+                case 'date_mod':
+                    if ($table_name === 'glpi_logs') {
+                      // Logs cannot be modified and their date is stored on `date_mod`.
+                      // FIXME It would be more logical to have a `date` instead, but renaming it is not so simple as table
+                      // can contains millions of rows.
+                        break;
+                    }
+                    if (!in_array('date_creation', $columns)) {
+                        $missing_columns[] = 'date_creation';
+                    }
+                    break;
+            }
+        }
 
-      $columns = $this->getColumnsNames($table_name);
-      foreach ($columns as $column_name) {
-         switch ($column_name) {
-            case 'date_creation':
-               if (!in_array('date_mod', $columns)) {
-                  $missing_columns[] = 'date_mod';
-               }
-               break;
-            case 'date_mod':
-               if ($table_name === 'glpi_logs') {
-                  // Logs cannot be modified and their date is stored on `date_mod`.
-                  // FIXME It would be more logical to have a `date` instead, but renaming it is not so simple as table
-                  // can contains millions of rows.
-                  break;
-               }
-               if (!in_array('date_creation', $columns)) {
-                  $missing_columns[] = 'date_creation';
-               }
-               break;
-         }
-      }
-
-      return $missing_columns;
-   }
+        return $missing_columns;
+    }
 }

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -34,24 +35,24 @@ namespace Glpi\Csv;
 
 interface ExportToCsvInterface
 {
-   /**
-    * Get name of the csv file
-    *
-    * @return string
-    */
-   public function getFileName(): string;
+    /**
+     * Get name of the csv file
+     *
+     * @return string
+     */
+    public function getFileName(): string;
 
-   /**
-    * Get header of the csv file
-    *
-    * @return array
-    */
-   public function getFileHeader(): array;
+    /**
+     * Get header of the csv file
+     *
+     * @return array
+     */
+    public function getFileHeader(): array;
 
-   /**
-    * Get content of the csv file
-    *
-    * @return array
-    */
-   public function getFileContent(): array;
+    /**
+     * Get content of the csv file
+     *
+     * @return array
+     */
+    public function getFileContent(): array;
 }

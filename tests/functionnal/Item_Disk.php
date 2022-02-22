@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -34,82 +35,85 @@ namespace tests\units;
 
 use DbTestCase;
 
-class Item_Disk extends DbTestCase {
+class Item_Disk extends DbTestCase
+{
+    public function testCreate()
+    {
+        $this->login();
 
-   public function testCreate() {
-      $this->login();
+        $this->newTestedInstance();
+        $obj = $this->testedInstance;
 
-      $this->newTestedInstance();
-      $obj = $this->testedInstance;
+       // Add
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $this->object($computer)->isInstanceOf('\Computer');
 
-      // Add
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $this->object($computer)->isInstanceOf('\Computer');
+        $this->integer(
+            $id = (int)$obj->add([
+                'itemtype'     => $computer->getType(),
+                'items_id'     => $computer->fields['id'],
+                'mountpoint'   => '/'
+            ])
+        )->isGreaterThan(0);
+        $this->boolean($obj->getFromDB($id))->isTrue();
+        $this->string($obj->fields['mountpoint'])->isIdenticalTo('/');
+    }
 
-      $this->integer(
-         $id = (int)$obj->add([
-            'itemtype'     => $computer->getType(),
-            'items_id'     => $computer->fields['id'],
-            'mountpoint'   => '/'
-         ])
-      )->isGreaterThan(0);
-      $this->boolean($obj->getFromDB($id))->isTrue();
-      $this->string($obj->fields['mountpoint'])->isIdenticalTo('/');
-   }
+    public function testUpdate()
+    {
+        $this->login();
 
-   public function testUpdate() {
-      $this->login();
+        $this->newTestedInstance();
+        $obj = $this->testedInstance;
 
-      $this->newTestedInstance();
-      $obj = $this->testedInstance;
+       // Add
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $this->object($computer)->isInstanceOf('\Computer');
 
-      // Add
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $this->object($computer)->isInstanceOf('\Computer');
+        $this->integer(
+            $id = (int)$obj->add([
+                'itemtype'     => $computer->getType(),
+                'items_id'     => $computer->fields['id'],
+                'mountpoint'   => '/'
+            ])
+        )->isGreaterThan(0);
+        $this->boolean($obj->getFromDB($id))->isTrue();
+        $this->string($obj->fields['mountpoint'])->isIdenticalTo('/');
 
-      $this->integer(
-         $id = (int)$obj->add([
-            'itemtype'     => $computer->getType(),
-            'items_id'     => $computer->fields['id'],
-            'mountpoint'   => '/'
-         ])
-      )->isGreaterThan(0);
-      $this->boolean($obj->getFromDB($id))->isTrue();
-      $this->string($obj->fields['mountpoint'])->isIdenticalTo('/');
+        $this->boolean($obj->update([
+            'id'           => $id,
+            'mountpoint'   => '/mnt'
+        ]))->isTrue();
+        $this->boolean($obj->getFromDB($id))->isTrue();
+        $this->string($obj->fields['mountpoint'])->isIdenticalTo('/mnt');
+    }
 
-      $this->boolean($obj->update([
-         'id'           => $id,
-         'mountpoint'   => '/mnt'
-      ]))->isTrue();
-      $this->boolean($obj->getFromDB($id))->isTrue();
-      $this->string($obj->fields['mountpoint'])->isIdenticalTo('/mnt');
-   }
+    public function testDelete()
+    {
+        $this->login();
 
-   public function testDelete() {
-      $this->login();
+        $this->newTestedInstance();
+        $obj = $this->testedInstance;
 
-      $this->newTestedInstance();
-      $obj = $this->testedInstance;
+       // Add
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $this->object($computer)->isInstanceOf('\Computer');
 
-      // Add
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $this->object($computer)->isInstanceOf('\Computer');
+        $this->integer(
+            $id = (int)$obj->add([
+                'itemtype'     => $computer->getType(),
+                'items_id'     => $computer->fields['id'],
+                'mountpoint'   => '/'
+            ])
+        )->isGreaterThan(0);
+        $this->boolean($obj->getFromDB($id))->isTrue();
+        $this->string($obj->fields['mountpoint'])->isIdenticalTo('/');
 
-      $this->integer(
-         $id = (int)$obj->add([
-            'itemtype'     => $computer->getType(),
-            'items_id'     => $computer->fields['id'],
-            'mountpoint'   => '/'
-         ])
-      )->isGreaterThan(0);
-      $this->boolean($obj->getFromDB($id))->isTrue();
-      $this->string($obj->fields['mountpoint'])->isIdenticalTo('/');
-
-      $this->boolean(
-         (boolean)$obj->delete([
-            'id'  => $id
-         ])
-      )->isTrue();
-      $this->boolean($obj->getFromDB($id))->isFalse();
-   }
+        $this->boolean(
+            (bool)$obj->delete([
+                'id'  => $id
+            ])
+        )->isTrue();
+        $this->boolean($obj->getFromDB($id))->isFalse();
+    }
 }

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -37,18 +38,19 @@ use Glpi\Toolbox\Sanitizer;
 /**
  * Test class for src/Glpi/Toolbox/dataexport.class.php
  */
-class DataExport extends \GLPITestCase {
+class DataExport extends \GLPITestCase
+{
+    protected function normalizeValueForTextExportProvider(): iterable
+    {
+       // Standard value
+        yield [
+            'value'           => 'Some value',
+            'expected_result' => 'Some value',
+        ];
 
-   protected function normalizeValueForTextExportProvider(): iterable {
-      // Standard value
-      yield [
-         'value'           => 'Some value',
-         'expected_result' => 'Some value',
-      ];
-
-      // Ticket title column
-      yield [
-         'value'           => Sanitizer::sanitize(<<<HTML
+       // Ticket title column
+        yield [
+            'value'           => Sanitizer::sanitize(<<<HTML
 <a id="Ticket1" href="/front/ticket.form.php?id=1" data-hasqtip="0">Ticket title</a>
 <div id="contentTicket1" class="invisible"><div class="content"><p>Ticket content ...</p></div></div>
 <script type="text/javascript">
@@ -61,16 +63,17 @@ $(function(){\$('#Ticket1').qtip({
 //]]>
 </script>
 HTML, false),
-         'expected_result' => "Ticket title ",
-      ];
-   }
+            'expected_result' => "Ticket title ",
+        ];
+    }
 
-   /**
-    * @dataProvider normalizeValueForTextExportProvider
-    */
-   public function testNormalizeValueForTextExport(string $value, string $expected_result) {
-      $dataexport = $this->newTestedInstance();
+    /**
+     * @dataProvider normalizeValueForTextExportProvider
+     */
+    public function testNormalizeValueForTextExport(string $value, string $expected_result)
+    {
+        $dataexport = $this->newTestedInstance();
 
-      $this->string($dataexport->normalizeValueForTextExport($value))->isEqualTo($expected_result);
-   }
+        $this->string($dataexport->normalizeValueForTextExport($value))->isEqualTo($expected_result);
+    }
 }

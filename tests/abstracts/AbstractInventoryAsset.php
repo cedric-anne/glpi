@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,29 +33,32 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
-abstract class AbstractInventoryAsset extends \InventoryTestCase {
-   protected $myclass = "";
+abstract class AbstractInventoryAsset extends \InventoryTestCase
+{
+    protected $myclass = "";
 
-   protected $log_entries;
-   protected $new_log_entries = 0;
+    protected $log_entries;
+    protected $new_log_entries = 0;
 
-   public function beforeTestMethod($method) {
-      parent::beforeTestMethod($method);
-      $this->log_entries = countElementsInTable(\Log::getTable());
-   }
+    public function beforeTestMethod($method)
+    {
+        parent::beforeTestMethod($method);
+        $this->log_entries = countElementsInTable(\Log::getTable());
+    }
 
-   public function afterTestMethod($method) {
-      parent::afterTestMethod($method);
-      $log_entries = countElementsInTable(\Log::getTable());
-      $this->integer($log_entries)->isIdenticalTo($this->log_entries + $this->new_log_entries);
-   }
+    public function afterTestMethod($method)
+    {
+        parent::afterTestMethod($method);
+        $log_entries = countElementsInTable(\Log::getTable());
+        $this->integer($log_entries)->isIdenticalTo($this->log_entries + $this->new_log_entries);
+    }
 
-   /**
-    * Data provider for asset
-    *
-    * @return array
-    */
-   abstract protected function assetProvider() :array;
+    /**
+     * Data provider for asset
+     *
+     * @return array
+     */
+    abstract protected function assetProvider(): array;
 
    /**
     * Test asset preparation

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,39 +33,42 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
-class ExtensionGroup extends \GLPITestCase {
+class ExtensionGroup extends \GLPITestCase
+{
+    public function testCheckOnExistingExtension()
+    {
 
-   public function testCheckOnExistingExtension() {
-
-      $this->newTestedInstance('test', ['curl', 'zlib']);
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
-      $this->array($this->testedInstance->getValidationMessages())
+        $this->newTestedInstance('test', ['curl', 'zlib']);
+        $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
+        $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(['Following extensions are installed: curl, zlib.']);
-   }
+    }
 
-   public function testCheckOnMissingMandatoryExtension() {
+    public function testCheckOnMissingMandatoryExtension()
+    {
 
-      $this->newTestedInstance('test', ['curl', 'fake_ext']);
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-      $this->array($this->testedInstance->getValidationMessages())
+        $this->newTestedInstance('test', ['curl', 'fake_ext']);
+        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
+        $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(
-            [
-               'Following extensions are installed: curl.',
-               'Following extensions are missing: fake_ext.'
-            ]
+             [
+                 'Following extensions are installed: curl.',
+                 'Following extensions are missing: fake_ext.'
+             ]
          );
-   }
+    }
 
-   public function testCheckOnMissingOptionalExtension() {
+    public function testCheckOnMissingOptionalExtension()
+    {
 
-      $this->newTestedInstance('test', ['curl', 'fake_ext'], true);
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-      $this->array($this->testedInstance->getValidationMessages())
+        $this->newTestedInstance('test', ['curl', 'fake_ext'], true);
+        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
+        $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(
-            [
-               'Following extensions are installed: curl.',
-               'Following extensions are not present: fake_ext.'
-            ]
+             [
+                 'Following extensions are installed: curl.',
+                 'Following extensions are not present: fake_ext.'
+             ]
          );
-   }
+    }
 }

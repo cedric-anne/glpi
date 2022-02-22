@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -36,142 +37,148 @@ use DbTestCase;
 
 /* Test for inc/notificationeventajax.class.php */
 
-class NotificationEventAjax extends DbTestCase {
+class NotificationEventAjax extends DbTestCase
+{
+    public function testGetTargetField()
+    {
+        $data = [];
+        $this->string(\NotificationEventAjax::getTargetField($data))->isIdenticalTo('users_id');
 
-   public function testGetTargetField() {
-      $data = [];
-      $this->string(\NotificationEventAjax::getTargetField($data))->isIdenticalTo('users_id');
+        $expected = ['users_id' => null];
+        $this->array($data)->isIdenticalTo($expected);
 
-      $expected = ['users_id' => null];
-      $this->array($data)->isIdenticalTo($expected);
+        $data = ['users_id' => '121'];
+        $this->string(\NotificationEventAjax::getTargetField($data))->isIdenticalTo('users_id');
 
-      $data = ['users_id' => '121'];
-      $this->string(\NotificationEventAjax::getTargetField($data))->isIdenticalTo('users_id');
+        $expected = ['users_id' => '121'];
+        $this->array($data)->isIdenticalTo($expected);
+    }
 
-      $expected = ['users_id' => '121'];
-      $this->array($data)->isIdenticalTo($expected);
-   }
+    public function testCanCron()
+    {
+        $this->boolean(\NotificationEventAjax::canCron())->isFalse();
+    }
 
-   public function testCanCron() {
-      $this->boolean(\NotificationEventAjax::canCron())->isFalse();
-   }
+    public function testGetAdminData()
+    {
+        $this->boolean(\NotificationEventAjax::getAdminData())->isFalse();
+    }
 
-   public function testGetAdminData() {
-      $this->boolean(\NotificationEventAjax::getAdminData())->isFalse();
-   }
+    public function testGetEntityAdminsData()
+    {
+        $this->boolean(\NotificationEventAjax::getEntityAdminsData(0))->isFalse();
+    }
 
-   public function testGetEntityAdminsData() {
-      $this->boolean(\NotificationEventAjax::getEntityAdminsData(0))->isFalse();
-   }
-
-   public function testSend() {
-      $this->when(
-         function () {
-            $this->boolean(\NotificationEventAjax::send([]))->isFalse();
-         }
-      )->error
+    public function testSend()
+    {
+        $this->when(
+            function () {
+                $this->boolean(\NotificationEventAjax::send([]))->isFalse();
+            }
+        )->error
          ->withType(E_USER_WARNING)
          ->withMessage('NotificationEventAjax::send should not be called!')
          ->exists();
-   }
+    }
 
-   public function testRaise() {
-      global $CFG_GLPI, $DB;
+    public function testRaise()
+    {
+        global $CFG_GLPI, $DB;
 
-      //enable notifications
-      $CFG_GLPI['use_notifications'] = 1;
-      $CFG_GLPI['notifications_ajax'] = 1;
+       //enable notifications
+        $CFG_GLPI['use_notifications'] = 1;
+        $CFG_GLPI['notifications_ajax'] = 1;
 
-      $this->login();
+        $this->login();
 
-      $ticket = new \Ticket();
-      $uid = getItemByTypeName('User', TU_USER, true);
-      $this->integer(
-         (int)$ticket->add([
-            'name'                  => '',
-            'description'           => 'My ticket to be notified.',
-            '_users_id_requester'   => $uid,
-            'content'               => ''
-         ])
-      )->isGreaterThan(0);
+        $ticket = new \Ticket();
+        $uid = getItemByTypeName('User', TU_USER, true);
+        $this->integer(
+            (int)$ticket->add([
+                'name'                  => '',
+                'description'           => 'My ticket to be notified.',
+                '_users_id_requester'   => $uid,
+                'content'               => ''
+            ])
+        )->isGreaterThan(0);
 
-      //event has been raised; it is in the queue!
-      $queue = getAllDataFromTable('glpi_queuednotifications');
+       //event has been raised; it is in the queue!
+        $queue = getAllDataFromTable('glpi_queuednotifications');
 
-      //no ajax notification configured per default
-      $this->array($queue)->hasSize(0);
+       //no ajax notification configured per default
+        $this->array($queue)->hasSize(0);
 
-      //add an ajax notification on tickets creation
-      $iterator = $DB->request([
-         'FROM'   => \Notification::getTable(),
-         'WHERE'  => [
-            'itemtype'  => \Ticket::getType(),
-            'event'     => 'new'
-         ]
-      ]);
-      $this->integer($iterator->numRows())->isIdenticalTo(1);
-      $row = $iterator->current();
-      $notif_id = $row['id'];
+       //add an ajax notification on tickets creation
+        $iterator = $DB->request([
+            'FROM'   => \Notification::getTable(),
+            'WHERE'  => [
+                'itemtype'  => \Ticket::getType(),
+                'event'     => 'new'
+            ]
+        ]);
+        $this->integer($iterator->numRows())->isIdenticalTo(1);
+        $row = $iterator->current();
+        $notif_id = $row['id'];
 
-      $iterator = $DB->request([
-         'FROM'   => \Notification_NotificationTemplate::getTable(),
-         'WHERE'  => [
-            'notifications_id'   => $notif_id,
-            'mode'               => \Notification_NotificationTemplate::MODE_MAIL
-         ]
-      ]);
-      $this->integer($iterator->numRows())->isIdenticalTo(1);
-      $row = $iterator->current();
-      unset($row['id']);
-      $row['mode'] = \Notification_NotificationTemplate::MODE_AJAX;
-      $notiftpltpl = new \Notification_NotificationTemplate();
-      $this->integer($notiftpltpl->add($row))->isGreaterThan(0);
+        $iterator = $DB->request([
+            'FROM'   => \Notification_NotificationTemplate::getTable(),
+            'WHERE'  => [
+                'notifications_id'   => $notif_id,
+                'mode'               => \Notification_NotificationTemplate::MODE_MAIL
+            ]
+        ]);
+        $this->integer($iterator->numRows())->isIdenticalTo(1);
+        $row = $iterator->current();
+        unset($row['id']);
+        $row['mode'] = \Notification_NotificationTemplate::MODE_AJAX;
+        $notiftpltpl = new \Notification_NotificationTemplate();
+        $this->integer($notiftpltpl->add($row))->isGreaterThan(0);
 
-      $this->integer(
-         (int)$ticket->add([
-            'name'                  => '',
-            'description'           => 'My ticket to be notified.',
-            '_users_id_requester'   => $uid,
-            'content'               => ''
-         ])
-      )->isGreaterThan(0);
+        $this->integer(
+            (int)$ticket->add([
+                'name'                  => '',
+                'description'           => 'My ticket to be notified.',
+                '_users_id_requester'   => $uid,
+                'content'               => ''
+            ])
+        )->isGreaterThan(0);
 
-      //event has been raised; it is in the queue!
-      $queue = getAllDataFromTable('glpi_queuednotifications');
+       //event has been raised; it is in the queue!
+        $queue = getAllDataFromTable('glpi_queuednotifications');
 
-      //no ajax notification configured per default
-      $this->array($queue)->hasSize(1);
+       //no ajax notification configured per default
+        $this->array($queue)->hasSize(1);
 
-      $GLPI_URI = GLPI_URI;
+        $GLPI_URI = GLPI_URI;
 
-      $data = array_pop($queue);
-      unset($data['id']);
-      unset($data['create_time']);
-      unset($data['send_time']);
-      unset($data['messageid']);
-      $data['body_text'] = preg_replace(
-         '/(Opening date).+/m',
-         '$1 OPENING',
-         $data['body_text']
-      );
-      $expected = [
-         'itemtype' => 'Ticket',
-         'items_id' => $ticket->getID(),
-         'notificationtemplates_id' => 4,
-         'entities_id' => 0,
-         'is_deleted' => 0,
-         'sent_try' => 0,
-         'sent_time' => null,
-         'name' => '[GLPI #' . str_pad($ticket ->getID(), 7, '0', STR_PAD_LEFT).'] New ticket ',
-         'sender' => null,
-         'sendername' => '',
-         'recipient' => (string) $uid,
-         'recipientname' => null,
-         'replyto' => null,
-         'replytoname' => null,
-         'headers' => '',
-         'body_html' => null,
-         'body_text' => <<<TEXT
+        $data = array_pop($queue);
+        unset($data['id']);
+        unset($data['create_time']);
+        unset($data['send_time']);
+        unset($data['messageid']);
+        $data['body_text'] = preg_replace(
+            '/(Opening date).+/m',
+            '$1 OPENING',
+            $data['body_text']
+        );
+        $expected = [
+            'itemtype' => 'Ticket',
+            'items_id' => $ticket->getID(),
+            'notificationtemplates_id' => 4,
+            'entities_id' => 0,
+            'is_deleted' => 0,
+            'sent_try' => 0,
+            'sent_time' => null,
+            'name' => '[GLPI #' . str_pad($ticket ->getID(), 7, '0', STR_PAD_LEFT) . '] New ticket ',
+            'sender' => null,
+            'sendername' => '',
+            'recipient' => (string) $uid,
+            'recipientname' => null,
+            'replyto' => null,
+            'replytoname' => null,
+            'headers' => '',
+            'body_html' => null,
+            'body_text' => <<<TEXT
  
   URL : {$GLPI_URI}/index.php?redirect=ticket_{$ticket->getID()}&#38;noAUTO=1 
 
@@ -207,13 +214,13 @@ Automatically generated by GLPI
 
 
 TEXT,
-         'documents' => '',
-         'mode' => 'ajax'
-      ];
-      $this->array($data)->isIdenticalTo($expected);
+            'documents' => '',
+            'mode' => 'ajax'
+        ];
+        $this->array($data)->isIdenticalTo($expected);
 
-      //reset
-      $CFG_GLPI['use_notifications'] = 0;
-      $CFG_GLPI['notifications_ajax'] = 0;
-   }
+       //reset
+        $CFG_GLPI['use_notifications'] = 0;
+        $CFG_GLPI['notifications_ajax'] = 0;
+    }
 }

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -39,12 +40,13 @@ use Twig\TwigFunction;
 /**
  * @since 10.0.0
  */
-class SecurityExtension extends AbstractExtension {
-
-   public function getFunctions(): array {
-      return [
-         new TwigFunction('csrf_token', [Session::class, 'getNewCSRFToken']),
-         new TwigFunction('idor_token', [Session::class, 'getNewIDORToken']),
-      ];
-   }
+class SecurityExtension extends AbstractExtension
+{
+    public function getFunctions(): array
+    {
+        return [
+            new TwigFunction('csrf_token', [Session::class, 'getNewCSRFToken']),
+            new TwigFunction('idor_token', [Session::class, 'getNewIDORToken']),
+        ];
+    }
 }

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -37,49 +38,50 @@ use Toolbox;
 /**
  * @since 10.0.0
  */
-class Response {
+class Response
+{
+    /**
+     * "application/json" content type.
+     */
+    const CONTENT_TYPE_JSON = 'application/json';
 
-   /**
-    * "application/json" content type.
-    */
-   const CONTENT_TYPE_JSON = 'application/json';
+    /**
+     * "text/html" content type.
+     */
+    const CONTENT_TYPE_TEXT_HTML = 'text/html';
 
-   /**
-    * "text/html" content type.
-    */
-   const CONTENT_TYPE_TEXT_HTML = 'text/html';
+    /**
+     * "text/plain" content type.
+     */
+    const CONTENT_TYPE_TEXT_PLAIN = 'text/plain';
 
-   /**
-    * "text/plain" content type.
-    */
-   const CONTENT_TYPE_TEXT_PLAIN = 'text/plain';
+    /**
+     * Send the given HTTP code then die with the error message in the given format.
+     *
+     * @param int     $code          HTTP code to set for the response
+     * @param string  $message       Error message to send
+     * @param string  $content_type  Response content type
+     *
+     * @return void
+     */
+    public static function sendError(int $code, string $message, string $content_type = self::CONTENT_TYPE_JSON): void
+    {
 
-   /**
-    * Send the given HTTP code then die with the error message in the given format.
-    *
-    * @param int     $code          HTTP code to set for the response
-    * @param string  $message       Error message to send
-    * @param string  $content_type  Response content type
-    *
-    * @return void
-    */
-   public static function sendError(int $code, string $message, string $content_type = self::CONTENT_TYPE_JSON): void {
+        switch ($content_type) {
+            case self::CONTENT_TYPE_JSON:
+                $output = json_encode(['message' => $message]);
+                break;
 
-      switch ($content_type) {
-         case self::CONTENT_TYPE_JSON:
-            $output = json_encode(['message' => $message]);
-            break;
+            case self::CONTENT_TYPE_TEXT_HTML:
+            default:
+                $output = $message;
+                break;
+        }
 
-         case self::CONTENT_TYPE_TEXT_HTML:
-         default:
-            $output = $message;
-            break;
-      }
+        header(sprintf('Content-Type: %s; charset=UTF-8', $content_type), true, $code);
 
-      header(sprintf('Content-Type: %s; charset=UTF-8', $content_type), true, $code);
+        Toolbox::logDebug($message);
 
-      Toolbox::logDebug($message);
-
-      die($output);
-   }
+        die($output);
+    }
 }

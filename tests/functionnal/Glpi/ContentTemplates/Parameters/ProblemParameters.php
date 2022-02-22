@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -34,109 +35,110 @@ namespace tests\units\Glpi\ContentTemplates\Parameters;
 
 class ProblemParameters extends AbstractParameters
 {
-   public function testGetValues(): void {
-      $this->login();
-      $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
+    public function testGetValues(): void
+    {
+        $this->login();
+        $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
 
-      $this->createItem('ITILCategory', [
-         'name' => 'category_testGetValues'
-      ]);
+        $this->createItem('ITILCategory', [
+            'name' => 'category_testGetValues'
+        ]);
 
-      $itilcategories_id = getItemByTypeName('ITILCategory', 'category_testGetValues', true);
+        $itilcategories_id = getItemByTypeName('ITILCategory', 'category_testGetValues', true);
 
-      $observer_groups_id1 = getItemByTypeName('Group', '_test_group_1', true);
-      $observer_groups_id2 = getItemByTypeName('Group', '_test_group_2', true);
-      $assigned_users_id   = getItemByTypeName('User', 'tech', true);
+        $observer_groups_id1 = getItemByTypeName('Group', '_test_group_1', true);
+        $observer_groups_id2 = getItemByTypeName('Group', '_test_group_2', true);
+        $assigned_users_id   = getItemByTypeName('User', 'tech', true);
 
-      $this->createItem('Problem', [
-         'name'                  => 'problem_testGetValues',
-         'content'               => '<p>problem_testGetValues content</p>',
-         'entities_id'           => $test_entity_id,
-         'date'                  => '2021-07-19 17:11:28',
-         'itilcategories_id'     => $itilcategories_id,
-         '_groups_id_observer'   => [$observer_groups_id1, $observer_groups_id2],
-         '_users_id_assign'      => [$assigned_users_id],
-      ]);
+        $this->createItem('Problem', [
+            'name'                  => 'problem_testGetValues',
+            'content'               => '<p>problem_testGetValues content</p>',
+            'entities_id'           => $test_entity_id,
+            'date'                  => '2021-07-19 17:11:28',
+            'itilcategories_id'     => $itilcategories_id,
+            '_groups_id_observer'   => [$observer_groups_id1, $observer_groups_id2],
+            '_users_id_assign'      => [$assigned_users_id],
+        ]);
 
-      $problems_id = getItemByTypeName('Problem', 'problem_testGetValues', true);
+        $problems_id = getItemByTypeName('Problem', 'problem_testGetValues', true);
 
-      $parameters = $this->newTestedInstance();
-      $values = $parameters->getValues(getItemByTypeName('Problem', 'problem_testGetValues'));
-      $this->array($values)->isEqualTo([
-         'id'        => $problems_id,
-         'ref'       => "#$problems_id",
-         'link'      => "<a  href='/glpi/front/problem.form.php?id=$problems_id'  title=\"problem_testGetValues\">problem_testGetValues</a>",
-         'name'      => 'problem_testGetValues',
-         'content'   => '<p>problem_testGetValues content</p>',
-         'date'      => '2021-07-19 17:11:28',
-         'solvedate' => null,
-         'closedate' => null,
-         'status'    => 'Processing (assigned)',
-         'urgency'   => 'Medium',
-         'impact'    => 'Medium',
-         'priority'  => 'Medium',
-         'entity'    => [
-            'id'           => $test_entity_id,
-            'name'         => '_test_child_2',
-            'completename' => 'Root entity > _test_root_entity > _test_child_2',
-         ],
-         'itilcategory' => [
-            'id'           => $itilcategories_id,
-            'name'         => 'category_testGetValues',
-            'completename' => 'category_testGetValues',
-         ],
-         'requesters' => [
-            'users'  => [
-               [
-                  'id'       => getItemByTypeName("User", TU_USER, true),
-                  'login'    => TU_USER,
-                  'fullname' => TU_USER,
-                  'email'    => "_test_user@glpi.com",
-                  'phone'    => null,
-                  'phone2'   => null,
-                  'mobile'   => null,
-                  'firstname'  => null,
-                  'realname'   => null,
-                  'used_items' => [],
-               ],
+        $parameters = $this->newTestedInstance();
+        $values = $parameters->getValues(getItemByTypeName('Problem', 'problem_testGetValues'));
+        $this->array($values)->isEqualTo([
+            'id'        => $problems_id,
+            'ref'       => "#$problems_id",
+            'link'      => "<a  href='/glpi/front/problem.form.php?id=$problems_id'  title=\"problem_testGetValues\">problem_testGetValues</a>",
+            'name'      => 'problem_testGetValues',
+            'content'   => '<p>problem_testGetValues content</p>',
+            'date'      => '2021-07-19 17:11:28',
+            'solvedate' => null,
+            'closedate' => null,
+            'status'    => 'Processing (assigned)',
+            'urgency'   => 'Medium',
+            'impact'    => 'Medium',
+            'priority'  => 'Medium',
+            'entity'    => [
+                'id'           => $test_entity_id,
+                'name'         => '_test_child_2',
+                'completename' => 'Root entity > _test_root_entity > _test_child_2',
             ],
-            'groups' => [],
-         ],
-         'observers' => [
-            'users'  => [],
-            'groups' => [
-               [
-                  'id'           => $observer_groups_id1,
-                  'name'         => '_test_group_1',
-                  'completename' => '_test_group_1',
-               ],
-               [
-                  'id'           => $observer_groups_id2,
-                  'name'         => '_test_group_2',
-                  'completename' => '_test_group_1 > _test_group_2',
-               ],
+            'itilcategory' => [
+                'id'           => $itilcategories_id,
+                'name'         => 'category_testGetValues',
+                'completename' => 'category_testGetValues',
             ],
-         ],
-         'assignees' => [
-            'users'     => [
-               [
-                  'id'       => $assigned_users_id,
-                  'login'    => 'tech',
-                  'fullname' => 'tech',
-                  'email'    => '',
-                  'phone'    => null,
-                  'phone2'   => null,
-                  'mobile'   => null,
-                  'firstname'  => null,
-                  'realname'   => null,
-                  'used_items' => [],
-               ],
+            'requesters' => [
+                'users'  => [
+                    [
+                        'id'       => getItemByTypeName("User", TU_USER, true),
+                        'login'    => TU_USER,
+                        'fullname' => TU_USER,
+                        'email'    => "_test_user@glpi.com",
+                        'phone'    => null,
+                        'phone2'   => null,
+                        'mobile'   => null,
+                        'firstname'  => null,
+                        'realname'   => null,
+                        'used_items' => [],
+                    ],
+                ],
+                'groups' => [],
             ],
-            'groups'    => [],
-            'suppliers' => [],
-         ],
-      ]);
+            'observers' => [
+                'users'  => [],
+                'groups' => [
+                    [
+                        'id'           => $observer_groups_id1,
+                        'name'         => '_test_group_1',
+                        'completename' => '_test_group_1',
+                    ],
+                    [
+                        'id'           => $observer_groups_id2,
+                        'name'         => '_test_group_2',
+                        'completename' => '_test_group_1 > _test_group_2',
+                    ],
+                ],
+            ],
+            'assignees' => [
+                'users'     => [
+                    [
+                        'id'       => $assigned_users_id,
+                        'login'    => 'tech',
+                        'fullname' => 'tech',
+                        'email'    => '',
+                        'phone'    => null,
+                        'phone2'   => null,
+                        'mobile'   => null,
+                        'firstname'  => null,
+                        'realname'   => null,
+                        'used_items' => [],
+                    ],
+                ],
+                'groups'    => [],
+                'suppliers' => [],
+            ],
+        ]);
 
-      $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
-   }
+        $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
+    }
 }

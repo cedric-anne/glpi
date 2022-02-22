@@ -1,7 +1,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -35,25 +35,25 @@ window.GLPI.Search = window.GLPI.Search || {};
 
 window.GLPI.Search.ResultsView = class ResultsView {
 
-   constructor(element_id, view_class) {
-      this.element_id = element_id;
+    constructor(element_id, view_class) {
+        this.element_id = element_id;
 
-      if (this.getElement()) {
-         this.getElement().closest('div.ajax-container.search-display-data').data('js_class', this);
-         this.view = new view_class(this.element_id);
-      }
-   }
+        if (this.getElement()) {
+            this.getAJAXContainer().data('js_class', this);
+            this.view = new view_class(this.element_id);
+        }
+    }
 
-   getElement() {
-      return $('#'+this.element_id);
-   }
+    getElement() {
+        return $('#'+this.element_id);
+    }
 
-   getAJAXContainer() {
-      return this.getElement().closest('div.ajax-container.search-display-data');
-   }
+    getAJAXContainer() {
+        return this.getElement().closest('div.ajax-container.search-display-data');
+    }
 
-   getView() {
-      return this.view;
-   }
+    getView() {
+        return this.view;
+    }
 };
 export default window.GLPI.Search.ResultsView;

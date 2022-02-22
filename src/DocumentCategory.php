@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,57 +32,62 @@
  */
 
 /// Class DocumentCategory
-class DocumentCategory extends CommonTreeDropdown {
-
-   public $can_be_translated = true;
-
-
-   static function getTypeName($nb = 0) {
-      return _n('Document heading', 'Document headings', $nb);
-   }
+class DocumentCategory extends CommonTreeDropdown
+{
+    public $can_be_translated = true;
 
 
-   function cleanRelationData() {
-
-      parent::cleanRelationData();
-
-      if ($this->isUsedAsDefaultCategoryForTickets()) {
-         $newval = (isset($this->input['_replace_by']) ? $this->input['_replace_by'] : 0);
-
-         Config::setConfigurationValues(
-            'core',
-            [
-               'documentcategories_id_forticket' => $newval,
-            ]
-         );
-      }
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Document heading', 'Document headings', $nb);
+    }
 
 
-   function isUsed() {
+    public function cleanRelationData()
+    {
 
-      if (parent::isUsed()) {
-         return true;
-      }
+        parent::cleanRelationData();
 
-      return $this->isUsedAsDefaultCategoryForTickets();
-   }
+        if ($this->isUsedAsDefaultCategoryForTickets()) {
+            $newval = (isset($this->input['_replace_by']) ? $this->input['_replace_by'] : 0);
+
+            Config::setConfigurationValues(
+                'core',
+                [
+                    'documentcategories_id_forticket' => $newval,
+                ]
+            );
+        }
+    }
 
 
-   /**
-    * Check if category is used as default for tickets documents.
-    *
-    * @return boolean
-    */
-   private function isUsedAsDefaultCategoryForTickets() {
+    public function isUsed()
+    {
 
-      $config_values = Config::getConfigurationValues('core', ['documentcategories_id_forticket']);
+        if (parent::isUsed()) {
+            return true;
+        }
 
-      return array_key_exists('documentcategories_id_forticket', $config_values)
+        return $this->isUsedAsDefaultCategoryForTickets();
+    }
+
+
+    /**
+     * Check if category is used as default for tickets documents.
+     *
+     * @return boolean
+     */
+    private function isUsedAsDefaultCategoryForTickets()
+    {
+
+        $config_values = Config::getConfigurationValues('core', ['documentcategories_id_forticket']);
+
+        return array_key_exists('documentcategories_id_forticket', $config_values)
          && $config_values['documentcategories_id_forticket'] == $this->fields['id'];
-   }
+    }
 
-   static function getIcon() {
-      return "fas fa-tags";
-   }
+    public static function getIcon()
+    {
+        return "fas fa-tags";
+    }
 }

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,15 +32,17 @@
  */
 
 /// Class RackModel
-class RackModel extends CommonDropdown {
+class RackModel extends CommonDropdown
+{
+    public $additional_fields_for_dictionnary = ['manufacturer'];
 
-   public $additional_fields_for_dictionnary = ['manufacturer'];
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Rack model', 'Rack models', $nb);
+    }
 
-   static function getTypeName($nb = 0) {
-      return _n('Rack model', 'Rack models', $nb);
-   }
-
-   static function getIcon() {
-      return Rack::getIcon();
-   }
+    public static function getIcon()
+    {
+        return Rack::getIcon();
+    }
 }

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -36,47 +37,52 @@ require_once 'CommonDropdown.php';
 
 /* Test for inc/operatingsystem.class.php */
 
-class OperatingSystemEdition extends CommonDropdown {
+class OperatingSystemEdition extends CommonDropdown
+{
+    public function getObjectClass()
+    {
+        return '\OperatingSystemEdition';
+    }
 
-   public function getObjectClass() {
-      return '\OperatingSystemEdition';
-   }
+    public function typenameProvider()
+    {
+        return [
+            [\OperatingSystemEdition::getTypeName(), 'Editions'],
+            [\OperatingSystemEdition::getTypeName(0), 'Editions'],
+            [\OperatingSystemEdition::getTypeName(10), 'Editions'],
+            [\OperatingSystemEdition::getTypeName(1), 'Edition']
+        ];
+    }
 
-   public function typenameProvider() {
-      return [
-         [\OperatingSystemEdition::getTypeName(), 'Editions'],
-         [\OperatingSystemEdition::getTypeName(0), 'Editions'],
-         [\OperatingSystemEdition::getTypeName(10), 'Editions'],
-         [\OperatingSystemEdition::getTypeName(1), 'Edition']
-      ];
-   }
-
-   public function testMaybeTranslated() {
-      $this
+    public function testMaybeTranslated()
+    {
+        $this
          ->given($this->newTestedInstance)
             ->then
                ->boolean($this->testedInstance->maybeTranslated())->isTrue();
-   }
+    }
 
-   protected function getTabs() {
-      return [
-         'OperatingSystemEdition$main' =>'Edition',
-         'Log$1'                       => 'Historical'
-      ];
-   }
+    protected function getTabs()
+    {
+        return [
+            'OperatingSystemEdition$main' => 'Edition',
+            'Log$1'                       => 'Historical'
+        ];
+    }
 
-   /**
-    * Create new Operating system in database
-    *
-    * @return void
-    */
-   protected function newInstance() {
-      $this->newTestedInstance();
-      $this->integer(
-         (int)$this->testedInstance->add([
-            'name' => 'OS name ' . $this->getUniqueString()
-         ])
-      )->isGreaterThan(0);
-      $this->boolean($this->testedInstance->getFromDB($this->testedInstance->getID()))->isTrue();
-   }
+    /**
+     * Create new Operating system in database
+     *
+     * @return void
+     */
+    protected function newInstance()
+    {
+        $this->newTestedInstance();
+        $this->integer(
+            (int)$this->testedInstance->add([
+                'name' => 'OS name ' . $this->getUniqueString()
+            ])
+        )->isGreaterThan(0);
+        $this->boolean($this->testedInstance->getFromDB($this->testedInstance->getID()))->isTrue();
+    }
 }

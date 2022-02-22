@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -37,88 +38,94 @@ namespace Glpi\Api\Deprecated;
  */
 class TicketFollowup implements DeprecatedInterface
 {
-   use CommonDeprecatedTrait;
+    use CommonDeprecatedTrait;
 
-   public function getType(): string {
-      return "ITILFollowup";
-   }
+    public function getType(): string
+    {
+        return "ITILFollowup";
+    }
 
-   public function mapCurrentToDeprecatedHateoas(array $hateoas): array {
-      $hateoas = $this->replaceCurrentHateoasRefByDeprecated($hateoas);
-      return $hateoas;
-   }
+    public function mapCurrentToDeprecatedHateoas(array $hateoas): array
+    {
+        $hateoas = $this->replaceCurrentHateoasRefByDeprecated($hateoas);
+        return $hateoas;
+    }
 
-   public function mapDeprecatedToCurrentFields(object $fields): object {
-      $this
+    public function mapDeprecatedToCurrentFields(object $fields): object
+    {
+        $this
          ->renameField($fields, "tickets_id", "items_id")
          ->addField($fields, "itemtype", "Ticket");
 
-      return $fields;
-   }
+        return $fields;
+    }
 
-   public function mapCurrentToDeprecatedFields(array $fields): array {
-      $this
+    public function mapCurrentToDeprecatedFields(array $fields): array
+    {
+        $this
          ->renameField($fields, "items_id", "tickets_id")
          ->deleteField($fields, "itemtype")
          ->deleteField($fields, "sourceitems_id")
          ->deleteField($fields, "sourceof_items_id");
 
-      return $fields;
-   }
+        return $fields;
+    }
 
-   public function mapDeprecatedToCurrentCriteria(array $criteria): array {
-      // Add itemtype condition
-      $criteria[] = [
-         "link"       => 'AND',
-         "field"      => "6",
-         "searchtype" => 'equals',
-         "value"      => "Ticket"
-      ];
+    public function mapDeprecatedToCurrentCriteria(array $criteria): array
+    {
+       // Add itemtype condition
+        $criteria[] = [
+            "link"       => 'AND',
+            "field"      => "6",
+            "searchtype" => 'equals',
+            "value"      => "Ticket"
+        ];
 
-      return $criteria;
-   }
+        return $criteria;
+    }
 
-   public function mapCurrentToDeprecatedSearchOptions(array $soptions): array {
-      $this
+    public function mapCurrentToDeprecatedSearchOptions(array $soptions): array
+    {
+        $this
          ->updateSearchOptionsUids($soptions)
          ->updateSearchOptionsTables($soptions)
          ->alterSearchOption($soptions, "1", [
-            "available_searchtypes" => ["contains"]
+             "available_searchtypes" => ["contains"]
          ])
          ->alterSearchOption($soptions, "2", [
-            "available_searchtypes" => [
-               "contains",
-               "equals",
-               "notequals"
-            ]
+             "available_searchtypes" => [
+                 "contains",
+                 "equals",
+                 "notequals"
+             ]
          ])
          ->alterSearchOption($soptions, "3", [
-            "available_searchtypes" => [
-               "equals",
-               "notequals",
-               "lessthan",
-               "morethan",
-               "contains"
-            ]
+             "available_searchtypes" => [
+                 "equals",
+                 "notequals",
+                 "lessthan",
+                 "morethan",
+                 "contains"
+             ]
          ])
          ->alterSearchOption($soptions, "4", [
-            "available_searchtypes" => [
-               "equals",
-               "notequals",
-               "contains"
-            ]
+             "available_searchtypes" => [
+                 "equals",
+                 "notequals",
+                 "contains"
+             ]
          ])
          ->alterSearchOption($soptions, "5", [
-            "available_searchtypes" => [
-               "contains",
-               "equals",
-               "notequals"
-            ]
+             "available_searchtypes" => [
+                 "contains",
+                 "equals",
+                 "notequals"
+             ]
          ])
          ->deleteSearchOption($soptions, "6")
          ->deleteSearchOption($soptions, "119")
          ->deleteSearchOption($soptions, "document");
 
-      return $soptions;
-   }
+        return $soptions;
+    }
 }

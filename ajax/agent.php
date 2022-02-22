@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -33,7 +34,7 @@
 use Glpi\Http\Response;
 
 $AJAX_INCLUDE = 1;
-include ('../inc/includes.php');
+include('../inc/includes.php');
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
@@ -41,22 +42,22 @@ Session::checkLoginUser();
 
 
 if (isset($_POST['action']) && isset($_POST['id'])) {
-   $agent = new Agent();
-   if (!$agent->getFromDB($_POST['id'])) {
-      Response::sendError(404, 'Unable to load agent #' . $_POST['id']);
-      return;
-   };
-   $answer = [];
+    $agent = new Agent();
+    if (!$agent->getFromDB($_POST['id'])) {
+        Response::sendError(404, 'Unable to load agent #' . $_POST['id']);
+        return;
+    };
+    $answer = [];
 
-   switch ($_POST['action']) {
-      case Agent::ACTION_INVENTORY:
-         $answer = $agent->requestInventory();
-         break;
+    switch ($_POST['action']) {
+        case Agent::ACTION_INVENTORY:
+            $answer = $agent->requestInventory();
+            break;
 
-      case Agent::ACTION_STATUS:
-         $answer = $agent->requestStatus();
-         break;
-   }
+        case Agent::ACTION_STATUS:
+            $answer = $agent->requestStatus();
+            break;
+    }
 
-   echo json_encode($answer);
+    echo json_encode($answer);
 }

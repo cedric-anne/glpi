@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkCentralAccess();
 
@@ -38,46 +39,45 @@ $pdup = new \Pdu_Plug();
 $pdu = new PDU();
 
 if (isset($_POST['update'])) {
-   $pdup->check($_POST['id'], UPDATE);
+    $pdup->check($_POST['id'], UPDATE);
    //update existing relation
-   if ($pdup->update($_POST)) {
-      $url = $pdu->getFormURLWithID($_POST['pdus_id']);
-   } else {
-      $url = $pdup->getFormURLWithID($_POST['id']);
-   }
-   Html::redirect($url);
+    if ($pdup->update($_POST)) {
+        $url = $pdu->getFormURLWithID($_POST['pdus_id']);
+    } else {
+        $url = $pdup->getFormURLWithID($_POST['id']);
+    }
+    Html::redirect($url);
 } else if (isset($_POST['add'])) {
-   $pdup->check(-1, CREATE, $_POST);
-   $pdup->add($_POST);
-   $url = $pdu->getFormURLWithID($_POST['pdus_id']);
-   Html::redirect($url);
+    $pdup->check(-1, CREATE, $_POST);
+    $pdup->add($_POST);
+    $url = $pdu->getFormURLWithID($_POST['pdus_id']);
+    Html::redirect($url);
 } else if (isset($_POST['purge'])) {
-   $pdup->check($_POST['id'], PURGE);
-   $pdup->delete($_POST, 1);
-   $url = $pdu->getFormURLWithID($_POST['pdus_id']);
-   Html::redirect($url);
+    $pdup->check($_POST['id'], PURGE);
+    $pdup->delete($_POST, 1);
+    $url = $pdu->getFormURLWithID($_POST['pdus_id']);
+    Html::redirect($url);
 }
 
 if (!isset($_GET['pdus_id']) && !isset($_GET['plugs_id']) && !isset($_GET['number_plug']) && !isset($_GET['id'])) {
-   Html::displayErrorAndDie('Lost');
+    Html::displayErrorAndDie('Lost');
 }
 
 $params = [];
 if (isset($_GET['id'])) {
-   $params['id'] = $_GET['id'];
+    $params['id'] = $_GET['id'];
 } else {
-   $params = [
-      'pdus_id'      => $_GET['pdus_id'],
-      'plugs_id'     => $_GET['plugs_id'],
-      'number_plug'  => $_GET['number_plug']
-   ];
+    $params = [
+        'pdus_id'      => $_GET['pdus_id'],
+        'plugs_id'     => $_GET['plugs_id'],
+        'number_plug'  => $_GET['number_plug']
+    ];
 }
 $ajax = isset($_REQUEST['ajax']) ? true : false;
 
-if (!$ajax) {
-   Html::header(Pdu_Plug::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "pdu");
-}
-$pdup->display($params);
-if (!$ajax) {
-   Html::footer();
+if ($ajax) {
+    $pdup->display($params);
+} else {
+    $menus = ["assets", "pdu"];
+    Pdu_Plug::displayFullPageForItem($_GET['id'] ?? 0, $menus, $params);
 }

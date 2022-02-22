@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,24 +33,29 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkLoginUser();
 
 $category = new KnowbaseItem_KnowbaseItemCategory();
 
 if (isset($_POST["add"])) {
-   if (!isset($_POST['knowbaseitems_id']) || !isset($_POST['knowbaseitemcategories_id'])) {
-      $message = __('Mandatory fields are not filled!');
-      Session::addMessageAfterRedirect($message, false, ERROR);
-      Html::back();
-   }
+    if (!isset($_POST['knowbaseitems_id']) || !isset($_POST['knowbaseitemcategories_id'])) {
+        $message = __('Mandatory fields are not filled!');
+        Session::addMessageAfterRedirect($message, false, ERROR);
+        Html::back();
+    }
 
-   if ($category->add($_POST)) {
-      Event::log($_POST["knowbaseitems_id"], "knowbaseitem", 4, "tracking",
-                  sprintf(__('%s adds a link with a category'), $_SESSION["glpiname"]));
-   }
-   Html::back();
+    if ($category->add($_POST)) {
+        Event::log(
+            $_POST["knowbaseitems_id"],
+            "knowbaseitem",
+            4,
+            "tracking",
+            sprintf(__('%s adds a link with a category'), $_SESSION["glpiname"])
+        );
+    }
+    Html::back();
 }
 
 Html::displayErrorAndDie("lost");

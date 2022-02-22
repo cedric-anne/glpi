@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,19 +31,18 @@
  * ---------------------------------------------------------------------
  */
 
-class RuleDictionnaryDropdown extends Rule {
-
+class RuleDictionnaryDropdown extends Rule
+{
    // From Rule
-   public $can_sort      = true;
+    public $can_sort      = true;
 
-   static $rightname     = 'rule_dictionnary_dropdown';
+    public static $rightname     = 'rule_dictionnary_dropdown';
 
-   /**
-    * @see Rule::maxActionsCount()
-   **/
-   function maxActionsCount() {
-      return 1;
-   }
-
-
+    /**
+     * @see Rule::maxActionsCount()
+     **/
+    public function maxActionsCount()
+    {
+        return 1;
+    }
 }

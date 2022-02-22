@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -37,13 +38,14 @@ use SoftwareVersion as CoreSoftwareVersion;
 
 /* Test for inc/softwareversion.class.php */
 
-class SoftwareVersion extends DbTestCase {
-
-   public function testDropdownForOneSoftware() {
-      $this
+class SoftwareVersion extends DbTestCase
+{
+    public function testDropdownForOneSoftware()
+    {
+        $this
          ->string(CoreSoftwareVersion::dropdownForOneSoftware([
-            "display" => false
+             "display" => false
          ]))
          ->isNotEmpty();
-   }
+    }
 }

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -34,13 +35,12 @@
  * TicketCost Class
  *
  * @since 0.84
-**/
-class TicketCost extends CommonITILCost {
-
+ **/
+class TicketCost extends CommonITILCost
+{
    // From CommonDBChild
-   static public $itemtype  = 'Ticket';
-   static public $items_id  = 'tickets_id';
+    public static $itemtype  = 'Ticket';
+    public static $items_id  = 'tickets_id';
 
-   static $rightname        = 'ticketcost';
-
+    public static $rightname        = 'ticketcost';
 }

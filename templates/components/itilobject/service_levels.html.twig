@@ -1,7 +1,7 @@
 {#
  # ---------------------------------------------------------------------
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2021 Teclib' and contributors.
+ # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
@@ -171,6 +171,7 @@
                         'entity': item.fields['entities_id'],
                         'condition': {'type': la_field.type},
                         'disabled': (not canupdate),
+                        'add_field_class': (is_expanded ? 'col-sm-6' : ''),
                      }
                   ) }}
                </div>
@@ -222,7 +223,8 @@
          mb: 'mb-2',
          label_class: 'col-auto',
          full_width: true,
-         is_horizontal: false
+         is_horizontal: false,
+         add_field_class: (is_expanded ? 'col-sm-6' : ''),
       }
    ) }}
 {% endfor %}

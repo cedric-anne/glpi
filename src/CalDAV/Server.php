@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -43,54 +44,56 @@ use Glpi\CalDAV\Plugin\CalDAV;
 use Sabre\DAV;
 use Sabre\DAVACL;
 
-class Server extends DAV\Server {
+class Server extends DAV\Server
+{
+    public function __construct()
+    {
+        $this->on('exception', [$this, 'logException']);
 
-   public function __construct() {
-      $this->on('exception', [$this, 'logException']);
+       // Backends
+        $authBackend = new Auth();
+        $principalBackend = new Principal();
+        $calendarBackend = new Calendar();
 
-      // Backends
-      $authBackend = new Auth();
-      $principalBackend = new Principal();
-      $calendarBackend = new Calendar();
+       // Directory tree
+        $tree = [
+            new DAV\SimpleCollection(
+                Principal::PRINCIPALS_ROOT,
+                [
+                    new DAVACL\PrincipalCollection($principalBackend, Principal::PREFIX_GROUPS),
+                    new DAVACL\PrincipalCollection($principalBackend, Principal::PREFIX_USERS),
+                ]
+            ),
+            new DAV\SimpleCollection(
+                Calendar::CALENDAR_ROOT,
+                [
+                    new CalendarRoot($principalBackend, $calendarBackend, Principal::PREFIX_GROUPS),
+                    new CalendarRoot($principalBackend, $calendarBackend, Principal::PREFIX_USERS),
+                ]
+            ),
+        ];
 
-      // Directory tree
-      $tree = [
-         new DAV\SimpleCollection(
-            Principal::PRINCIPALS_ROOT,
-            [
-               new DAVACL\PrincipalCollection($principalBackend, Principal::PREFIX_GROUPS),
-               new DAVACL\PrincipalCollection($principalBackend, Principal::PREFIX_USERS),
-            ]
-         ),
-         new DAV\SimpleCollection(
-            Calendar::CALENDAR_ROOT,
-            [
-               new CalendarRoot($principalBackend, $calendarBackend, Principal::PREFIX_GROUPS),
-               new CalendarRoot($principalBackend, $calendarBackend, Principal::PREFIX_USERS),
-            ]
-         ),
-      ];
+        parent::__construct($tree);
 
-      parent::__construct($tree);
+        $this->addPlugin(new DAV\Auth\Plugin($authBackend));
+        $this->addPlugin(new Acl());
+        $this->addPlugin(new CalDAV());
 
-      $this->addPlugin(new DAV\Auth\Plugin($authBackend));
-      $this->addPlugin(new Acl());
-      $this->addPlugin(new CalDAV());
+       // Support for html frontend (only in debug mode)
+        $this->addPlugin(new Browser(false));
+    }
 
-      // Support for html frontend (only in debug mode)
-      $this->addPlugin(new Browser(false));
-   }
+    /**
+     *
+     * @param \Throwable $exception
+     */
+    public function logException(\Throwable $exception)
+    {
+        if ($exception instanceof \Sabre\DAV\Exception && $exception->getHTTPCode() < 500) {
+           // Ignore server exceptions that does not corresponds to a server error
+            return;
+        }
 
-   /**
-    *
-    * @param \Throwable $exception
-    */
-   public function logException(\Throwable $exception) {
-      if ($exception instanceof \Sabre\DAV\Exception && $exception->getHTTPCode() < 500) {
-         // Ignore server exceptions that does not corresponds to a server error
-         return;
-      }
-
-      ErrorHandler::getInstance()->handleException($exception, true);
-   }
+        ErrorHandler::getInstance()->handleException($exception, true);
+    }
 }

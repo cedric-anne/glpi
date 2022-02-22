@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,30 +31,30 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkLoginUser();
 
 if (!isset($_POST['kbitem_id'])) {
-   throw new \RuntimeException('Required argument missing!');
+    throw new \RuntimeException('Required argument missing!');
 }
 
 $kbitem_id = $_POST['kbitem_id'];
 $lang = null;
 if (isset($_POST['language'])) {
-   $lang = $_POST['language'];
+    $lang = $_POST['language'];
 }
 
 $edit = false;
 if (isset($_POST['edit'])) {
-   $edit = $_POST['edit'];
+    $edit = $_POST['edit'];
 }
 
 $answer = false;
 if (isset($_POST['answer'])) {
-   $answer = $_POST['answer'];
+    $answer = $_POST['answer'];
 }
 
 echo KnowbaseItem_Comment::getCommentForm($kbitem_id, $lang, $edit, $answer);

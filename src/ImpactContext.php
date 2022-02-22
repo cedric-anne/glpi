@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -33,18 +34,19 @@
 /**
  * @since 9.5.0
  */
-class ImpactContext extends CommonDBTM {
+class ImpactContext extends CommonDBTM
+{
+    /**
+     * Get ImpactContext for the given ImpactItem
+     *
+     * @param ImpactItem $item
+     * @return ImpactContext|false
+     */
+    public static function findForImpactItem(\ImpactItem $item)
+    {
+        $impactContext = new self();
+        $exist = $impactContext->getFromDB($item->fields['impactcontexts_id']);
 
-   /**
-    * Get ImpactContext for the given ImpactItem
-    *
-    * @param ImpactItem $item
-    * @return ImpactContext|false
-    */
-   public static function findForImpactItem(\ImpactItem $item) {
-      $impactContext = new self();
-      $exist = $impactContext->getFromDB($item->fields['impactcontexts_id']);
-
-      return $exist ? $impactContext : false;
-   }
+        return $exist ? $impactContext : false;
+    }
 }

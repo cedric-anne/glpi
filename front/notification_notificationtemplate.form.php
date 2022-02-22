@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,49 +31,45 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkCentralAccess();
 
 //Html::back();
 //
 if (!isset($_GET["id"])) {
-   $_GET["id"] = "";
+    $_GET["id"] = "";
 }
 
 $notiftpl = new Notification_NotificationTemplate();
 if (isset($_POST["add"])) {
-   $notiftpl->check(-1, CREATE, $_POST);
+    $notiftpl->check(-1, CREATE, $_POST);
 
-   if ($notiftpl->add($_POST)) {
-      if ($_SESSION['glpibackcreated']) {
-         Html::redirect($notiftpl->getLinkURL());
-      }
-   }
-   Html::back();
+    if ($notiftpl->add($_POST)) {
+        if ($_SESSION['glpibackcreated']) {
+            Html::redirect($notiftpl->getLinkURL());
+        }
+    }
+    Html::back();
 } else if (isset($_POST["purge"])) {
-   $notiftpl->check($_POST["id"], PURGE);
-   $notiftpl->delete($_POST, 1);
-   $notiftpl->redirectToList();
+    $notiftpl->check($_POST["id"], PURGE);
+    $notiftpl->delete($_POST, 1);
+    $notiftpl->redirectToList();
 } else if (isset($_POST["update"])) {
-   $notiftpl->check($_POST["id"], UPDATE);
+    $notiftpl->check($_POST["id"], UPDATE);
 
-   $notiftpl->update($_POST);
-   Html::back();
+    $notiftpl->update($_POST);
+    Html::back();
 } else {
-   Html::header(
-      Notification_NotificationTemplate::getTypeName(Session::getPluralNumber()),
-      $_SERVER['PHP_SELF'],
-      "config",
-      "notification",
-      "notifications_notificationtemplates"
-   );
-   $params = [
-      'id' => $_GET['id'],
-   ];
-   if (isset($_GET['notifications_id'])) {
-      $params['notifications_id'] = $_GET['notifications_id'];
-   }
-   $notiftpl->display($params);
-   Html::footer();
+    $params = [];
+    if (isset($_GET['notifications_id'])) {
+        $params['notifications_id'] = $_GET['notifications_id'];
+    }
+
+    $menus = ["config", "notification", "notifications_notificationtemplates"];
+    Notification_NotificationTemplate::displayFullPageForItem(
+        $_GET['id'],
+        $menus,
+        $params
+    );
 }

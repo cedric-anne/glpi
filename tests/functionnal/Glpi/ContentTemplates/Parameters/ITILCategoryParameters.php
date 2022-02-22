@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -34,22 +35,23 @@ namespace tests\units\Glpi\ContentTemplates\Parameters;
 
 class ITILCategoryParameters extends AbstractParameters
 {
-   public function testGetValues(): void {
-      $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
+    public function testGetValues(): void
+    {
+        $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
 
-      $this->createItem('ITILCategory', [
-         'name'        => 'itilcategory_testGetValues',
-         'entities_id' => $test_entity_id
-      ]);
+        $this->createItem('ITILCategory', [
+            'name'        => 'itilcategory_testGetValues',
+            'entities_id' => $test_entity_id
+        ]);
 
-      $parameters = $this->newTestedInstance();
-      $values = $parameters->getValues(getItemByTypeName('ITILCategory', 'itilcategory_testGetValues'));
-      $this->array($values)->isEqualTo([
-         'id'           => getItemByTypeName('ITILCategory', 'itilcategory_testGetValues', true),
-         'name'         => 'itilcategory_testGetValues',
-         'completename' => 'itilcategory_testGetValues',
-      ]);
+        $parameters = $this->newTestedInstance();
+        $values = $parameters->getValues(getItemByTypeName('ITILCategory', 'itilcategory_testGetValues'));
+        $this->array($values)->isEqualTo([
+            'id'           => getItemByTypeName('ITILCategory', 'itilcategory_testGetValues', true),
+            'name'         => 'itilcategory_testGetValues',
+            'completename' => 'itilcategory_testGetValues',
+        ]);
 
-      $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
-   }
+        $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
+    }
 }

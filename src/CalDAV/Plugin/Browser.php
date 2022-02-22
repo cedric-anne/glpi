@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -42,32 +43,34 @@ use Sabre\HTTP\ResponseInterface;
  *
  * @since 9.5.0
  */
-class Browser extends Plugin {
+class Browser extends Plugin
+{
+    use CalDAVUriUtilTrait;
 
-   use CalDAVUriUtilTrait;
+    public function httpGet(RequestInterface $request, ResponseInterface $response)
+    {
+        if (!$this->canDisplayDebugInterface()) {
+            return;
+        }
 
-   public function httpGet(RequestInterface $request, ResponseInterface $response) {
-      if (!$this->canDisplayDebugInterface()) {
-         return;
-      }
+        return parent::httpGet($request, $response);
+    }
 
-      return parent::httpGet($request, $response);
-   }
+    /**
+     * Check if connected user can display the HTML frontend.
+     *
+     * @return boolean
+     */
+    private function canDisplayDebugInterface()
+    {
+        /** @var $authPlugin \Sabre\DAV\Auth\Plugin */
+        $authPlugin = $this->server->getPlugin('auth');
+        if (!$authPlugin) {
+            return false;
+        }
 
-   /**
-    * Check if connected user can display the HTML frontend.
-    *
-    * @return boolean
-    */
-   private function canDisplayDebugInterface() {
-      /** @var $authPlugin \Sabre\DAV\Auth\Plugin */
-      $authPlugin = $this->server->getPlugin('auth');
-      if (!$authPlugin) {
-         return false;
-      }
+        $user = $this->getPrincipalItemFromUri($authPlugin->getCurrentPrincipal());
 
-      $user = $this->getPrincipalItemFromUri($authPlugin->getCurrentPrincipal());
-
-      return $user instanceof \User && \Session::DEBUG_MODE == $user->fields['use_mode'];
-   }
+        return $user instanceof \User && \Session::DEBUG_MODE == $user->fields['use_mode'];
+    }
 }

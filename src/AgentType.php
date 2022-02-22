@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -33,9 +34,16 @@
 /**
  * @since 9.5
  **/
-class AgentType extends CommonDBTM {
+class AgentType extends CommonDBTM
+{
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Agent type', 'Agents types', $nb);
+    }
 
-   static function getTypeName($nb = 0) {
-      return _n('Agent type', 'Agents types', $nb);
-   }
+    public function cleanDBonPurge()
+    {
+        $agent = new Agent();
+        $agent->deleteByCriteria(['agenttypes_id' => $this->fields['id']]);
+    }
 }

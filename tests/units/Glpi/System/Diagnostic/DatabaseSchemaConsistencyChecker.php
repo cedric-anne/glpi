@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,42 +33,43 @@
 
 namespace tests\units\Glpi\System\Diagnostic;
 
-class DatabaseSchemaConsistencyChecker extends \GLPITestCase {
-
-   protected function sqlProvider(): iterable {
-      // `date_creation` should always be associated with `date_mod`
-      yield [
-         'create_table_sql'   => <<<SQL
+class DatabaseSchemaConsistencyChecker extends \GLPITestCase
+{
+    protected function sqlProvider(): iterable
+    {
+       // `date_creation` should always be associated with `date_mod`
+        yield [
+            'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB
 SQL
          ,
-         'expected_missing'   => [
-            'date_mod'
-         ],
-      ];
-      yield [
-         'create_table_sql'   => <<<SQL
+            'expected_missing'   => [
+                'date_mod'
+            ],
+        ];
+        yield [
+            'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB
 SQL
          ,
-         'expected_missing'   => [
-            'date_creation'
-         ],
-      ];
-      yield [
-         'create_table_sql'   => <<<SQL
+            'expected_missing'   => [
+                'date_creation'
+            ],
+        ];
+        yield [
+            'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
@@ -75,27 +77,27 @@ CREATE TABLE `%s` (
 ) ENGINE=InnoDB
 SQL
          ,
-         'expected_missing'   => [],
-      ];
-   }
+            'expected_missing'   => [],
+        ];
+    }
 
-   /**
-    * @dataProvider sqlProvider
-    */
-   public function testGetMissingFields(
-      string $create_table_sql,
-      array $expected_missing
-   ) {
+    /**
+     * @dataProvider sqlProvider
+     */
+    public function testGetMissingFields(
+        string $create_table_sql,
+        array $expected_missing
+    ) {
 
-      global $DB;
+        global $DB;
 
-      $table_name = sprintf('glpitests_%s', uniqid());
+        $table_name = sprintf('glpitests_%s', uniqid());
 
-      $this->newTestedInstance($DB);
-      $DB->query(sprintf($create_table_sql, $table_name));
-      $missing_fields = $this->testedInstance->getMissingFields($table_name);
-      $DB->query(sprintf('DROP TABLE `%s`', $table_name));
+        $this->newTestedInstance($DB);
+        $DB->query(sprintf($create_table_sql, $table_name));
+        $missing_fields = $this->testedInstance->getMissingFields($table_name);
+        $DB->query(sprintf('DROP TABLE `%s`', $table_name));
 
-      $this->array($missing_fields)->isEqualTo($expected_missing);
-   }
+        $this->array($missing_fields)->isEqualTo($expected_missing);
+    }
 }

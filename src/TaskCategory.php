@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,53 +33,58 @@
 
 /**
  * TaskCategory class
-**/
-class TaskCategory extends CommonTreeDropdown {
-
+ **/
+class TaskCategory extends CommonTreeDropdown
+{
    // From CommonDBTM
-   public $dohistory          = true;
-   public $can_be_translated  = true;
+    public $dohistory          = true;
+    public $can_be_translated  = true;
 
-   static $rightname          = 'taskcategory';
+    public static $rightname          = 'taskcategory';
 
-   function getAdditionalFields() {
+    public function getAdditionalFields()
+    {
 
-      $tab = parent::getAdditionalFields();
+        $tab = parent::getAdditionalFields();
 
-      $tab[] = ['name'  => 'is_active',
-                     'label' => __('Active'),
-                     'type'  => 'bool'];
+        $tab[] = ['name'  => 'is_active',
+            'label' => __('Active'),
+            'type'  => 'bool'
+        ];
 
-      $tab[] = ['name'  => 'knowbaseitemcategories_id',
-                     'label' => KnowbaseItemCategory::getTypeName(),
-                     'type'  => 'dropdownValue',
-                     'list'  => true];
+        $tab[] = ['name'  => 'knowbaseitemcategories_id',
+            'label' => KnowbaseItemCategory::getTypeName(),
+            'type'  => 'dropdownValue',
+            'list'  => true
+        ];
 
-      return $tab;
-   }
-
-
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
-
-      $tab[] = [
-         'id'                 => '8',
-         'table'              => $this->getTable(),
-         'field'              => 'is_active',
-         'name'               => __('Active'),
-         'datatype'           => 'bool'
-      ];
-
-      return $tab;
-   }
+        return $tab;
+    }
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Task category', 'Task categories', $nb);
-   }
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-   static function getIcon() {
-      return "fas fa-tags";
-   }
+        $tab[] = [
+            'id'                 => '8',
+            'table'              => $this->getTable(),
+            'field'              => 'is_active',
+            'name'               => __('Active'),
+            'datatype'           => 'bool'
+        ];
 
+        return $tab;
+    }
+
+
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Task category', 'Task categories', $nb);
+    }
+
+    public static function getIcon()
+    {
+        return "fas fa-tags";
+    }
 }

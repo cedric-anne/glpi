@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,15 +31,16 @@
  * ---------------------------------------------------------------------
  */
 
-class RuleDictionnaryPrinterTypeCollection extends RuleDictionnaryDropdownCollection {
-   public $item_table  = "glpi_printertypes";
-   public $menu_option = "type.printer";
+class RuleDictionnaryPrinterTypeCollection extends RuleDictionnaryDropdownCollection
+{
+    public $item_table  = "glpi_printertypes";
+    public $menu_option = "type.printer";
 
-   /**
-    * @see RuleCollection::getTitle()
-   **/
-   function getTitle() {
-      return __('Dictionnary of printer types');
-   }
-
+    /**
+     * @see RuleCollection::getTitle()
+     **/
+    public function getTitle()
+    {
+        return __('Dictionnary of printer types');
+    }
 }

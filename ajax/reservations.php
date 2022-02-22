@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,42 +31,42 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkCentralAccess();
 
 if (!isset($_REQUEST["action"])) {
-   exit;
+    exit;
 }
 
 if ($_REQUEST["action"] == "get_events") {
-   header("Content-Type: application/json; charset=UTF-8");
-   echo json_encode(Reservation::getEvents($_REQUEST));
-   exit;
+    header("Content-Type: application/json; charset=UTF-8");
+    echo json_encode(Reservation::getEvents($_REQUEST));
+    exit;
 }
 
 if ($_REQUEST["action"] == "get_resources") {
-   header("Content-Type: application/json; charset=UTF-8");
-   echo json_encode(Reservation::getResources());
-   exit;
+    header("Content-Type: application/json; charset=UTF-8");
+    echo json_encode(Reservation::getResources());
+    exit;
 }
 
 if (($_POST['action'] ?? null) === "update_event") {
-   $result = Reservation::updateEvent($_REQUEST);
-   echo json_encode(['result' => $result]);
-   exit;
+    $result = Reservation::updateEvent($_REQUEST);
+    echo json_encode(['result' => $result]);
+    exit;
 }
 
 Html::header_nocache();
 header("Content-Type: text/html; charset=UTF-8");
 
 if ($_REQUEST["action"] == "add_reservation_fromselect") {
-   $reservation = new Reservation;
-   $reservation->showForm(0, [
-      'item'  => [(int) $_REQUEST['id']],
-      'begin' => $_REQUEST['start'],
-      'end'   => $_REQUEST['end'],
-   ]);
+    $reservation = new Reservation();
+    $reservation->showForm(0, [
+        'item'  => [(int) $_REQUEST['id']],
+        'begin' => $_REQUEST['start'],
+        'end'   => $_REQUEST['end'],
+    ]);
 }
 
 Html::ajaxFooter();

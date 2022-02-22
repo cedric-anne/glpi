@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -33,80 +34,85 @@
 /**
  * TicketValidation class
  */
-class TicketValidation  extends CommonITILValidation {
-
+class TicketValidation extends CommonITILValidation
+{
    // From CommonDBChild
-   static public $itemtype           = 'Ticket';
-   static public $items_id           = 'tickets_id';
+    public static $itemtype           = 'Ticket';
+    public static $items_id           = 'tickets_id';
 
-   static $rightname                 = 'ticketvalidation';
+    public static $rightname                 = 'ticketvalidation';
 
-   const CREATEREQUEST               = 1024;
-   const CREATEINCIDENT              = 2048;
-   const VALIDATEREQUEST             = 4096;
-   const VALIDATEINCIDENT            = 8192;
-
-
-
-   static function getCreateRights() {
-      return [static::CREATEREQUEST, static::CREATEINCIDENT];
-   }
+    const CREATEREQUEST               = 1024;
+    const CREATEINCIDENT              = 2048;
+    const VALIDATEREQUEST             = 4096;
+    const VALIDATEINCIDENT            = 8192;
 
 
-   static function getValidateRights() {
-      return [static::VALIDATEREQUEST, static::VALIDATEINCIDENT];
-   }
+
+    public static function getCreateRights()
+    {
+        return [static::CREATEREQUEST, static::CREATEINCIDENT];
+    }
 
 
-   /**
-    * @since 0.85
-   **/
-   function canCreateItem() {
+    public static function getValidateRights()
+    {
+        return [static::VALIDATEREQUEST, static::VALIDATEINCIDENT];
+    }
 
-      if ($this->canChildItem('canViewItem', 'canView')) {
-         $ticket = new Ticket();
-         if ($ticket->getFromDB($this->fields['tickets_id'])) {
-            // No validation for closed tickets
-            if (in_array($ticket->fields['status'], $ticket->getClosedStatusArray())) {
-               return false;
+
+    /**
+     * @since 0.85
+     **/
+    public function canCreateItem()
+    {
+
+        if ($this->canChildItem('canViewItem', 'canView')) {
+            $ticket = new Ticket();
+            if ($ticket->getFromDB($this->fields['tickets_id'])) {
+                // No validation for closed tickets
+                if (in_array($ticket->fields['status'], $ticket->getClosedStatusArray())) {
+                    return false;
+                }
+
+                if ($ticket->fields['type'] == Ticket::INCIDENT_TYPE) {
+                    return Session::haveRight(self::$rightname, self::CREATEINCIDENT);
+                }
+                if ($ticket->fields['type'] == Ticket::DEMAND_TYPE) {
+                    return Session::haveRight(self::$rightname, self::CREATEREQUEST);
+                }
             }
+        }
+    }
 
-            if ($ticket->fields['type'] == Ticket::INCIDENT_TYPE) {
-               return Session::haveRight(self::$rightname, self::CREATEINCIDENT);
-            }
-            if ($ticket->fields['type'] == Ticket::DEMAND_TYPE) {
-               return Session::haveRight(self::$rightname, self::CREATEREQUEST);
-            }
-         }
-      }
-   }
+    /**
+     * @since 0.85
+     *
+     * @see commonDBTM::getRights()
+     **/
+    public function getRights($interface = 'central')
+    {
 
-   /**
-    * @since 0.85
-    *
-    * @see commonDBTM::getRights()
-    **/
-   function getRights($interface = 'central') {
+        $values = parent::getRights();
+        unset($values[UPDATE], $values[CREATE], $values[READ]);
 
-      $values = parent::getRights();
-      unset($values[UPDATE], $values[CREATE], $values[READ]);
-
-      $values[self::CREATEREQUEST]
+        $values[self::CREATEREQUEST]
                               = ['short' => __('Create for request'),
-                                      'long'  => __('Create a validation request for a request')];
-      $values[self::CREATEINCIDENT]
+                                  'long'  => __('Create a validation request for a request')
+                              ];
+        $values[self::CREATEINCIDENT]
                               = ['short' => __('Create for incident'),
-                                      'long'  => __('Create a validation request for an incident')];
-      $values[self::VALIDATEREQUEST]
+                                  'long'  => __('Create a validation request for an incident')
+                              ];
+        $values[self::VALIDATEREQUEST]
                               = __('Validate a request');
-      $values[self::VALIDATEINCIDENT]
+        $values[self::VALIDATEINCIDENT]
                               = __('Validate an incident');
 
-      if ($interface == 'helpdesk') {
-         unset($values[PURGE]);
-      }
+        if ($interface == 'helpdesk') {
+            unset($values[PURGE]);
+        }
 
-      return $values;
-   }
-
+        return $values;
+    }
 }

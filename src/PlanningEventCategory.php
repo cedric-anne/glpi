@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,24 +31,26 @@
  * ---------------------------------------------------------------------
  */
 
-class PlanningEventCategory extends CommonDropdown {
+class PlanningEventCategory extends CommonDropdown
+{
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Event category', 'Event categories', $nb);
+    }
 
+    public function getAdditionalFields()
+    {
+        return [
+            [
+                'name'  => 'color',
+                'label' => __('Color'),
+                'type'  => 'color',
+            ]
+        ];
+    }
 
-   static function getTypeName($nb = 0) {
-      return _n('Event category', 'Event categories', $nb);
-   }
-
-   function getAdditionalFields() {
-      return [
-         [
-            'name'  => 'color',
-            'label' => __('Color'),
-            'type'  => 'color',
-         ]
-      ];
-   }
-
-   static function getIcon() {
-      return "fas fa-tag";
-   }
+    public static function getIcon()
+    {
+        return "fas fa-tag";
+    }
 }

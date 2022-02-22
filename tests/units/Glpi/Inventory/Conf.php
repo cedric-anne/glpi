@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -35,87 +36,93 @@ namespace tests\units\Glpi\Inventory;
 /**
  * Test class for src/Glpi/Inventory/conf.class.php
  */
-class Conf extends \GLPITestCase {
+class Conf extends \GLPITestCase
+{
+    public function testKnownInventoryExtensions()
+    {
+        $expected = [
+            'json',
+            'xml',
+            'ocs'
+        ];
 
-   public function testKnownInventoryExtensions() {
-      $expected = [
-         'json',
-         'xml',
-         'ocs'
-      ];
-
-      $this
+        $this
          ->if($this->newTestedInstance)
          ->then
             ->array($this->testedInstance->knownInventoryExtensions())
             ->isIdenticalTo($expected);
-   }
+    }
 
-   protected function inventoryfilesProvider(): array {
-      return [
-         [
-            'file'      => 'computer.json',
-            'expected'  => true
-         ], [
-            'file'      => 'anything.xml',
-            'expected'  => true
-         ], [
-            'file'      => 'another.ocs',
-            'expected'  => true
-         ], [
-            'file'      => 'computer.xls',
-            'expected'  => false
-         ]
-      ];
-   }
+    protected function inventoryfilesProvider(): array
+    {
+        return [
+            [
+                'file'      => 'computer.json',
+                'expected'  => true
+            ], [
+                'file'      => 'anything.xml',
+                'expected'  => true
+            ], [
+                'file'      => 'another.ocs',
+                'expected'  => true
+            ], [
+                'file'      => 'computer.xls',
+                'expected'  => false
+            ]
+        ];
+    }
 
-   /**
-    * @dataProvider inventoryfilesProvider
-    */
-   public function testIsInventoryFile(string $file, bool $expected) {
-      $this
+    /**
+     * @dataProvider inventoryfilesProvider
+     */
+    public function testIsInventoryFile(string $file, bool $expected)
+    {
+        $this
          ->if($this->newTestedInstance)
          ->then
             ->boolean($this->testedInstance->isInventoryFile($file))
             ->isIdenticalTo($expected);
-   }
+    }
 
 
-   protected function confProvider() :array {
-      $provider = [];
-      $defaults = \Glpi\Inventory\Conf::$defaults;
-      foreach ($defaults as $key => $value) {
-         $provider[] = [
-            'key'    => $key,
-            'value'  => $value
-         ];
-      }
-      return $provider;
-   }
+    protected function confProvider(): array
+    {
+        $provider = [];
+        $defaults = \Glpi\Inventory\Conf::$defaults;
+        foreach ($defaults as $key => $value) {
+            $provider[] = [
+                'key'    => $key,
+                'value'  => $value
+            ];
+        }
+        return $provider;
+    }
 
-   /**
-    * @dataProvider confProvider
-    */
-   public function testGetter($key, $value) {
-      $this
+    /**
+     * @dataProvider confProvider
+     */
+    public function testGetter($key, $value)
+    {
+        $this
          ->if($this->newTestedInstance)
          ->then
             ->variable($this->testedInstance->$key)
             ->isEqualTo($value);
-   }
+    }
 
-   public function testErrorGetter() {
-      $this
+    public function testErrorGetter()
+    {
+        $this
          ->if($this->newTestedInstance)
          ->then
             ->when(
-               function () {
-                  $this->variable($this->testedInstance->doesNotExists)->isEqualTo(null);
-                  $this->hasSessionMessages(WARNING, ['Property doesNotExists does not exists!']);
-               }
+                function () {
+                    $this->variable($this->testedInstance->doesNotExists)->isEqualTo(null);
+                    $this->hasSessionMessages(WARNING, ['Property doesNotExists does not exists!']);
+                }
             )->error
                ->withType(E_USER_WARNING)
                ->withMessage('Property doesNotExists does not exists!')
                ->exists();
-   }
+    }
 }

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -41,46 +42,49 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CleanSoftwareCommand extends AbstractCommand
 {
-   protected function configure() {
-      parent::configure();
+    protected function configure()
+    {
+        parent::configure();
 
-      $this->setName('glpi:assets:cleansoftware');
-      $this->setAliases(['assets:cleansoftware']);
-      $this->setDescription(CleanSoftwareCron::getTaskDescription());
+        $this->setName('glpi:assets:cleansoftware');
+        $this->setAliases(['assets:cleansoftware']);
+        $this->setDescription(CleanSoftwareCron::getTaskDescription());
 
-      $this->addOption(
-         'max',
-         'm',
-         InputOption::VALUE_REQUIRED,
-         CleanSoftwareCron::getParameterDescription(),
-         500
-      );
-   }
+        $this->addOption(
+            'max',
+            'm',
+            InputOption::VALUE_REQUIRED,
+            CleanSoftwareCron::getParameterDescription(),
+            500
+        );
+    }
 
-   protected function execute(InputInterface $input, OutputInterface $output) {
-      $this->validateInput($input);
-      $max = $input->getOption('max');
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $this->validateInput($input);
+        $max = $input->getOption('max');
 
-      // Run crontask
-      $total = CleanSoftwareCron::run($max);
-      $output->writeln("<info> $total item(s) deleted </info>");
+       // Run crontask
+        $total = CleanSoftwareCron::run($max);
+        $output->writeln("<info> $total item(s) deleted </info>");
 
-      return 0;
-   }
+        return 0;
+    }
 
-   /**
-    * Validate command input.
-    *
-    * @param InputInterface $input
-    *
-    * @throws InvalidArgumentException
-    */
-   private function validateInput(InputInterface $input) {
-      $max = $input->getOption('max');
-      if (!is_numeric($max)) {
-         throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
-            __('Option --max must be an integer.')
-         );
-      }
-   }
+    /**
+     * Validate command input.
+     *
+     * @param InputInterface $input
+     *
+     * @throws InvalidArgumentException
+     */
+    private function validateInput(InputInterface $input)
+    {
+        $max = $input->getOption('max');
+        if (!is_numeric($max)) {
+            throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
+                __('Option --max must be an integer.')
+            );
+        }
+    }
 }

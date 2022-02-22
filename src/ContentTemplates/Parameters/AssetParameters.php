@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -45,47 +46,52 @@ use Glpi\Toolbox\Sanitizer;
  */
 class AssetParameters extends AbstractParameters
 {
-   public static function getDefaultNodeName(): string {
-      return 'asset';
-   }
+    public static function getDefaultNodeName(): string
+    {
+        return 'asset';
+    }
 
-   public static function getObjectLabel(): string {
-      return _n('Asset', 'Assets', 1);
-   }
+    public static function getObjectLabel(): string
+    {
+        return _n('Asset', 'Assets', 1);
+    }
 
-   protected function getTargetClasses(): array {
-      global $CFG_GLPI;
-      return $CFG_GLPI["asset_types"];
-   }
+    protected function getTargetClasses(): array
+    {
+        global $CFG_GLPI;
+        return $CFG_GLPI["asset_types"];
+    }
 
-   public function getAvailableParameters(): array {
-      return [
-         new AttributeParameter("id", __('ID')),
-         new AttributeParameter("name", __('Name')),
-         new AttributeParameter("itemtype", __('Itemtype')),
-         new AttributeParameter("serial", __('Serial number')),
-         new ObjectParameter(new EntityParameters()),
-      ];
-   }
+    public function getAvailableParameters(): array
+    {
+        return [
+            new AttributeParameter("id", __('ID')),
+            new AttributeParameter("name", __('Name')),
+            new AttributeParameter("itemtype", __('Itemtype')),
+            new AttributeParameter("serial", __('Serial number')),
+            new ObjectParameter(new EntityParameters()),
+        ];
+    }
 
-   protected function defineValues(CommonDBTM $asset): array {
+    protected function defineValues(CommonDBTM $asset): array
+    {
 
-      // Output "unsanitized" values
-      $fields = Sanitizer::unsanitize($asset->fields);
+       // Output "unsanitized" values
+        $fields = Sanitizer::unsanitize($asset->fields);
 
-      $values = [
-         'id'       => $fields['id'],
-         'name'     => $fields['name'],
-         'itemtype' => $asset->getType(),
-         'serial'   => $fields['serial'],
-      ];
+        $values = [
+            'id'       => $fields['id'],
+            'name'     => $fields['name'],
+            'itemtype' => $asset->getType(),
+            'serial'   => $fields['serial'],
+        ];
 
-      // Add asset's entity
-      if ($entity = Entity::getById($fields['entities_id'])) {
-         $entity_parameters = new EntityParameters();
-         $values['entity'] = $entity_parameters->getValues($entity);
-      }
+       // Add asset's entity
+        if ($entity = Entity::getById($fields['entities_id'])) {
+            $entity_parameters = new EntityParameters();
+            $values['entity'] = $entity_parameters->getValues($entity);
+        }
 
-      return $values;
-   }
+        return $values;
+    }
 }

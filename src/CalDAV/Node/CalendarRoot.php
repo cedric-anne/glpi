@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -40,25 +41,26 @@ use Glpi\CalDAV\Backend\Principal;
  *
  * @since 9.5.0
  */
-class CalendarRoot extends \Sabre\CalDAV\CalendarRoot {
+class CalendarRoot extends \Sabre\CalDAV\CalendarRoot
+{
+    public function getName()
+    {
 
-   public function getName() {
+        $calendarPath = '';
+        switch ($this->principalPrefix) {
+            case Principal::PREFIX_GROUPS:
+                $calendarPath = Calendar::PREFIX_GROUPS;
+                break;
+            case Principal::PREFIX_USERS:
+                $calendarPath = Calendar::PREFIX_USERS;
+                break;
+        }
 
-      $calendarPath = '';
-      switch ($this->principalPrefix) {
-         case Principal::PREFIX_GROUPS:
-            $calendarPath = Calendar::PREFIX_GROUPS;
-            break;
-         case Principal::PREFIX_USERS:
-            $calendarPath = Calendar::PREFIX_USERS;
-            break;
-      }
-
-      // Return calendar path relative to calendar root path
-      return preg_replace(
-         '/^' . preg_quote(Calendar::CALENDAR_ROOT . '/', '/') . '/',
-         '',
-         $calendarPath
-      );
-   }
+       // Return calendar path relative to calendar root path
+        return preg_replace(
+            '/^' . preg_quote(Calendar::CALENDAR_ROOT . '/', '/') . '/',
+            '',
+            $calendarPath
+        );
+    }
 }

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -36,16 +37,17 @@ use League\Csv\Writer;
 
 class CsvResponse
 {
-   /**
-    * Output a CSV file using League\Csv
-    *
-    * @param ExportToCsvInterface $export
-    */
-   public static function output(ExportToCsvInterface $export): void {
-      $csv = Writer::createFromString('');
-      $csv->setDelimiter($_SESSION["glpicsv_delimiter"] ?? ";");
-      $csv->insertOne($export->getFileHeader());
-      $csv->insertAll($export->getFileContent());
-      $csv->output($export->getFileName());
-   }
+    /**
+     * Output a CSV file using League\Csv
+     *
+     * @param ExportToCsvInterface $export
+     */
+    public static function output(ExportToCsvInterface $export): void
+    {
+        $csv = Writer::createFromString('');
+        $csv->setDelimiter($_SESSION["glpicsv_delimiter"] ?? ";");
+        $csv->insertOne($export->getFileHeader());
+        $csv->insertAll($export->getFileContent());
+        $csv->output($export->getFileName());
+    }
 }

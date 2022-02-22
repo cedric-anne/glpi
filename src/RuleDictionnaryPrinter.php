@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,79 +32,82 @@
  */
 
 /**
-* Rule class store all information about a GLPI rule :
-*   - description
-*   - criterias
-*   - actions
-**/
-class RuleDictionnaryPrinter extends Rule {
-
+ * Rule class store all information about a GLPI rule :
+ *   - description
+ *   - criterias
+ *   - actions
+ **/
+class RuleDictionnaryPrinter extends Rule
+{
    // From Rule
-   public $can_sort  = true;
+    public $can_sort  = true;
 
-   static $rightname = 'rule_dictionnary_printer';
-
-
-   function getTitle() {
-      return __('Dictionnary of printers');
-   }
+    public static $rightname = 'rule_dictionnary_printer';
 
 
-   /**
-    * @see Rule::maxActionsCount()
-   **/
-   function maxActionsCount() {
-      return 4;
-   }
-
-   /**
-    * @see Rule::getCriterias()
-   **/
-   function getCriterias() {
-
-      static $criterias = [];
-
-      if (count($criterias)) {
-         return $criterias;
-      }
-
-      $criterias['name']['field']         = 'name';
-      $criterias['name']['name']          = __('Name');
-      $criterias['name']['table']         = 'glpi_printers';
-
-      $criterias['manufacturer']['field'] = 'name';
-      $criterias['manufacturer']['name']  = Manufacturer::getTypeName(1);
-      $criterias['manufacturer']['table'] = '';
-
-      $criterias['comment']['field']      = 'comment';
-      $criterias['comment']['name']       = __('Comments');
-      $criterias['comment']['table']      = '';
-
-      return $criterias;
-   }
+    public function getTitle()
+    {
+        return __('Dictionnary of printers');
+    }
 
 
-   /**
-    * @see Rule::getActions()
-   **/
-   function getActions() {
+    /**
+     * @see Rule::maxActionsCount()
+     **/
+    public function maxActionsCount()
+    {
+        return 4;
+    }
 
-      $actions                               = [];
+    /**
+     * @see Rule::getCriterias()
+     **/
+    public function getCriterias()
+    {
 
-      $actions['name']['name']               = __('Name');
-      $actions['name']['force_actions']      = ['assign', 'regex_result'];
+        static $criterias = [];
 
-      $actions['_ignore_import']['name']     = __('To be unaware of import');
-      $actions['_ignore_import']['type']     = 'yesonly';
+        if (count($criterias)) {
+            return $criterias;
+        }
 
-      $actions['manufacturer']['name']       = Manufacturer::getTypeName(1);
-      $actions['manufacturer']['table']      = 'glpi_manufacturers';
-      $actions['manufacturer']['type']       = 'dropdown';
+        $criterias['name']['field']         = 'name';
+        $criterias['name']['name']          = __('Name');
+        $criterias['name']['table']         = 'glpi_printers';
 
-      $actions['is_global']['name']          = __('Management type');
-      $actions['is_global']['type']          = 'dropdown_management';
+        $criterias['manufacturer']['field'] = 'name';
+        $criterias['manufacturer']['name']  = Manufacturer::getTypeName(1);
+        $criterias['manufacturer']['table'] = '';
 
-      return $actions;
-   }
+        $criterias['comment']['field']      = 'comment';
+        $criterias['comment']['name']       = __('Comments');
+        $criterias['comment']['table']      = '';
 
+        return $criterias;
+    }
+
+
+    /**
+     * @see Rule::getActions()
+     **/
+    public function getActions()
+    {
+
+        $actions                               = [];
+
+        $actions['name']['name']               = __('Name');
+        $actions['name']['force_actions']      = ['assign', 'regex_result'];
+
+        $actions['_ignore_import']['name']     = __('To be unaware of import');
+        $actions['_ignore_import']['type']     = 'yesonly';
+
+        $actions['manufacturer']['name']       = Manufacturer::getTypeName(1);
+        $actions['manufacturer']['table']      = 'glpi_manufacturers';
+        $actions['manufacturer']['type']       = 'dropdown';
+
+        $actions['is_global']['name']          = __('Management type');
+        $actions['is_global']['type']          = 'dropdown_management';
+
+        return $actions;
+    }
 }

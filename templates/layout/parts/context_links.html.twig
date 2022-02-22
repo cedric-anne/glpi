@@ -1,7 +1,7 @@
 {#
  # ---------------------------------------------------------------------
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2021 Teclib' and contributors.
+ # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
@@ -90,6 +90,13 @@
          <a href="{{ path(link) }}" class="btn btn-icon btn-sm btn-outline-secondary me-1 pe-2" title="{{ __('Global Kanban') }}">
             <i class="ti ti-layout-columns"></i>
             <span class="d-none d-xxl-block">{{ __('Global Kanban') }}</span>
+         </a>
+      </li>
+   {% elseif type == 'transfer_list' %}
+      <li class="nav-item">
+         <a href="{{ path(link) }}" class="btn btn-icon btn-sm btn-outline-secondary me-1 pe-2" title="{{ __('Transfer list') }}">
+            <i class="ti ti-list-check"></i>
+            <span class="d-none d-xxl-block">{{ __('Transfer list') }}</span>
          </a>
       </li>
    {% elseif type == 'config' %}

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,106 +33,128 @@
 
 /**
  * DeviceControl Class
-**/
-class DeviceControl extends CommonDevice {
+ **/
+class DeviceControl extends CommonDevice
+{
+    protected static $forward_entity_to = ['Item_DeviceControl', 'Infocom'];
 
-   static protected $forward_entity_to = ['Item_DeviceControl', 'Infocom'];
-
-   static function getTypeName($nb = 0) {
-      return _n('Controller', 'Controllers', $nb);
-   }
-
-
-   function getAdditionalFields() {
-
-      return array_merge(parent::getAdditionalFields(),
-                         [['name'  => 'is_raid',
-                                     'label' => __('RAID'),
-                                     'type'  => 'bool'],
-                               ['name'  => 'interfacetypes_id',
-                                     'label' => __('Interface'),
-                                     'type'  => 'dropdownValue'],
-                               ['name'  => 'devicecontrolmodels_id',
-                                     'label' => _n('Model', 'Models', 1),
-                                     'type'  => 'dropdownValue'],
-                               ['name'  => 'none',
-                                     'label' => RegisteredID::getTypeName(Session::getPluralNumber()).
-                                        RegisteredID::showAddChildButtonForItemForm($this,
-                                                                                    '_registeredID',
-                                                                                    null, false),
-                                     'type'  => 'registeredIDChooser']]);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Controller', 'Controllers', $nb);
+    }
 
 
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    public function getAdditionalFields()
+    {
 
-      $tab[] = [
-         'id'                 => '12',
-         'table'              => $this->getTable(),
-         'field'              => 'is_raid',
-         'name'               => __('RAID'),
-         'datatype'           => 'bool'
-      ];
-
-      $tab[] = [
-         'id'                 => '14',
-         'table'              => 'glpi_interfacetypes',
-         'field'              => 'name',
-         'name'               => __('Interface'),
-         'datatype'           => 'dropdown'
-      ];
-
-      $tab[] = [
-         'id'                 => '15',
-         'table'              => 'glpi_devicecontrolmodels',
-         'field'              => 'name',
-         'name'               => _n('Model', 'Models', 1),
-         'datatype'           => 'dropdown'
-      ];
-
-      return $tab;
-   }
-
-
-   static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super = null,
-                                      HTMLTableHeader $father = null, array $options = []) {
-
-      $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
-
-      if ($column == $father) {
-         return $father;
-      }
-
-      switch ($itemtype) {
-         case 'Computer' :
-            Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-            InterfaceType::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-
-            break;
-      }
-   }
+        return array_merge(
+            parent::getAdditionalFields(),
+            [['name'  => 'is_raid',
+                'label' => __('RAID'),
+                'type'  => 'bool'
+            ],
+                ['name'  => 'interfacetypes_id',
+                    'label' => __('Interface'),
+                    'type'  => 'dropdownValue'
+                ],
+                ['name'  => 'devicecontrolmodels_id',
+                    'label' => _n('Model', 'Models', 1),
+                    'type'  => 'dropdownValue'
+                ],
+                ['name'  => 'none',
+                    'label' => RegisteredID::getTypeName(Session::getPluralNumber()) .
+                                        RegisteredID::showAddChildButtonForItemForm(
+                                            $this,
+                                            '_registeredID',
+                                            null,
+                                            false
+                                        ),
+                    'type'  => 'registeredIDChooser'
+                ]
+            ]
+        );
+    }
 
 
-   function getHTMLTableCellForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
-                                    HTMLTableCell $father = null, array $options = []) {
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
+        $tab[] = [
+            'id'                 => '12',
+            'table'              => $this->getTable(),
+            'field'              => 'is_raid',
+            'name'               => __('RAID'),
+            'datatype'           => 'bool'
+        ];
 
-      if ($column == $father) {
-         return $father;
-      }
+        $tab[] = [
+            'id'                 => '14',
+            'table'              => 'glpi_interfacetypes',
+            'field'              => 'name',
+            'name'               => __('Interface'),
+            'datatype'           => 'dropdown'
+        ];
 
-      switch ($item->getType()) {
-         case 'Computer' :
-            Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
-            InterfaceType::getHTMLTableCellsForItem($row, $this, null, $options);
-      }
-   }
+        $tab[] = [
+            'id'                 => '15',
+            'table'              => 'glpi_devicecontrolmodels',
+            'field'              => 'name',
+            'name'               => _n('Model', 'Models', 1),
+            'datatype'           => 'dropdown'
+        ];
+
+        return $tab;
+    }
 
 
-   static function getIcon() {
-      return "fas fa-microchip";
-   }
+    public static function getHTMLTableHeader(
+        $itemtype,
+        HTMLTableBase $base,
+        HTMLTableSuperHeader $super = null,
+        HTMLTableHeader $father = null,
+        array $options = []
+    ) {
+
+        $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
+
+        if ($column == $father) {
+            return $father;
+        }
+
+        switch ($itemtype) {
+            case 'Computer':
+                Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+                InterfaceType::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+
+                break;
+        }
+    }
+
+
+    public function getHTMLTableCellForItem(
+        HTMLTableRow $row = null,
+        CommonDBTM $item = null,
+        HTMLTableCell $father = null,
+        array $options = []
+    ) {
+
+        $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
+
+        if ($column == $father) {
+            return $father;
+        }
+
+        switch ($item->getType()) {
+            case 'Computer':
+                Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
+                InterfaceType::getHTMLTableCellsForItem($row, $this, null, $options);
+        }
+    }
+
+
+    public static function getIcon()
+    {
+        return "fas fa-microchip";
+    }
 }

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -34,23 +35,25 @@
  * Problem template class
  *
  * since version 9.5.0
-**/
-class ProblemTemplate extends ITILTemplate {
-   use Glpi\Features\Clonable;
+ **/
+class ProblemTemplate extends ITILTemplate
+{
+    use Glpi\Features\Clonable;
 
-   public $second_level_menu         = "problem";
-   public $third_level_menu          = "ProblemTemplate";
+    public $second_level_menu         = "problem";
+    public $third_level_menu          = "ProblemTemplate";
 
-   static function getTypeName($nb = 0) {
-      return _n('Problem template', 'Problem templates', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Problem template', 'Problem templates', $nb);
+    }
 
-   public function getCloneRelations() :array {
-      return [
-         ProblemTemplateHiddenField::class,
-         ProblemTemplateMandatoryField::class,
-         ProblemTemplatePredefinedField::class,
-      ];
-   }
-
+    public function getCloneRelations(): array
+    {
+        return [
+            ProblemTemplateHiddenField::class,
+            ProblemTemplateMandatoryField::class,
+            ProblemTemplatePredefinedField::class,
+        ];
+    }
 }

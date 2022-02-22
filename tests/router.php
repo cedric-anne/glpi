@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -34,10 +35,10 @@ define('GLPI_CONFIG_DIR', __DIR__ . '/config');
 define('GLPI_VAR_DIR', __DIR__ . '/files');
 
 define(
-   'PLUGINS_DIRECTORIES',
-   [
-      __DIR__ . '/fixtures/plugins',
-   ]
+    'PLUGINS_DIRECTORIES',
+    [
+        __DIR__ . '/fixtures/plugins',
+    ]
 );
 
 // Avoid warnings because of missing globals
@@ -47,7 +48,6 @@ $DEBUG_SQL = [
     'times'   => [],
 ];
 
-ini_set("display_errors", "Off");
-ini_set("error_log", "tests/web/error.log");
+ini_set("log_error", 1);
 
 return false;

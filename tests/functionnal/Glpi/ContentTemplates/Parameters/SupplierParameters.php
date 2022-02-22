@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -34,39 +35,40 @@ namespace tests\units\Glpi\ContentTemplates\Parameters;
 
 class SupplierParameters extends AbstractParameters
 {
-   public function testGetValues(): void {
-      $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
+    public function testGetValues(): void
+    {
+        $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
 
-      $this->createItem('Supplier', [
-         'name'        => 'supplier_testGetValues',
-         'entities_id' => $test_entity_id,
-         'address'     => '221B Baker Street',
-         'town'        => 'London',
-         'postcode'    => 'NW1 6XE',
-         'state'       => 'England',
-         'country'     => 'UK',
-         'phonenumber' => '+44 20 7224 ...0',
-         'fax'         => '+44 20 7224 ...1',
-         'email'       => 'test@glpi-project.org',
-         'website'     => 'https://glpi-project.org',
-      ]);
+        $this->createItem('Supplier', [
+            'name'        => 'supplier_testGetValues',
+            'entities_id' => $test_entity_id,
+            'address'     => '221B Baker Street',
+            'town'        => 'London',
+            'postcode'    => 'NW1 6XE',
+            'state'       => 'England',
+            'country'     => 'UK',
+            'phonenumber' => '+44 20 7224 ...0',
+            'fax'         => '+44 20 7224 ...1',
+            'email'       => 'test@glpi-project.org',
+            'website'     => 'https://glpi-project.org',
+        ]);
 
-      $parameters = $this->newTestedInstance();
-      $values = $parameters->getValues(getItemByTypeName('Supplier', 'supplier_testGetValues'));
-      $this->array($values)->isEqualTo([
-         'id'       => getItemByTypeName('Supplier', 'supplier_testGetValues', true),
-         'name'     => 'supplier_testGetValues',
-         'address'  => '221B Baker Street',
-         'city'     => 'London',
-         'postcode' => 'NW1 6XE',
-         'state'    => 'England',
-         'country'  => 'UK',
-         'phone'    => '+44 20 7224 ...0',
-         'fax'      => '+44 20 7224 ...1',
-         'email'    => 'test@glpi-project.org',
-         'website'  => 'https://glpi-project.org',
-      ]);
+        $parameters = $this->newTestedInstance();
+        $values = $parameters->getValues(getItemByTypeName('Supplier', 'supplier_testGetValues'));
+        $this->array($values)->isEqualTo([
+            'id'       => getItemByTypeName('Supplier', 'supplier_testGetValues', true),
+            'name'     => 'supplier_testGetValues',
+            'address'  => '221B Baker Street',
+            'city'     => 'London',
+            'postcode' => 'NW1 6XE',
+            'state'    => 'England',
+            'country'  => 'UK',
+            'phone'    => '+44 20 7224 ...0',
+            'fax'      => '+44 20 7224 ...1',
+            'email'    => 'test@glpi-project.org',
+            'website'  => 'https://glpi-project.org',
+        ]);
 
-      $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
-   }
+        $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
+    }
 }

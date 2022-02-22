@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -34,18 +35,19 @@ namespace tests\units\Glpi\ContentTemplates\Parameters;
 
 class UserCategoryParameters extends AbstractParameters
 {
-   public function testGetValues(): void {
-      $this->createItem('UserCategory', [
-         'name' => 'usercategory_testGetValues',
-      ]);
+    public function testGetValues(): void
+    {
+        $this->createItem('UserCategory', [
+            'name' => 'usercategory_testGetValues',
+        ]);
 
-      $parameters = $this->newTestedInstance();
-      $values = $parameters->getValues(getItemByTypeName('UserCategory', 'usercategory_testGetValues'));
-      $this->array($values)->isEqualTo([
-         'id'   => getItemByTypeName('UserCategory', 'usercategory_testGetValues', true),
-         'name' => 'usercategory_testGetValues',
-      ]);
+        $parameters = $this->newTestedInstance();
+        $values = $parameters->getValues(getItemByTypeName('UserCategory', 'usercategory_testGetValues'));
+        $this->array($values)->isEqualTo([
+            'id'   => getItemByTypeName('UserCategory', 'usercategory_testGetValues', true),
+            'name' => 'usercategory_testGetValues',
+        ]);
 
-      $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
-   }
+        $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
+    }
 }

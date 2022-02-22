@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,50 +32,51 @@
  */
 
 /** @file
-* @brief
-*/
+ * @brief
+ */
 
 /**
  * Update from 9.3.1 to 9.3.2
  *
  * @return bool for success (will die for most error)
-**/
-function update931to932() {
-   global $DB, $migration;
+ **/
+function update931to932()
+{
+    global $DB, $migration;
 
-   $current_config   = Config::getConfigurationValues('core');
-   $updateresult     = true;
-   $ADDTODISPLAYPREF = [];
+    $current_config   = Config::getConfigurationValues('core');
+    $updateresult     = true;
+    $ADDTODISPLAYPREF = [];
 
    //TRANS: %s is the number of new version
-   $migration->displayTitle(sprintf(__('Update to %s'), '9.3.2'));
-   $migration->setVersion('9.3.2');
+    $migration->displayTitle(sprintf(__('Update to %s'), '9.3.2'));
+    $migration->setVersion('9.3.2');
 
-   /** Clean rack/enclosure items corrupted relations */
-   $corrupted_criteria = [
-      'OR' => [
-         'itemtype' => 0,
-         'items_id' => 0,
-      ],
-   ];
-   $DB->delete(Item_Rack::getTable(), $corrupted_criteria);
-   $DB->delete(Item_Enclosure::getTable(), $corrupted_criteria);
-   /** /Clean rack/enclosure items corrupted relations */
+    /** Clean rack/enclosure items corrupted relations */
+    $corrupted_criteria = [
+        'OR' => [
+            'itemtype' => 0,
+            'items_id' => 0,
+        ],
+    ];
+    $DB->delete(Item_Rack::getTable(), $corrupted_criteria);
+    $DB->delete(Item_Enclosure::getTable(), $corrupted_criteria);
+    /** /Clean rack/enclosure items corrupted relations */
 
    // limit state visibility for enclosures and pdus
-   $migration->addField('glpi_states', 'is_visible_enclosure', 'bool', [
-      'value' => 1,
-      'after' => 'is_visible_rack'
-   ]);
-   $migration->addField('glpi_states', 'is_visible_pdu', 'bool', [
-      'value' => 1,
-      'after' => 'is_visible_enclosure'
-   ]);
-   $migration->addKey('glpi_states', 'is_visible_enclosure');
-   $migration->addKey('glpi_states', 'is_visible_pdu');
+    $migration->addField('glpi_states', 'is_visible_enclosure', 'bool', [
+        'value' => 1,
+        'after' => 'is_visible_rack'
+    ]);
+    $migration->addField('glpi_states', 'is_visible_pdu', 'bool', [
+        'value' => 1,
+        'after' => 'is_visible_enclosure'
+    ]);
+    $migration->addKey('glpi_states', 'is_visible_enclosure');
+    $migration->addKey('glpi_states', 'is_visible_pdu');
 
    // ************ Keep it at the end **************
-   $migration->executeMigration();
+    $migration->executeMigration();
 
-   return $updateresult;
+    return $updateresult;
 }

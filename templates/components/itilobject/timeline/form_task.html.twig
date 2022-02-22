@@ -1,7 +1,7 @@
 {#
  # ---------------------------------------------------------------------
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2021 Teclib' and contributors.
+ # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
@@ -31,6 +31,9 @@
 
 {% extends 'components/itilobject/timeline/form_timeline_item.html.twig' %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set params = {'parent': item}|merge(params|default({})) %}
+
 {% set candedit = item.maySolve() %}
 {% set can_read_kb = has_profile_right('knowbase', constant('READ')) or has_profile_right('knowbase', constant('KnowbaseItem::READFAQ')) %}
 {% set can_update_kb = has_profile_right('knowbase', constant('UPDATE')) %}
@@ -40,12 +43,6 @@
 {% block timeline_card %}
    {% if form_mode == 'view' %}
       <div class="read-only-content {{ entry_i['state'] is constant('Planning::DONE') ? 'done' : '' }}">
-         {% if entry_i['state'] is constant('Planning::TODO') %}
-            <span class="state state_1" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('To do') }}"></span>
-         {% elseif entry_i['state'] is constant('Planning::DONE') %}
-            <span class="state state_2" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('Done') }}"></span>
-         {% endif %}
-
          <div class="text-content" data-bs-html="true" data-bs-custom-class="todo-list-tooltip"
               title="{{ entry_i['content']|html_to_text }}" data-bs-toggle="tooltip">
             {{ entry_i['content']|enhanced_html({
@@ -58,7 +55,7 @@
             {% if entry_i['users_id_tech'] %}
                <span class="badge bg-orange-lt">
                   {% set is_current_tech = (entry_i['users_id_tech'] == session('glpiID')) %}
-                  {% set anonym_tech = (get_current_interface() == 'helpdesk' and not is_current_tech and entity_config('anonymize_support_agents') != constant('Entity::ANONYMIZE_DISABLED')) %}
+                  {% set anonym_tech = (get_current_interface() == 'helpdesk' and not is_current_tech and entity_config('anonymize_support_agents', session('glpiactive_entity')) != constant('Entity::ANONYMIZE_DISABLED')) %}
                   {{ include('components/user/link_with_tooltip.html.twig', {
                      'users_id': entry_i['users_id_tech'],
                      'enable_anonymization': anonym_tech
@@ -158,7 +155,7 @@
                action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true" data-submit-once>
             <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
             <input type="hidden" name="{{ item.getForeignKeyField() }}" value="{{ item.fields['id'] }}" />
-            {{ call_plugin_hook('pre_item_form', {"item": subitem}) }}
+            {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
 
             <div class="row">
                <div class="col-12 col-md-9">
@@ -342,7 +339,7 @@
                            });
                         }
                      </script>
-                     <button id="plan{{ rand }}" class="btn btn-outline-secondary d-block mb-2" onclick="showPlanUpdate{{ rand }}()" type="button">
+                     <button id="plan{{ rand }}" class="btn btn-outline-secondary d-block mb-2 text-truncate" onclick="showPlanUpdate{{ rand }}()" type="button">
                         <i class="fas fa-calendar"></i>
                         <span>{{ __('Plan this task') }}</span>
                      </button>
@@ -351,7 +348,7 @@
                </div>
             </div>
 
-            {{ call_plugin_hook('post_item_form', {"item": subitem}) }}
+            {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
             <div class="d-flex card-footer mx-n3 mb-n3">
                {% if subitem.fields['id'] <= 0 %}
                   <div class="input-group">

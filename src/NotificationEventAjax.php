@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,48 +31,54 @@
  * ---------------------------------------------------------------------
  */
 
-class NotificationEventAjax extends NotificationEventAbstract implements NotificationEventInterface {
-
-   static public function getTargetFieldName() {
-      return 'users_id';
-   }
-
-
-   static public function getTargetField(&$data) {
-      $field = self::getTargetFieldName();
-
-      if (!isset($data[$field])) {
-         //Missing users_id; set to null
-         $data[$field] = null;
-      }
-
-      return $field;
-   }
+class NotificationEventAjax extends NotificationEventAbstract implements NotificationEventInterface
+{
+    public static function getTargetFieldName()
+    {
+        return 'users_id';
+    }
 
 
-   static public function canCron() {
-      //notifications are pulled from web browser, it must not be handled from cron
-      return false;
-   }
+    public static function getTargetField(&$data)
+    {
+        $field = self::getTargetFieldName();
+
+        if (!isset($data[$field])) {
+           //Missing users_id; set to null
+            $data[$field] = null;
+        }
+
+        return $field;
+    }
 
 
-   static public function getAdminData() {
-      //since admin cannot be logged in; no ajax notifications for global admin
-      return false;
-   }
+    public static function canCron()
+    {
+       //notifications are pulled from web browser, it must not be handled from cron
+        return false;
+    }
 
 
-   static public function getEntityAdminsData($entity) {
-      //since entities admin cannot be logged in; no ajax notifications for them
-      return false;
-   }
+    public static function getAdminData()
+    {
+       //since admin cannot be logged in; no ajax notifications for global admin
+        return false;
+    }
 
 
-   static public function send(array $data) {
-      trigger_error(
-         __METHOD__ . ' should not be called!',
-         E_USER_WARNING
-      );
-      return false;
-   }
+    public static function getEntityAdminsData($entity)
+    {
+       //since entities admin cannot be logged in; no ajax notifications for them
+        return false;
+    }
+
+
+    public static function send(array $data)
+    {
+        trigger_error(
+            __METHOD__ . ' should not be called!',
+            E_USER_WARNING
+        );
+        return false;
+    }
 }

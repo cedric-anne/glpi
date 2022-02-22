@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -29,6 +30,7 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
+
 /**
  * @var DB $DB
  * @var Migration $migration
@@ -37,10 +39,11 @@
 
 $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 if (!$DB->tableExists('glpi_databaseinstancetypes')) {
-   $query = "CREATE TABLE `glpi_databaseinstancetypes` (
-         `id` int NOT NULL AUTO_INCREMENT,
+    $query = "CREATE TABLE `glpi_databaseinstancetypes` (
+         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `name` varchar(255) DEFAULT NULL,
          `comment` text,
          `date_mod` timestamp NULL DEFAULT NULL,
@@ -50,12 +53,12 @@ if (!$DB->tableExists('glpi_databaseinstancetypes')) {
          KEY `date_mod` (`date_mod`),
          KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "10.0 add table glpi_databaseinstancetypes");
+    $DB->queryOrDie($query, "10.0 add table glpi_databaseinstancetypes");
 }
 
 if (!$DB->tableExists('glpi_databaseinstancecategories')) {
-   $query = "CREATE TABLE `glpi_databaseinstancecategories` (
-         `id` int NOT NULL AUTO_INCREMENT,
+    $query = "CREATE TABLE `glpi_databaseinstancecategories` (
+         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `name` varchar(255) DEFAULT NULL,
          `comment` text,
          `date_mod` timestamp NULL DEFAULT NULL,
@@ -65,28 +68,28 @@ if (!$DB->tableExists('glpi_databaseinstancecategories')) {
          KEY `date_mod` (`date_mod`),
          KEY `date_creation` (`date_creation`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "10.0 add table glpi_databaseinstancecategoriess");
+    $DB->queryOrDie($query, "10.0 add table glpi_databaseinstancecategoriess");
 }
 
 if (!$DB->tableExists('glpi_databaseinstances')) {
-   $query = "CREATE TABLE `glpi_databaseinstances` (
-         `id` int NOT NULL AUTO_INCREMENT,
-         `entities_id` int NOT NULL DEFAULT '0',
+    $query = "CREATE TABLE `glpi_databaseinstances` (
+         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+         `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
          `name` varchar(255) NOT NULL DEFAULT '',
          `version` varchar(255) NOT NULL DEFAULT '',
          `port` varchar(10) NOT NULL DEFAULT '',
          `path` varchar(255) NOT NULL DEFAULT '',
          `size` int NOT NULL DEFAULT '0',
-         `databaseinstancetypes_id` int NOT NULL DEFAULT '0',
-         `databaseinstancecategories_id` int NOT NULL DEFAULT '0',
-         `locations_id` int NOT NULL DEFAULT '0',
-         `manufacturers_id` int NOT NULL DEFAULT '0',
-         `users_id_tech` int NOT NULL DEFAULT '0',
-         `groups_id_tech` int NOT NULL DEFAULT '0',
-         `states_id` int NOT NULL DEFAULT '0',
+         `databaseinstancetypes_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+         `databaseinstancecategories_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+         `locations_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+         `manufacturers_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+         `users_id_tech` int {$default_key_sign} NOT NULL DEFAULT '0',
+         `groups_id_tech` int {$default_key_sign} NOT NULL DEFAULT '0',
+         `states_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `itemtype` varchar(100) NOT NULL DEFAULT '',
-         `items_id` int NOT NULL DEFAULT '0',
+         `items_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `is_onbackup` tinyint NOT NULL DEFAULT '0',
          `is_active` tinyint NOT NULL DEFAULT '0',
          `is_deleted` tinyint NOT NULL DEFAULT '0',
@@ -116,34 +119,34 @@ if (!$DB->tableExists('glpi_databaseinstances')) {
          KEY `is_helpdesk_visible` (`is_helpdesk_visible`),
          KEY `is_dynamic` (`is_dynamic`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "10.0 add table glpi_databaseinstances");
+    $DB->queryOrDie($query, "10.0 add table glpi_databaseinstances");
 }
 
 // Create glpi_databaseinstances itemtype/items_id if they are not existing (datamodel changed during v10.0 development)
 if (!$DB->fieldExists('glpi_databaseinstances', 'itemtype') || !$DB->fieldExists('glpi_databaseinstances', 'items_id')) {
    //1- migrate glpi_databaseinstances table
-   $migration->addField('glpi_databaseinstances', 'itemtype', 'string', [
-      'after' => 'states_id'
-   ]);
-   $migration->addField('glpi_databaseinstances', 'items_id', 'integer', [
-      'after' => 'itemtype'
-   ]);
-   $migration->addKey('glpi_databaseinstances', ['itemtype', 'items_id'], 'item');
-   $migration->migrationOneTable('glpi_databaseinstances');
+    $migration->addField('glpi_databaseinstances', 'itemtype', 'string', [
+        'after' => 'states_id'
+    ]);
+    $migration->addField('glpi_databaseinstances', 'items_id', "int {$default_key_sign} NOT NULL DEFAULT '0'", [
+        'after' => 'itemtype'
+    ]);
+    $migration->addKey('glpi_databaseinstances', ['itemtype', 'items_id'], 'item');
+    $migration->migrationOneTable('glpi_databaseinstances');
 }
 // Delete old table
 if ($DB->tableExists('glpi_databaseinstances_items')) {
-   $migration->dropTable('glpi_databaseinstances_items');
+    $migration->dropTable('glpi_databaseinstances_items');
 }
 
 if (!$DB->tableExists('glpi_databases')) {
-   $query = "CREATE TABLE `glpi_databases` (
-         `id` int NOT NULL AUTO_INCREMENT,
-         `entities_id` int NOT NULL DEFAULT '0',
+    $query = "CREATE TABLE `glpi_databases` (
+         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+         `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `is_recursive` tinyint NOT NULL DEFAULT '0',
          `name` varchar(255) NOT NULL DEFAULT '',
          `size` int NOT NULL DEFAULT '0',
-         `databaseinstances_id` int NOT NULL DEFAULT '0',
+         `databaseinstances_id` int {$default_key_sign} NOT NULL DEFAULT '0',
          `is_onbackup` tinyint NOT NULL DEFAULT '0',
          `is_active` tinyint NOT NULL DEFAULT '0',
          `is_deleted` tinyint NOT NULL DEFAULT '0',
@@ -161,11 +164,11 @@ if (!$DB->tableExists('glpi_databases')) {
          KEY `date_mod` (`date_mod`),
          KEY `databaseinstances_id` (`databaseinstances_id`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-   $DB->queryOrDie($query, "10.0 add table glpi_databases");
+    $DB->queryOrDie($query, "10.0 add table glpi_databases");
 }
 $migration->addField('glpi_states', 'is_visible_database', 'bool', [
-   'value' => 1,
-   'after' => 'is_visible_appliance'
+    'value' => 1,
+    'after' => 'is_visible_appliance'
 ]);
 $migration->addKey('glpi_states', 'is_visible_database');
 

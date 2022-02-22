@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,14 +31,13 @@
  * ---------------------------------------------------------------------
  */
 
-
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 if ((int)$CFG_GLPI['use_anonymous_helpdesk'] === 0) {
     Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
 }
 
 Glpi\Application\View\TemplateRenderer::getInstance()->display('anonymous_helpdesk.html.twig', [
-   'card_md_width' => true,
-   'title'         => "Helpdesk",
+    'card_md_width' => true,
+    'title'         => "Helpdesk",
 ]);

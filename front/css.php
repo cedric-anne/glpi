@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,7 +32,7 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   define('GLPI_ROOT', dirname(__DIR__));
+    define('GLPI_ROOT', dirname(__DIR__));
 }
 
 use Glpi\Application\ErrorHandler;
@@ -44,6 +45,12 @@ $skip_db_check               = true;
 include_once GLPI_ROOT . "/inc/db.function.php";
 include_once GLPI_ROOT . '/inc/config.php';
 
+if (Toolbox::getMemoryLimit() < (128 * 1024 * 1024)) {
+    // Main CSS compilation requires about 90MB of memory.
+    // Increase it a bit to ensure it will not reach memory limit.
+    ini_set('memory_limit', '128M');
+}
+
 // Ensure warnings will not break CSS output.
 ErrorHandler::getInstance()->disableOutput();
 
@@ -54,11 +61,11 @@ header('Content-Type: text/css');
 $is_cacheable = !isset($_GET['debug']) && !isset($_GET['nocache']);
 if ($is_cacheable) {
    // Makes CSS cacheable by browsers and proxies
-   $max_age = WEEK_TIMESTAMP;
-   header_remove('Pragma');
-   header('Cache-Control: public');
-   header('Cache-Control: max-age=' . $max_age);
-   header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $max_age));
+    $max_age = WEEK_TIMESTAMP;
+    header_remove('Pragma');
+    header('Cache-Control: public');
+    header('Cache-Control: max-age=' . $max_age);
+    header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $max_age));
 }
 
 echo $css;

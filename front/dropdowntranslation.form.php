@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -34,14 +35,14 @@
  * @since 0.85
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 $translation = new DropdownTranslation();
 if (isset($_POST['add'])) {
-   $translation->add($_POST);
+    $translation->add($_POST);
 } else if (isset($_POST['update'])) {
-   $translation->update($_POST);
+    $translation->update($_POST);
 } else if (isset($_POST['purge'])) {
-   $translation->delete($_POST, 1);
+    $translation->delete($_POST, 1);
 }
 Html::back();

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -35,11 +36,11 @@
  */
 
 $migration->addField('glpi_cartridgeitems', 'stock_target', 'int', [
-   'value'  => 0,
-   'after'  => 'alarm_threshold'
+    'value'  => 0,
+    'after'  => 'alarm_threshold'
 ]);
 
 $migration->addField('glpi_consumableitems', 'stock_target', 'int', [
-   'value'  => 0,
-   'after'  => 'alarm_threshold'
+    'value'  => 0,
+    'after'  => 'alarm_threshold'
 ]);

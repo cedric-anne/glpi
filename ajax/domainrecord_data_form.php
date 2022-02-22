@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,19 +31,17 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 Html::header_nocache();
 
 Session::checkLoginUser();
 
 $domainrecordtype = new DomainRecordType();
-if (!array_key_exists('domainrecordtypes_id', $_REQUEST)
-    || !$domainrecordtype->getFromDB($_REQUEST['domainrecordtypes_id'])) {
-   $domainrecordtype->getEmpty();
+if (
+    !array_key_exists('domainrecordtypes_id', $_REQUEST)
+    || !$domainrecordtype->getFromDB($_REQUEST['domainrecordtypes_id'])
+) {
+    $domainrecordtype->getEmpty();
 }
 
-Html::popHeader($domainrecordtype->fields['name']);
-
 $domainrecordtype->showDataAjaxForm($_REQUEST['str_input_id'] ?? '', $_REQUEST['obj_input_id'] ?? '');
-
-Html::popFooter();

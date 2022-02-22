@@ -1,7 +1,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -29,32 +29,45 @@
  * ---------------------------------------------------------------------
  */
 
-/* global GLPI */
+#tree_browse {
+    display: flex;
+    align-items: stretch;
 
-require('../../../js/modules/Search/GenericView.js');
+    .browser_tree {
+        flex-basis: 250px;
+        flex-shrink: 0;
+        padding-right: 10px;
+        padding-left: 2px;
 
-describe('Search GenericView', () => {
-   beforeEach(() => {
-      jest.clearAllMocks();
-   });
-   $(document.body).append(`
-    <div class="ajax-container search-display-data">
-        <div id="generic-search-view" class="search-container"></div>
-    </div>
-`);
+        .browser-tree-container {
+            overflow-x: hidden;
+            overflow-y: auto;
+            flex: 1;
 
-   const generic_view = new GLPI.Search.GenericView('generic-search-view');
-   test('Class exists', () => {
-      expect(GLPI).toBeDefined();
-      expect(GLPI.Search).toBeDefined();
-      expect(GLPI.Search.GenericView).toBeDefined();
-   });
-   test('getElement', () => {
-      expect(generic_view.getElement().length).toBe(1);
-   });
-   test('getResultsView', () => {
-      generic_view.getElement().closest('.ajax-container').data('js_class', {test: 'Test'});
-      expect(generic_view.getResultsView()).toBeObject();
-      expect(generic_view.getResultsView()).toHaveProperty('test');
-   });
-});
+            .fancytree-container {
+                overflow-y: auto;
+
+                i.fa.sub_items {
+                    color: #787878;
+                }
+            }
+        }
+
+        .browser_tree_search {
+            width: 100%;
+            margin-bottom: 5px;
+            padding: 10px 5px;
+            border-radius: 0;
+            box-sizing: border-box;
+        }
+    }
+
+    .browser_items {
+        width: 100%;
+        margin-left: 5px;
+
+        .tab_cadre_pager {
+            width: 100%;
+        }
+    }
+}

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -36,40 +37,44 @@ require_once 'CommonDropdown.php';
 
 /* Test for inc/operatingsystemkernel.class.php */
 
-class OperatingSystemKernel extends CommonDropdown {
+class OperatingSystemKernel extends CommonDropdown
+{
+    public function getObjectClass()
+    {
+        return '\OperatingSystemKernel';
+    }
 
-   public function getObjectClass() {
-      return '\OperatingSystemKernel';
-   }
+    public function typenameProvider()
+    {
+        return [
+            [\OperatingSystemKernel::getTypeName(), 'Kernels'],
+            [\OperatingSystemKernel::getTypeName(0), 'Kernels'],
+            [\OperatingSystemKernel::getTypeName(10), 'Kernels'],
+            [\OperatingSystemKernel::getTypeName(1), 'Kernel']
+        ];
+    }
 
-   public function typenameProvider() {
-      return [
-         [\OperatingSystemKernel::getTypeName(), 'Kernels'],
-         [\OperatingSystemKernel::getTypeName(0), 'Kernels'],
-         [\OperatingSystemKernel::getTypeName(10), 'Kernels'],
-         [\OperatingSystemKernel::getTypeName(1), 'Kernel']
-      ];
-   }
+    protected function getTabs()
+    {
+        return [
+            'OperatingSystemKernel$main'  => 'Kernel',
+            'Log$1'                       => 'Historical'
+        ];
+    }
 
-   protected function getTabs() {
-      return [
-         'OperatingSystemKernel$main'  =>'Kernel',
-         'Log$1'                       => 'Historical'
-      ];
-   }
-
-   /**
-    * Create new Kernel in database
-    *
-    * @return void
-    */
-   protected function newInstance() {
-      $this->newTestedInstance();
-      $this->integer(
-         (int)$this->testedInstance->add([
-            'name' => 'Kernel name ' . $this->getUniqueString()
-         ])
-      )->isGreaterThan(0);
-      $this->boolean($this->testedInstance->getFromDB($this->testedInstance->getID()))->isTrue();
-   }
+    /**
+     * Create new Kernel in database
+     *
+     * @return void
+     */
+    protected function newInstance()
+    {
+        $this->newTestedInstance();
+        $this->integer(
+            (int)$this->testedInstance->add([
+                'name' => 'Kernel name ' . $this->getUniqueString()
+            ])
+        )->isGreaterThan(0);
+        $this->boolean($this->testedInstance->getFromDB($this->testedInstance->getID()))->isTrue();
+    }
 }

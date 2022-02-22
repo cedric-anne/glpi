@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -35,7 +36,7 @@ use Glpi\Csv\StatCsvExport;
 use Glpi\Http\Response;
 use Glpi\Stat\StatData;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 // Check rights
 Session::checkRight("statistic", READ);

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,21 +31,21 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 if (isset($_POST['reinit_network'])) {
-
-   if (Session::haveRight('internet', UPDATE)
-       // Check access to all entities
-       && Session::canViewAllEntities()) {
-      IPNetwork::recreateTree();
-      Session::addMessageAfterRedirect(__('Successfully recreated network tree'));
-      Html::back();
-   } else {
-      Html::displayRightError();
-   }
-
+    if (
+        Session::haveRight('internet', UPDATE)
+        // Check access to all entities
+        && Session::canViewAllEntities()
+    ) {
+        IPNetwork::recreateTree();
+        Session::addMessageAfterRedirect(__('Successfully recreated network tree'));
+        Html::back();
+    } else {
+        Html::displayRightError();
+    }
 }
 
 $dropdown = new IPNetwork();
-include (GLPI_ROOT . "/front/dropdown.common.form.php");
+include(GLPI_ROOT . "/front/dropdown.common.form.php");

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,14 +33,17 @@
 
 namespace Glpi\Exception;
 
-class PasswordTooWeakException extends \Exception {
-   private $messages = [];
+class PasswordTooWeakException extends \Exception
+{
+    private $messages = [];
 
-   public function addMessage($message) {
-      $this->messages[] = $message;
-   }
+    public function addMessage($message)
+    {
+        $this->messages[] = $message;
+    }
 
-   public function getMessages() {
-      return $this->messages;
-   }
+    public function getMessages()
+    {
+        return $this->messages;
+    }
 }

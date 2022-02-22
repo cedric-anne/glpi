@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -34,27 +35,26 @@
  * Show network port by network equipment
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("reports", READ);
 
 // Titre
 if (isset($_POST["switch"]) && $_POST["switch"]) {
-   Html::header(Report::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "report");
+    Html::header(Report::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "report");
 
-   Report::title();
+    Report::title();
 
-   $name = Dropdown::getDropdownName("glpi_networkequipments", $_POST["switch"]);
-   echo "<div class='center spaced'><h2>".sprintf(__('Network report by hardware: %s'), $name).
+    $name = Dropdown::getDropdownName("glpi_networkequipments", $_POST["switch"]);
+    echo "<div class='center spaced'><h2>" . sprintf(__('Network report by hardware: %s'), $name) .
         "</h2></div>";
-   Report::reportForNetworkInformations(
-      'glpi_networkequipments AS ITEM', //from
-      ['PORT_1' => 'items_id', 'ITEM' => 'id', ['AND' => ['PORT_1.itemtype' => 'NetworkEquipment']]], //joincrit
-      ['ITEM.id' => $_POST['switch']] //where
-   );
+    Report::reportForNetworkInformations(
+        'glpi_networkequipments AS ITEM', //from
+        ['PORT_1' => 'items_id', 'ITEM' => 'id', ['AND' => ['PORT_1.itemtype' => 'NetworkEquipment']]], //joincrit
+        ['ITEM.id' => $_POST['switch']] //where
+    );
 
-   Html::footer();
-
+    Html::footer();
 } else {
-   Html::redirect($CFG_GLPI['root_doc']."/front/report.networking.php");
+    Html::redirect($CFG_GLPI['root_doc'] . "/front/report.networking.php");
 }

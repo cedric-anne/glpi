@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -40,213 +41,225 @@ use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
  *
  * @since 9.5.0
  */
-trait CalDAVUriUtilTrait {
+trait CalDAVUriUtilTrait
+{
+    /**
+     * Get principal URI, relative to CalDAV server root.
+     *
+     * @param \CommonDBTM $item
+     *
+     * @return string|null
+     */
+    protected function getPrincipalUri(\CommonDBTM $item)
+    {
 
-   /**
-    * Get principal URI, relative to CalDAV server root.
-    *
-    * @param \CommonDBTM $item
-    *
-    * @return string|null
-    */
-   protected function getPrincipalUri(\CommonDBTM $item) {
+        $principal_uri = null;
 
-      $principal_uri = null;
+        switch (get_class($item)) {
+            case \Group::class:
+                $principal_uri = $this->getGroupPrincipalUri($item->fields['id']);
+                break;
+            case \User::class:
+                $principal_uri = $this->getUserPrincipalUri($item->fields['name']);
+                break;
+        }
 
-      switch (get_class($item)) {
-         case \Group::class:
-            $principal_uri = $this->getGroupPrincipalUri($item->fields['id']);
-            break;
-         case \User::class:
-            $principal_uri = $this->getUserPrincipalUri($item->fields['name']);
-            break;
-      }
+        return $principal_uri;
+    }
 
-      return $principal_uri;
-   }
+    /**
+     * Get principal URI for a group, relative to CalDAV server root.
+     *
+     * @param integer $group_id
+     *
+     * @return string
+     */
+    protected function getGroupPrincipalUri($group_id)
+    {
+        return Principal::PREFIX_GROUPS . '/' . $group_id;
+    }
 
-   /**
-    * Get principal URI for a group, relative to CalDAV server root.
-    *
-    * @param integer $group_id
-    *
-    * @return string
-    */
-   protected function getGroupPrincipalUri($group_id) {
-      return Principal::PREFIX_GROUPS . '/' . $group_id;
-   }
+    /**
+     * Get principal URI for a user, relative to CalDAV server root.
+     *
+     * @param string $username
+     *
+     * @return string|null
+     */
+    protected function getUserPrincipalUri($username)
+    {
+        return Principal::PREFIX_USERS . '/' . $username;
+        ;
+    }
 
-   /**
-    * Get principal URI for a user, relative to CalDAV server root.
-    *
-    * @param string $username
-    *
-    * @return string|null
-    */
-   protected function getUserPrincipalUri($username) {
-      return Principal::PREFIX_USERS . '/' . $username;;
-   }
+    /**
+     * Return item corresponding to given URI.
+     *
+     * @param string $uri
+     *
+     * @return \CommonDBTM|null
+     */
+    protected function getPrincipalItemFromUri($uri)
+    {
+        $principal_itemtype = $this->getPrincipalItemtypeFromUri($uri);
 
-   /**
-    * Return item corresponding to given URI.
-    *
-    * @param string $uri
-    *
-    * @return \CommonDBTM|null
-    */
-   protected function getPrincipalItemFromUri($uri) {
-      $principal_itemtype = $this->getPrincipalItemtypeFromUri($uri);
+        if (
+            null === $principal_itemtype || !class_exists($principal_itemtype)
+            || !is_a($principal_itemtype, \CommonDBTM::class, true)
+        ) {
+            return null;
+        }
 
-      if (null === $principal_itemtype || !class_exists($principal_itemtype)
-          || !is_a($principal_itemtype, \CommonDBTM::class, true)) {
-         return null;
-      }
+        $item  = new $principal_itemtype();
+        switch ($principal_itemtype) {
+            case \Group::class:
+                $found = $item->getFromDB($this->getGroupIdFromPrincipalUri($uri));
+                break;
+            case \User::class:
+                $found = $item->getFromDBbyName($this->getUsernameFromPrincipalUri($uri));
+                break;
+        }
 
-      $item  = new $principal_itemtype();
-      switch ($principal_itemtype) {
-         case \Group::class:
-            $found = $item->getFromDB($this->getGroupIdFromPrincipalUri($uri));
-            break;
-         case \User::class:
-            $found = $item->getFromDBbyName($this->getUsernameFromPrincipalUri($uri));
-            break;
-      }
+        return $found ? $item : null;
+    }
 
-      return $found ? $item : null;
-   }
+    /**
+     * Return itemtype corresponding to given URI.
+     *
+     * @param string $uri
+     *
+     * @return string|null
+     */
+    protected function getPrincipalItemtypeFromUri($uri)
+    {
+        $uri_parts = \Sabre\Uri\split($uri);
+        $prefix = $uri_parts[0];
 
-   /**
-    * Return itemtype corresponding to given URI.
-    *
-    * @param string $uri
-    *
-    * @return string|null
-    */
-   protected function getPrincipalItemtypeFromUri($uri) {
-      $uri_parts = \Sabre\Uri\split($uri);
-      $prefix = $uri_parts[0];
+        $itemtype = null;
 
-      $itemtype = null;
+        switch ($prefix) {
+            case Principal::PREFIX_GROUPS:
+                $itemtype = \Group::class;
+                break;
+            case Principal::PREFIX_USERS:
+                $itemtype = \User::class;
+                break;
+        }
 
-      switch ($prefix) {
-         case Principal::PREFIX_GROUPS:
-            $itemtype = \Group::class;
-            break;
-         case Principal::PREFIX_USERS:
-            $itemtype = \User::class;
-            break;
-      }
+        return $itemtype;
+    }
 
-      return $itemtype;
-   }
+    /**
+     * Return group id corresponding to given principal URI.
+     *
+     * @param string $uri
+     *
+     * @return string|null
+     */
+    protected function getGroupIdFromPrincipalUri($uri)
+    {
+        $uri_parts = \Sabre\Uri\split($uri);
+        return \Group::class === $this->getPrincipalItemtypeFromUri($uri) ? $uri_parts[1] : null;
+    }
 
-   /**
-    * Return group id corresponding to given principal URI.
-    *
-    * @param string $uri
-    *
-    * @return string|null
-    */
-   protected function getGroupIdFromPrincipalUri($uri) {
-      $uri_parts = \Sabre\Uri\split($uri);
-      return \Group::class === $this->getPrincipalItemtypeFromUri($uri) ? $uri_parts[1] : null;
-   }
+    /**
+     * Return user name corresponding to given principal URI.
+     *
+     * @param string $uri
+     *
+     * @return string|null
+     */
+    protected function getUsernameFromPrincipalUri($uri)
+    {
+        $uri_parts = \Sabre\Uri\split($uri);
+        return \User::class === $this->getPrincipalItemtypeFromUri($uri) ? $uri_parts[1] : null;
+    }
 
-   /**
-    * Return user name corresponding to given principal URI.
-    *
-    * @param string $uri
-    *
-    * @return string|null
-    */
-   protected function getUsernameFromPrincipalUri($uri) {
-      $uri_parts = \Sabre\Uri\split($uri);
-      return \User::class === $this->getPrincipalItemtypeFromUri($uri) ? $uri_parts[1] : null;
-   }
+    /**
+     * Returns calendar item for given UID.
+     *
+     * @param string  $uid
+     *
+     * @return CalDAVCompatibleItemInterface|null
+     */
+    protected function getCalendarItemForUid($uid)
+    {
 
-   /**
-    * Returns calendar item for given UID.
-    *
-    * @param string  $uid
-    *
-    * @return CalDAVCompatibleItemInterface|null
-    */
-   protected function getCalendarItemForUid($uid) {
+        global $CFG_GLPI, $DB;
 
-      global $CFG_GLPI, $DB;
+        $union = new \QueryUnion();
+        foreach ($CFG_GLPI['planning_types'] as $itemtype) {
+            if (!is_a($itemtype, CalDAVCompatibleItemInterface::class, true)) {
+                continue;
+            }
 
-      $union = new \QueryUnion();
-      foreach ($CFG_GLPI['planning_types'] as $itemtype) {
-         if (!is_a($itemtype, CalDAVCompatibleItemInterface::class, true)) {
-            continue;
-         }
-
-         $union->addQuery(
-            [
-               'SELECT' => [
-                  'id',
-                  new \QueryExpression(
-                     $DB->quoteValue($itemtype) . ' AS ' . $DB->quoteName('itemtype')
-                  ),
-               ],
-               'FROM'   => getTableForItemType($itemtype),
-               'WHERE'  => [
-                  'uuid' => $uid,
-               ]
-            ]
-         );
-      }
-
-      $items_iterator = $DB->request(
-         [
-            'SELECT'   => [
-               'id',
-               'itemtype'
-            ],
-            'DISTINCT' => true,
-            'FROM'     => $union,
-         ]
-      );
-
-      if ($items_iterator->count() !== 1) {
-         if ($items_iterator->count() > 1) {
-            // Ambiguous response, unable to return matching element.
-            // Should never happens as UID has very very low probability to not be unique.
-            trigger_error(
-               sprintf(
-                  'Multiple calendar items found with uuid %s. Unable to determine which item should be returned.',
-                  $uid
-               ),
-               E_USER_WARNING
+            $union->addQuery(
+                [
+                    'SELECT' => [
+                        'id',
+                        new \QueryExpression(
+                            $DB->quoteValue($itemtype) . ' AS ' . $DB->quoteName('itemtype')
+                        ),
+                    ],
+                    'FROM'   => getTableForItemType($itemtype),
+                    'WHERE'  => [
+                        'uuid' => $uid,
+                    ]
+                ]
             );
-         }
-         return null;
-      }
+        }
 
-      $item_specs = $items_iterator->current();
-      if (!is_a($item_specs['itemtype'], CalDAVCompatibleItemInterface::class, true)) {
-         return null;
-      }
+        $items_iterator = $DB->request(
+            [
+                'SELECT'   => [
+                    'id',
+                    'itemtype'
+                ],
+                'DISTINCT' => true,
+                'FROM'     => $union,
+            ]
+        );
 
-      if (!$item = getItemForItemtype($item_specs['itemtype'])) {
-         return null;
-      }
+        if ($items_iterator->count() !== 1) {
+            if ($items_iterator->count() > 1) {
+                // Ambiguous response, unable to return matching element.
+                // Should never happens as UID has very very low probability to not be unique.
+                trigger_error(
+                    sprintf(
+                        'Multiple calendar items found with uuid %s. Unable to determine which item should be returned.',
+                        $uid
+                    ),
+                    E_USER_WARNING
+                );
+            }
+            return null;
+        }
 
-      if (!$item->getFromDB($item_specs['id'])) {
-         return null;
-      }
+        $item_specs = $items_iterator->current();
+        if (!is_a($item_specs['itemtype'], CalDAVCompatibleItemInterface::class, true)) {
+            return null;
+        }
 
-      return $item;
-   }
+        if (!$item = getItemForItemtype($item_specs['itemtype'])) {
+            return null;
+        }
 
-   /**
-    * Returns calendar item for given path.
-    *
-    * @param string  $path
-    *
-    * @return CalDAVCompatibleItemInterface|null
-    */
-   protected function getCalendarItemForPath($path) {
-      return $this->getCalendarItemForUid(preg_replace('/\.ics$/', '', $path));
-   }
+        if (!$item->getFromDB($item_specs['id'])) {
+            return null;
+        }
+
+        return $item;
+    }
+
+    /**
+     * Returns calendar item for given path.
+     *
+     * @param string  $path
+     *
+     * @return CalDAVCompatibleItemInterface|null
+     */
+    protected function getCalendarItemForPath($path)
+    {
+        return $this->getCalendarItemForUid(preg_replace('/\.ics$/', '', $path));
+    }
 }

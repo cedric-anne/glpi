@@ -8,7 +8,7 @@ bin/console glpi:database:install \
   --config-dir=./tests/config --ansi --no-interaction \
   --force \
   --reconfigure --db-name=glpi --db-host=db --db-user=root \
-  --log-deprecation-warnings \
+  --strict-configuration \
   | tee $LOG_FILE
 if [[ -n $(grep "Warning" $LOG_FILE) ]];
   then echo "glpi:database:install command FAILED" && exit 1;
@@ -18,6 +18,7 @@ fi
 bin/console glpi:database:check_schema_integrity --config-dir=./tests/config --ansi --no-interaction --strict
 bin/console glpi:tools:check_database_keys --config-dir=./tests/config --ansi --no-interaction --detect-useless-keys
 bin/console glpi:tools:check_database_schema_consistency --config-dir=./tests/config --ansi --no-interaction
+tests/bin/test-data-sanitization --ansi --no-interaction
 
 # Execute update
 ## Should do nothing.

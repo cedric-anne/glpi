@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -36,12 +37,13 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/controller.class.php */
 
-class Controller extends AbstractInventoryAsset {
-
-   protected function assetProvider() :array {
-      return [
-         [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+class Controller extends AbstractInventoryAsset
+{
+    protected function assetProvider(): array
+    {
+        return [
+            [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <CONTROLLERS>
@@ -61,9 +63,9 @@ class Controller extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"caption": "Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers", "driver": "skl_uncore", "manufacturer": "Intel Corporation", "name": "Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers", "pciclass": "0600", "pcislot": "00:00.0", "productid": "1904", "rev": "08", "type": "Host bridge", "vendorid": "8086", "designation": "Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers", "manufacturers_id": "Intel Corporation", "interfacetypes_id": "Host bridge", "is_dynamic": 1}'
-         ], [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"caption": "Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers", "driver": "skl_uncore", "manufacturer": "Intel Corporation", "name": "Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers", "pciclass": "0600", "pcislot": "00:00.0", "productid": "1904", "rev": "08", "type": "Host bridge", "vendorid": "8086", "designation": "Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers", "manufacturers_id": "Intel Corporation", "interfacetypes_id": "Host bridge", "is_dynamic": 1}'
+            ], [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <CONTROLLERS>
@@ -83,60 +85,63 @@ class Controller extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"caption": "NVMe SSD Controller SM951/PM951", "driver": "nvme", "manufacturer": "Samsung Electronics Co Ltd", "name": "NVMe SSD Controller SM951/PM951", "pciclass": "0108", "pcislot": "3c:00.0", "productid": "a802", "rev": "01", "type": "Non-Volatile memory controller", "vendorid": "144d", "designation": "NVMe SSD Controller SM951/PM951", "manufacturers_id": "Samsung Electronics Co Ltd", "interfacetypes_id": "Non-Volatile memory controller", "is_dynamic": 1}'
-         ]
-      ];
-   }
+                'expected'  => '{"caption": "NVMe SSD Controller SM951/PM951", "driver": "nvme", "manufacturer": "Samsung Electronics Co Ltd", "name": "NVMe SSD Controller SM951/PM951", "pciclass": "0108", "pcislot": "3c:00.0", "productid": "a802", "rev": "01", "type": "Non-Volatile memory controller", "vendorid": "144d", "designation": "NVMe SSD Controller SM951/PM951", "manufacturers_id": "Samsung Electronics Co Ltd", "interfacetypes_id": "Non-Volatile memory controller", "is_dynamic": 1}'
+            ]
+        ];
+    }
 
-   /**
-    * @dataProvider assetProvider
-    */
-   public function testPrepare($xml, $expected) {
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($xml);
-      $json = json_decode($data);
+    /**
+     * @dataProvider assetProvider
+     */
+    public function testPrepare($xml, $expected)
+    {
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\Controller($computer, $json->content->controllers);
-      $asset->setExtraData((array)$json->content);
-      $result = $asset->prepare();
-      $this->object($result[0])->isEqualTo(json_decode($expected));
-   }
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $asset = new \Glpi\Inventory\Asset\Controller($computer, $json->content->controllers);
+        $asset->setExtraData((array)$json->content);
+        $result = $asset->prepare();
+        $this->object($result[0])->isEqualTo(json_decode($expected));
+    }
 
-   public function testHandle() {
-      $computer = getItemByTypeName('Computer', '_test_pc01');
+    public function testHandle()
+    {
+        $computer = getItemByTypeName('Computer', '_test_pc01');
 
-      //first, check there are no controller linked to this computer
-      $idc = new \Item_DeviceControl();
-      $this->boolean($idc->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+       //first, check there are no controller linked to this computer
+        $idc = new \Item_DeviceControl();
+        $this->boolean($idc->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isFalse('A controller is already linked to computer!');
 
-      //convert data
-      $expected = $this->assetProvider()[0];
+       //convert data
+        $expected = $this->assetProvider()[0];
 
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($expected['xml']);
-      $json = json_decode($data);
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($expected['xml']);
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\Controller($computer, $json->content->controllers);
-      $asset->setExtraData((array)$json->content);
-      $result = $asset->prepare();
-      $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $asset = new \Glpi\Inventory\Asset\Controller($computer, $json->content->controllers);
+        $asset->setExtraData((array)$json->content);
+        $result = $asset->prepare();
+        $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
 
-      //handle
-      $asset->handleLinks();
-      $asset->handle();
-      $this->boolean($idc->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+       //handle
+        $asset->handleLinks();
+        $asset->handle();
+        $this->boolean($idc->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isTrue('Controller has not been linked to computer :(');
-   }
+    }
 
-   public function testInventoryUpdate() {
-      $computer = new \Computer();
-      $device_control = new \DeviceControl();
-      $item_control = new \Item_DeviceControl();
+    public function testInventoryUpdate()
+    {
+        $computer = new \Computer();
+        $device_control = new \DeviceControl();
+        $item_control = new \Item_DeviceControl();
 
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <CONTROLLERS>
@@ -175,93 +180,93 @@ class Controller extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      //create manually a computer, with 3 controllers
-      $computers_id = $computer->add([
-         'name'   => 'pc002',
-         'serial' => 'ggheb7ne7',
-         'entities_id' => 0
-      ]);
-      $this->integer($computers_id)->isGreaterThan(0);
+       //create manually a computer, with 3 controllers
+        $computers_id = $computer->add([
+            'name'   => 'pc002',
+            'serial' => 'ggheb7ne7',
+            'entities_id' => 0
+        ]);
+        $this->integer($computers_id)->isGreaterThan(0);
 
-      $manufacturer = new \Manufacturer();
-      $manufacturers_id = $manufacturer->add([
-         'name' => 'Intel Corporation'
-      ]);
-      $this->integer($manufacturers_id)->isGreaterThan(0);
+        $manufacturer = new \Manufacturer();
+        $manufacturers_id = $manufacturer->add([
+            'name' => 'Intel Corporation'
+        ]);
+        $this->integer($manufacturers_id)->isGreaterThan(0);
 
-      $controller_1_id = $device_control->add([
-         'designation' => 'Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers',
-         'manufacturers_id' => $manufacturers_id,
-         'entities_id'  => 0
-      ]);
-      $this->integer($controller_1_id)->isGreaterThan(0);
+        $controller_1_id = $device_control->add([
+            'designation' => 'Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers',
+            'manufacturers_id' => $manufacturers_id,
+            'entities_id'  => 0
+        ]);
+        $this->integer($controller_1_id)->isGreaterThan(0);
 
-      $item_controller_1_id = $item_control->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicecontrols_id' => $controller_1_id
-      ]);
+        $item_controller_1_id = $item_control->add([
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicecontrols_id' => $controller_1_id
+        ]);
 
-      $manufacturer = new \Manufacturer();
-      $manufacturers_id = $manufacturer->add([
-         'name' => 'Samsung Electronics Co Ltd'
-      ]);
+        $manufacturer = new \Manufacturer();
+        $manufacturers_id = $manufacturer->add([
+            'name' => 'Samsung Electronics Co Ltd'
+        ]);
 
-      $controller_2_id = $device_control->add([
-         'designation' => 'NVMe SSD Controller SM951/PM951',
-         'manufacturers_id' => $manufacturers_id,
-         'entities_id'  => 0
-      ]);
-      $this->integer($controller_2_id)->isGreaterThan(0);
+        $controller_2_id = $device_control->add([
+            'designation' => 'NVMe SSD Controller SM951/PM951',
+            'manufacturers_id' => $manufacturers_id,
+            'entities_id'  => 0
+        ]);
+        $this->integer($controller_2_id)->isGreaterThan(0);
 
-      $item_controller_2_id = $item_control->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicecontrols_id' => $controller_2_id
-      ]);
-      $this->integer($item_controller_2_id)->isGreaterThan(0);
+        $item_controller_2_id = $item_control->add([
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicecontrols_id' => $controller_2_id
+        ]);
+        $this->integer($item_controller_2_id)->isGreaterThan(0);
 
-      $controller_3_id = $device_control->add([
-         'designation' => 'My Controller',
-         'manufacturers_id' => $manufacturers_id,
-         'entities_id'  => 0
-      ]);
-      $this->integer($controller_3_id)->isGreaterThan(0);
+        $controller_3_id = $device_control->add([
+            'designation' => 'My Controller',
+            'manufacturers_id' => $manufacturers_id,
+            'entities_id'  => 0
+        ]);
+        $this->integer($controller_3_id)->isGreaterThan(0);
 
-      $item_controller_3_id = $item_control->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicecontrols_id' => $controller_3_id
-      ]);
-      $this->integer($item_controller_3_id)->isGreaterThan(0);
+        $item_controller_3_id = $item_control->add([
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicecontrols_id' => $controller_3_id
+        ]);
+        $this->integer($item_controller_3_id)->isGreaterThan(0);
 
-      $controllers = $item_control->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($controllers))->isIdenticalTo(3);
-      foreach ($controllers as $controller) {
-         $this->variable($controller['is_dynamic'])->isEqualTo(0);
-      }
+        $controllers = $item_control->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($controllers))->isIdenticalTo(3);
+        foreach ($controllers as $controller) {
+            $this->variable($controller['is_dynamic'])->isEqualTo(0);
+        }
 
-      //computer inventory knows only "Xeon" and "NVMe SSD" controllers
-      $this->doInventory($xml_source, true);
+       //computer inventory knows only "Xeon" and "NVMe SSD" controllers
+        $this->doInventory($xml_source, true);
 
-      //we still have 3 controllers
-      $controllers = $device_control->find();
-      $this->integer(count($controllers))->isIdenticalTo(3);
+       //we still have 3 controllers
+        $controllers = $device_control->find();
+        $this->integer(count($controllers))->isIdenticalTo(3);
 
-      //we still have 3 controllers items linked to the computer
-      $controllers = $item_control->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($controllers))->isIdenticalTo(3);
+       //we still have 3 controllers items linked to the computer
+        $controllers = $item_control->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($controllers))->isIdenticalTo(3);
 
-      //controllers present in the inventory source are now dynamic
-      $controllers = $item_control->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
-      $this->integer(count($controllers))->isIdenticalTo(2);
+       //controllers present in the inventory source are now dynamic
+        $controllers = $item_control->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($controllers))->isIdenticalTo(2);
 
-      //controller not present in the inventory is still not dynamic
-      $controllers = $item_control->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
-      $this->integer(count($controllers))->isIdenticalTo(1);
+       //controller not present in the inventory is still not dynamic
+        $controllers = $item_control->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+        $this->integer(count($controllers))->isIdenticalTo(1);
 
-      //Redo inventory, but with removed "NVMe SSD" controller
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+       //Redo inventory, but with removed "NVMe SSD" controller
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <CONTROLLERS>
@@ -288,22 +293,22 @@ class Controller extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      $this->doInventory($xml_source, true);
+        $this->doInventory($xml_source, true);
 
-      //we still have 3 controllers
-      $controllers = $device_control->find();
-      $this->integer(count($controllers))->isIdenticalTo(3);
+       //we still have 3 controllers
+        $controllers = $device_control->find();
+        $this->integer(count($controllers))->isIdenticalTo(3);
 
-      //we now have 2 controllers linked to computer only
-      $controllers = $item_control->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($controllers))->isIdenticalTo(2);
+       //we now have 2 controllers linked to computer only
+        $controllers = $item_control->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($controllers))->isIdenticalTo(2);
 
-      //controller present in the inventory source is still dynamic
-      $controllers = $item_control->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
-      $this->integer(count($controllers))->isIdenticalTo(1);
+       //controller present in the inventory source is still dynamic
+        $controllers = $item_control->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($controllers))->isIdenticalTo(1);
 
-      //controller not present in the inventory is still not dynamic
-      $controllers = $item_control->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
-      $this->integer(count($controllers))->isIdenticalTo(1);
-   }
+       //controller not present in the inventory is still not dynamic
+        $controllers = $item_control->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+        $this->integer(count($controllers))->isIdenticalTo(1);
+    }
 }

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,11 +33,10 @@
 
 /// Mandatory fields for problem template class
 /// since version 0.83
-class ProblemTemplateMandatoryField extends ITILTemplateMandatoryField {
-
+class ProblemTemplateMandatoryField extends ITILTemplateMandatoryField
+{
    // From CommonDBChild
-   static public $itemtype  = 'ProblemTemplate';
-   static public $items_id  = 'problemtemplates_id';
-   static public $itiltype = 'Problem';
-
+    public static $itemtype  = 'ProblemTemplate';
+    public static $items_id  = 'problemtemplates_id';
+    public static $itiltype = 'Problem';
 }

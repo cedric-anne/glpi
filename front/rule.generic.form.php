@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,15 +31,15 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkCentralAccess();
 
 if (isset($_GET["id"])) {
-   $generic_rule = new Rule;
-   $generic_rule->getFromDB($_GET["id"]);
-   $generic_rule->checkGlobal(READ);
+    $generic_rule = new Rule();
+    $generic_rule->getFromDB($_GET["id"]);
+    $generic_rule->checkGlobal(READ);
 
-   $rulecollection = RuleCollection::getClassByType($generic_rule->fields["sub_type"]);
-   include (GLPI_ROOT . "/front/rule.common.form.php");
+    $rulecollection = RuleCollection::getClassByType($generic_rule->fields["sub_type"]);
+    include(GLPI_ROOT . "/front/rule.common.form.php");
 }

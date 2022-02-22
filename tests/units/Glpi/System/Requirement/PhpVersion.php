@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,25 +33,27 @@
 
 namespace tests\units\Glpi\System\Requirement;
 
-class PhpVersion extends \GLPITestCase {
+class PhpVersion extends \GLPITestCase
+{
+    public function testCheckWithUpToDateVersion()
+    {
 
-   public function testCheckWithUpToDateVersion() {
-
-      $this->newTestedInstance(GLPI_MIN_PHP);
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
-      $this->array($this->testedInstance->getValidationMessages())
+        $this->newTestedInstance(GLPI_MIN_PHP, GLPI_MAX_PHP);
+        $this->boolean($this->testedInstance->isValidated())->isEqualTo(true);
+        $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(['PHP version (' . PHP_VERSION . ') is supported.']);
-   }
+    }
 
-   public function testCheckOutdatedVersion() {
+    public function testCheckOutdatedVersion()
+    {
 
-      $this->newTestedInstance('20.7');
-      $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
-      $this->array($this->testedInstance->getValidationMessages())
+        $this->newTestedInstance('20.7', '20.8');
+        $this->boolean($this->testedInstance->isValidated())->isEqualTo(false);
+        $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(
-            [
-               'PHP version must be at least 20.7.'
-            ]
+             [
+                 'PHP version must be between 20.7 and 20.8 (exclusive).'
+             ]
          );
-   }
+    }
 }

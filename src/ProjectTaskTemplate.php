@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -33,221 +34,240 @@
 /**
  * Template for task
  * @since 9.2
-**/
-class ProjectTaskTemplate extends CommonDropdown {
-
+ **/
+class ProjectTaskTemplate extends CommonDropdown
+{
    // From CommonDBTM
-   public $dohistory          = true;
-   public $can_be_translated  = true;
+    public $dohistory          = true;
+    public $can_be_translated  = true;
 
-   static $rightname          = 'project';
+    public static $rightname          = 'project';
 
-   static function getTypeName($nb = 0) {
-      return _n('Project task template', 'Project task templates', $nb);
-   }
-
-
-   function getAdditionalFields() {
-
-      return [['name'  => 'projectstates_id',
-               'label' => _x('item', 'State'),
-               'type'  => 'dropdownValue',
-               'list'  => true],
-              ['name'  => 'projecttasktypes_id',
-               'label' => _n('Type', 'Types', 1),
-               'type'  => 'dropdownValue'],
-              ['name'  => 'projecttasks_id',
-               'label' => __('As child of'),
-               'type'  => 'dropdownValue'],
-              ['name'  => 'percent_done',
-               'label' => __('Percent done'),
-               'type'  => 'percent_done'],
-              ['name'  => 'is_milestone',
-               'label' => __('Milestone'),
-               'type'  => 'bool'],
-              ['name'  => 'plan_start_date',
-               'label' => __('Planned start date'),
-               'type'  => 'datetime'],
-              ['name'  => 'real_start_date',
-               'label' => __('Real start date'),
-               'type'  => 'datetime'],
-              ['name'  => 'plan_end_date',
-               'label' => __('Planned end date'),
-               'type'  => 'datetime'],
-              ['name'  => 'real_end_date',
-               'label' => __('Real end date'),
-               'type'  => 'datetime'],
-              ['name'  => 'planned_duration',
-               'label' => __('Planned duration'),
-               'type'  => 'actiontime'],
-              ['name'  => 'effective_duration',
-               'label' => __('Effective duration'),
-               'type'  => 'actiontime'],
-              ['name'  => 'description',
-               'label' => __('Description'),
-               'type'  => 'tinymce'],
-              ['name'  => 'comments',
-               'label' => __('Comments'),
-               'type'  => 'textarea'],
-      ];
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Project task template', 'Project task templates', $nb);
+    }
 
 
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    public function getAdditionalFields()
+    {
 
-      $tab[] = [
-         'id'       => '4',
-         'name'     => _x('item', 'State'),
-         'field'    => 'name',
-         'table'    => 'glpi_projectstates',
-         'datatype' => 'dropdown',
-      ];
-
-      $tab[] = [
-         'id'       => '5',
-         'name'     => _n('Type', 'Types', 1),
-         'field'    => 'name',
-         'table'    => 'glpi_projecttasktypes',
-         'datatype' => 'dropdown',
-      ];
-
-      $tab[] = [
-         'id'       => '6',
-         'name'     => __('As child of'),
-         'field'    => 'name',
-         'table'    => 'glpi_projects',
-         'datatype' => 'itemlink',
-      ];
-
-      $tab[] = [
-         'id'       => '7',
-         'name'     => __('Percent done'),
-         'field'    => 'percent_done',
-         'table'    => $this->getTable(),
-         'datatype' => 'percent',
-      ];
-
-      $tab[] = [
-         'id'       => '8',
-         'name'     => __('Milestone'),
-         'field'    => 'is_milestone',
-         'table'    => $this->getTable(),
-         'datatype' => 'bool',
-      ];
-
-      $tab[] = [
-         'id'       => '9',
-         'name'     => __('Planned start date'),
-         'field'    => 'plan_start_date',
-         'table'    => $this->getTable(),
-         'datatype' => 'datetime',
-      ];
-
-      $tab[] = [
-         'id'       => '10',
-         'name'     => __('Real start date'),
-         'field'    => 'real_start_date',
-         'table'    => $this->getTable(),
-         'datatype' => 'datetime',
-      ];
-
-      $tab[] = [
-         'id'       => '11',
-         'name'     => __('Planned end date'),
-         'field'    => 'plan_end_date',
-         'table'    => $this->getTable(),
-         'datatype' => 'datetime',
-      ];
-
-      $tab[] = [
-         'id'       => '12',
-         'name'     => __('Real end date'),
-         'field'    => 'real_end_date',
-         'table'    => $this->getTable(),
-         'datatype' => 'datetime',
-      ];
-
-      $tab[] = [
-         'id'       => '13',
-         'name'     => __('Planned duration'),
-         'field'    => 'planned_duration',
-         'table'    => $this->getTable(),
-         'datatype' => 'actiontime',
-      ];
-
-      $tab[] = [
-         'id'       => '14',
-         'name'     => __('Effective duration'),
-         'field'    => 'effective_duration',
-         'table'    => $this->getTable(),
-         'datatype' => 'actiontime',
-      ];
-
-      $tab[] = [
-         'id'       => '15',
-         'name'     => __('Description'),
-         'field'    => 'description',
-         'table'    => $this->getTable(),
-         'datatype' => 'textarea',
-      ];
-
-      return $tab;
-   }
+        return [['name'  => 'projectstates_id',
+            'label' => _x('item', 'State'),
+            'type'  => 'dropdownValue',
+            'list'  => true
+        ],
+            ['name'  => 'projecttasktypes_id',
+                'label' => _n('Type', 'Types', 1),
+                'type'  => 'dropdownValue'
+            ],
+            ['name'  => 'projecttasks_id',
+                'label' => __('As child of'),
+                'type'  => 'dropdownValue'
+            ],
+            ['name'  => 'percent_done',
+                'label' => __('Percent done'),
+                'type'  => 'percent_done'
+            ],
+            ['name'  => 'is_milestone',
+                'label' => __('Milestone'),
+                'type'  => 'bool'
+            ],
+            ['name'  => 'plan_start_date',
+                'label' => __('Planned start date'),
+                'type'  => 'datetime'
+            ],
+            ['name'  => 'real_start_date',
+                'label' => __('Real start date'),
+                'type'  => 'datetime'
+            ],
+            ['name'  => 'plan_end_date',
+                'label' => __('Planned end date'),
+                'type'  => 'datetime'
+            ],
+            ['name'  => 'real_end_date',
+                'label' => __('Real end date'),
+                'type'  => 'datetime'
+            ],
+            ['name'  => 'planned_duration',
+                'label' => __('Planned duration'),
+                'type'  => 'actiontime'
+            ],
+            ['name'  => 'effective_duration',
+                'label' => __('Effective duration'),
+                'type'  => 'actiontime'
+            ],
+            ['name'  => 'description',
+                'label' => __('Description'),
+                'type'  => 'tinymce'
+            ],
+            ['name'  => 'comments',
+                'label' => __('Comments'),
+                'type'  => 'textarea'
+            ],
+        ];
+    }
 
 
-   function displaySpecificTypeField($ID, $field = [], array $options = []) {
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      switch ($field['type']) {
-         case 'percent_done' :
-            Dropdown::showNumber("percent_done", [
-               'value'     => $this->fields['percent_done'],
-               'min'       => 0,
-               'max'       => 100,
-               'step'      => 5,
-               'unit'      => '%',
-               'width'     => '100%',
-            ]);
-            break;
-         case 'actiontime' :
-            Dropdown::showTimeStamp($field["name"], [
-               'min'             => 0,
-               'max'             => 100 * HOUR_TIMESTAMP,
-               'step'            => HOUR_TIMESTAMP,
-               'value'           => $this->fields[$field["name"]],
-               'addfirstminutes' => true,
-               'inhours'         => true,
-               'width'           => '100%',
-            ]);
-            break;
-      }
-   }
+        $tab[] = [
+            'id'       => '4',
+            'name'     => _x('item', 'State'),
+            'field'    => 'name',
+            'table'    => 'glpi_projectstates',
+            'datatype' => 'dropdown',
+        ];
+
+        $tab[] = [
+            'id'       => '5',
+            'name'     => _n('Type', 'Types', 1),
+            'field'    => 'name',
+            'table'    => 'glpi_projecttasktypes',
+            'datatype' => 'dropdown',
+        ];
+
+        $tab[] = [
+            'id'       => '6',
+            'name'     => __('As child of'),
+            'field'    => 'name',
+            'table'    => 'glpi_projects',
+            'datatype' => 'itemlink',
+        ];
+
+        $tab[] = [
+            'id'       => '7',
+            'name'     => __('Percent done'),
+            'field'    => 'percent_done',
+            'table'    => $this->getTable(),
+            'datatype' => 'percent',
+        ];
+
+        $tab[] = [
+            'id'       => '8',
+            'name'     => __('Milestone'),
+            'field'    => 'is_milestone',
+            'table'    => $this->getTable(),
+            'datatype' => 'bool',
+        ];
+
+        $tab[] = [
+            'id'       => '9',
+            'name'     => __('Planned start date'),
+            'field'    => 'plan_start_date',
+            'table'    => $this->getTable(),
+            'datatype' => 'datetime',
+        ];
+
+        $tab[] = [
+            'id'       => '10',
+            'name'     => __('Real start date'),
+            'field'    => 'real_start_date',
+            'table'    => $this->getTable(),
+            'datatype' => 'datetime',
+        ];
+
+        $tab[] = [
+            'id'       => '11',
+            'name'     => __('Planned end date'),
+            'field'    => 'plan_end_date',
+            'table'    => $this->getTable(),
+            'datatype' => 'datetime',
+        ];
+
+        $tab[] = [
+            'id'       => '12',
+            'name'     => __('Real end date'),
+            'field'    => 'real_end_date',
+            'table'    => $this->getTable(),
+            'datatype' => 'datetime',
+        ];
+
+        $tab[] = [
+            'id'       => '13',
+            'name'     => __('Planned duration'),
+            'field'    => 'planned_duration',
+            'table'    => $this->getTable(),
+            'datatype' => 'actiontime',
+        ];
+
+        $tab[] = [
+            'id'       => '14',
+            'name'     => __('Effective duration'),
+            'field'    => 'effective_duration',
+            'table'    => $this->getTable(),
+            'datatype' => 'actiontime',
+        ];
+
+        $tab[] = [
+            'id'       => '15',
+            'name'     => __('Description'),
+            'field'    => 'description',
+            'table'    => $this->getTable(),
+            'datatype' => 'textarea',
+        ];
+
+        return $tab;
+    }
 
 
-   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+    public function displaySpecificTypeField($ID, $field = [], array $options = [])
+    {
 
-      if (!is_array($values)) {
-         $values = [$field => $values];
-      }
-      switch ($field) {
-         case 'type' :
-            $types = self::getTypes();
-            return $types[$values[$field]];
-      }
-      return parent::getSpecificValueToDisplay($field, $values, $options);
-   }
+        switch ($field['type']) {
+            case 'percent_done':
+                Dropdown::showNumber("percent_done", [
+                    'value'     => $this->fields['percent_done'],
+                    'min'       => 0,
+                    'max'       => 100,
+                    'step'      => 5,
+                    'unit'      => '%',
+                    'width'     => '100%',
+                ]);
+                break;
+            case 'actiontime':
+                Dropdown::showTimeStamp($field["name"], [
+                    'min'             => 0,
+                    'max'             => 100 * HOUR_TIMESTAMP,
+                    'step'            => HOUR_TIMESTAMP,
+                    'value'           => $this->fields[$field["name"]],
+                    'addfirstminutes' => true,
+                    'inhours'         => true,
+                    'width'           => '100%',
+                ]);
+                break;
+        }
+    }
 
 
-   function defineTabs($options = []) {
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
 
-      $ong = parent::defineTabs($options);
-      $this->addStandardTab('Document_Item', $ong, $options);
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+        switch ($field) {
+            case 'type':
+                $types = self::getTypes();
+                return $types[$values[$field]];
+        }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
 
-      return $ong;
-   }
 
-   static function getIcon() {
-      return "fas fa-layer-group";
-   }
+    public function defineTabs($options = [])
+    {
 
+        $ong = parent::defineTabs($options);
+        $this->addStandardTab('Document_Item', $ong, $options);
+
+        return $ong;
+    }
+
+    public static function getIcon()
+    {
+        return "fas fa-layer-group";
+    }
 }

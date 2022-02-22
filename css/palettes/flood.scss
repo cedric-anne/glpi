@@ -1,7 +1,7 @@
-/**
+/*!
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -41,4 +41,4 @@ $logo_reduced: "../pics/logos/logo-G-100-white.png";
 $badge-bg: #d0d9f0;
 $badge-fg: rgb(58, 73, 102);
 
-@import "includes";
+@import "../includes/palette_light";

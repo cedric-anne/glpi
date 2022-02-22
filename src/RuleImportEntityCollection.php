@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,21 +32,22 @@
  */
 
 /// Import rules collection class
-class RuleImportEntityCollection extends RuleCollection {
-
+class RuleImportEntityCollection extends RuleCollection
+{
    // From RuleCollection
-   public $stop_on_first_match = true;
-   static $rightname           = 'rule_import';
-   public $menu_option         = 'importentity';
+    public $stop_on_first_match = true;
+    public static $rightname           = 'rule_import';
+    public $menu_option         = 'importentity';
 
 
-   function canList() {
-      return static::canView();
-   }
+    public function canList()
+    {
+        return static::canView();
+    }
 
 
-   function getTitle() {
-      return __('Rules for assigning an item to an entity');
-   }
-
+    public function getTitle()
+    {
+        return __('Rules for assigning an item to an entity');
+    }
 }

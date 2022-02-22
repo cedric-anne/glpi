@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -33,39 +34,41 @@
 /**
  *  Timer class for debug and some other cases
  */
-class Timer {
-
+class Timer
+{
    //! Timer value
-   public $timer=0;
+    public $timer = 0;
 
 
-   /**
-    * Start the Timer
-    *
-    * @return true
-    */
-   function start () {
+    /**
+     * Start the Timer
+     *
+     * @return true
+     */
+    public function start()
+    {
 
-      $this->timer = microtime(true);
-      return true;
-   }
+        $this->timer = microtime(true);
+        return true;
+    }
 
 
-   /**
-    * Get the current time of the timer
-    *
-    * @param integer $decimals Number of decimal of the result (default 3)
-    * @param boolean $raw      Get raw time
-    *
-    * @return time past from start
-   **/
-   function getTime ($decimals = 3, $raw = false) {
-      $elapsed = microtime(true) - $this->timer;
-      if ($raw === true) {
-         return $elapsed * 1000;
-      } else {
-         // $decimals will set the number of decimals you want for your milliseconds.
-         return number_format($elapsed, $decimals, '.', ' ');
-      }
-   }
+    /**
+     * Get the current time of the timer
+     *
+     * @param integer $decimals Number of decimal of the result (default 3)
+     * @param boolean $raw      Get raw time
+     *
+     * @return time past from start
+     **/
+    public function getTime($decimals = 3, $raw = false)
+    {
+        $elapsed = microtime(true) - $this->timer;
+        if ($raw === true) {
+            return $elapsed * 1000;
+        } else {
+           // $decimals will set the number of decimals you want for your milliseconds.
+            return number_format($elapsed, $decimals, '.', ' ');
+        }
+    }
 }

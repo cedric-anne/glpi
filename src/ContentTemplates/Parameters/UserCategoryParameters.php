@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -41,15 +42,18 @@ use UserCategory;
  */
 class UserCategoryParameters extends DropdownParameters
 {
-   public static function getDefaultNodeName(): string {
-      return 'usercategory';
-   }
+    public static function getDefaultNodeName(): string
+    {
+        return 'usercategory';
+    }
 
-   public static function getObjectLabel(): string {
-      return UserCategory::getTypeName(1);
-   }
+    public static function getObjectLabel(): string
+    {
+        return UserCategory::getTypeName(1);
+    }
 
-   protected function getTargetClasses(): array {
-      return [UserCategory::class];
-   }
+    protected function getTargetClasses(): array
+    {
+        return [UserCategory::class];
+    }
 }

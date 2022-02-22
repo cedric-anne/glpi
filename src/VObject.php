@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -33,9 +34,8 @@
 /**
  * @since 9.5.0
  */
-class VObject extends CommonDBChild {
-
-   static public $itemtype          = 'itemtype';
-   static public $items_id          = 'items_id';
-
+class VObject extends CommonDBChild
+{
+    public static $itemtype          = 'itemtype';
+    public static $items_id          = 'items_id';
 }

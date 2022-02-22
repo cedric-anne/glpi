@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,41 +33,41 @@
 
 /// Class Group_KnowbaseItem
 /// since version 0.83
-class Group_KnowbaseItem extends CommonDBRelation {
-
+class Group_KnowbaseItem extends CommonDBRelation
+{
    // From CommonDBRelation
-   static public $itemtype_1          = 'KnowbaseItem';
-   static public $items_id_1          = 'knowbaseitems_id';
-   static public $itemtype_2          = 'Group';
-   static public $items_id_2          = 'groups_id';
+    public static $itemtype_1          = 'KnowbaseItem';
+    public static $items_id_1          = 'knowbaseitems_id';
+    public static $itemtype_2          = 'Group';
+    public static $items_id_2          = 'groups_id';
 
-   static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
-   static public $logs_for_item_2     = false;
+    public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
+    public static $logs_for_item_2     = false;
 
 
-   /**
-    * Get groups for a knowbaseitem
-    *
-    * @param integer $knowbaseitems_id ID of the knowbaseitem
-    *
-    * @return array of groups linked to a knowbaseitem
-   **/
-   static function getGroups($knowbaseitems_id) {
-      global $DB;
+    /**
+     * Get groups for a knowbaseitem
+     *
+     * @param integer $knowbaseitems_id ID of the knowbaseitem
+     *
+     * @return array of groups linked to a knowbaseitem
+     **/
+    public static function getGroups($knowbaseitems_id)
+    {
+        global $DB;
 
-      $groups = [];
+        $groups = [];
 
-      $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'knowbaseitems_id' => $knowbaseitems_id
-         ]
-      ]);
+        $iterator = $DB->request([
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'knowbaseitems_id' => $knowbaseitems_id
+            ]
+        ]);
 
-      foreach ($iterator as $data) {
-         $groups[$data['groups_id']][] = $data;
-      }
-      return $groups;
-   }
-
+        foreach ($iterator as $data) {
+            $groups[$data['groups_id']][] = $data;
+        }
+        return $groups;
+    }
 }

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,19 +31,23 @@
  * ---------------------------------------------------------------------
  */
 
-class NotificationSettingInstance extends NotificationSetting {
+class NotificationSettingInstance extends NotificationSetting
+{
    //Placebo class to get NotificationSetting abtract class tested
    //Just defines required methods.
 
-   static public function getMode() {
-      throw new \BadMethodCallException();
-   }
+    public static function getMode()
+    {
+        throw new \BadMethodCallException();
+    }
 
-   public function getEnableLabel() {
-      throw new \BadMethodCallException();
-   }
+    public function getEnableLabel()
+    {
+        throw new \BadMethodCallException();
+    }
 
-   protected function showFormConfig() {
-      throw new \BadMethodCallException();
-   }
+    protected function showFormConfig()
+    {
+        throw new \BadMethodCallException();
+    }
 }

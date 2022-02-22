@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,62 +32,68 @@
  */
 
 /// Class SoftwareCategory
-class SoftwareCategory extends CommonTreeDropdown {
-
-   public $can_be_translated = true;
-
-
-   static function getTypeName($nb = 0) {
-      return _n('Software category', 'Software categories', $nb);
-   }
+class SoftwareCategory extends CommonTreeDropdown
+{
+    public $can_be_translated = true;
 
 
-   function cleanDBonPurge() {
-      Rule::cleanForItemAction($this);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Software category', 'Software categories', $nb);
+    }
 
 
-   function cleanRelationData() {
-
-      parent::cleanRelationData();
-
-      if ($this->isUsedAsCategoryOnSoftwareDeletion()) {
-         $newval = (isset($this->input['_replace_by']) ? $this->input['_replace_by'] : 0);
-
-         Config::setConfigurationValues(
-            'core',
-            [
-               'softwarecategories_id_ondelete' => $newval,
-            ]
-         );
-      }
-   }
+    public function cleanDBonPurge()
+    {
+        Rule::cleanForItemAction($this);
+    }
 
 
-   function isUsed() {
+    public function cleanRelationData()
+    {
 
-      if (parent::isUsed()) {
-         return true;
-      }
+        parent::cleanRelationData();
 
-      return $this->isUsedAsCategoryOnSoftwareDeletion();
-   }
+        if ($this->isUsedAsCategoryOnSoftwareDeletion()) {
+            $newval = (isset($this->input['_replace_by']) ? $this->input['_replace_by'] : 0);
+
+            Config::setConfigurationValues(
+                'core',
+                [
+                    'softwarecategories_id_ondelete' => $newval,
+                ]
+            );
+        }
+    }
 
 
-   /**
-    * Check if type is used as category for software deleted by rules.
-    *
-    * @return boolean
-    */
-   private function isUsedAsCategoryOnSoftwareDeletion() {
+    public function isUsed()
+    {
 
-      $config_values = Config::getConfigurationValues('core', ['softwarecategories_id_ondelete']);
+        if (parent::isUsed()) {
+            return true;
+        }
 
-      return array_key_exists('softwarecategories_id_ondelete', $config_values)
+        return $this->isUsedAsCategoryOnSoftwareDeletion();
+    }
+
+
+    /**
+     * Check if type is used as category for software deleted by rules.
+     *
+     * @return boolean
+     */
+    private function isUsedAsCategoryOnSoftwareDeletion()
+    {
+
+        $config_values = Config::getConfigurationValues('core', ['softwarecategories_id_ondelete']);
+
+        return array_key_exists('softwarecategories_id_ondelete', $config_values)
          && $config_values['softwarecategories_id_ondelete'] == $this->fields['id'];
-   }
+    }
 
-   static function getIcon() {
-      return Software::getIcon();
-   }
+    public static function getIcon()
+    {
+        return Software::getIcon();
+    }
 }

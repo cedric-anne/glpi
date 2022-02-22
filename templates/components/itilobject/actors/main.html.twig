@@ -1,7 +1,7 @@
 {#
  # ---------------------------------------------------------------------
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2021 Teclib' and contributors.
+ # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
@@ -38,7 +38,10 @@
    {% set display_labels = true %}
 {% endif %}
 
-{% set actor_options = field_options|merge({is_horizontal: false}) %}
+{% set actor_options = field_options|merge({
+    is_horizontal: false,
+    add_field_class: (is_expanded ? 'col-sm-4' : ''),
+}) %}
 {% set can_admin = item.canAdminActors() %}
 {% if item.isNewItem() %}
    {% set can_admin = true %}
@@ -53,7 +56,7 @@
          'item': item,
          'actortypeint': constant('CommonITILActor::REQUESTER'),
          'actortype': 'requester',
-         'entities_id': params['entities_id'],
+         'entities_id': item.fields['entities_id'],
          'itiltemplate': itiltemplate,
          'params': params,
          'canupdate': canupdate,
@@ -81,7 +84,7 @@
          'item': item,
          'actortypeint': constant('CommonITILActor::OBSERVER'),
          'actortype': 'observer',
-         'entities_id': params['entities_id'],
+         'entities_id': item.fields['entities_id'],
          'itiltemplate': itiltemplate,
          'params': params,
          'canupdate': canupdate,
@@ -109,7 +112,8 @@
          'item': item,
          'actortypeint': constant('CommonITILActor::ASSIGN'),
          'actortype': 'assign',
-         'entities_id': params['entities_id'],
+         'users_right': 'own_ticket',
+         'entities_id': item.fields['entities_id'],
          'itiltemplate': itiltemplate,
          'params': params,
          'canupdate': (canupdate or canassign),

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -34,16 +35,16 @@
  * ProjectType Class
  *
  * @since 0.85
-**/
-class ProjectType extends CommonDropdown {
+ **/
+class ProjectType extends CommonDropdown
+{
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Project type', 'Project types', $nb);
+    }
 
-
-   static function getTypeName($nb = 0) {
-      return _n('Project type', 'Project types', $nb);
-   }
-
-   static function getIcon() {
-      return "fas fa-columns";
-   }
-
+    public static function getIcon()
+    {
+        return "fas fa-columns";
+    }
 }

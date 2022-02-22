@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,17 +32,18 @@
  */
 
 /// Class Filesystem
-class Filesystem extends CommonDropdown {
+class Filesystem extends CommonDropdown
+{
+    public $can_be_translated = false;
 
-   public $can_be_translated = false;
 
+    public static function getTypeName($nb = 0)
+    {
+        return _n('File system', 'File systems', $nb);
+    }
 
-   static function getTypeName($nb = 0) {
-      return _n('File system', 'File systems', $nb);
-   }
-
-   static function getIcon() {
-      return "far fa-folder";
-   }
-
+    public static function getIcon()
+    {
+        return "far fa-folder";
+    }
 }

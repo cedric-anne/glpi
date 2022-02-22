@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,19 +33,19 @@
 
 namespace Glpi\Console\Command;
 
-interface GlpiCommandInterface {
+interface GlpiCommandInterface
+{
+    /**
+     * Defines whether or not mandatory requirements must be checked before running command.
+     *
+     * @return boolean
+     */
+    public function mustCheckMandatoryRequirements(): bool;
 
-   /**
-    * Defines whether or not mandatory requirements must be checked before running command.
-    *
-    * @return boolean
-    */
-   public function mustCheckMandatoryRequirements(): bool;
-
-   /**
-    * Defines whether or not command requires an up-to-date database to be executed.
-    *
-    * @return boolean
-    */
-   public function requiresUpToDateDb(): bool;
+    /**
+     * Defines whether or not command requires an up-to-date database to be executed.
+     *
+     * @return boolean
+     */
+    public function requiresUpToDateDb(): bool;
 }

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -36,12 +37,13 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/remotemanagement.class.php */
 
-class RemoteManagement extends AbstractInventoryAsset {
-
-   protected function assetProvider() :array {
-      return [
-         [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+class RemoteManagement extends AbstractInventoryAsset
+{
+    protected function assetProvider(): array
+    {
+        return [
+            [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <REMOTE_MGMT>
@@ -53,9 +55,9 @@ class RemoteManagement extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"remoteid": "123456789", "type": "teamviewer", "is_dynamic": 1}'
-         ], [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"remoteid": "123456789", "type": "teamviewer", "is_dynamic": 1}'
+            ], [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <REMOTE_MGMT>
@@ -67,9 +69,9 @@ class RemoteManagement extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"remoteid": "abcdyz", "type": "anydesk", "is_dynamic": 1}'
-         ], [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"remoteid": "abcdyz", "type": "anydesk", "is_dynamic": 1}'
+            ], [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <REMOTE_MGMT>
@@ -81,120 +83,125 @@ class RemoteManagement extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"remoteid": "myspecialid", "type": "litemanager", "is_dynamic": 1}'
-         ]
-      ];
-   }
+                'expected'  => '{"remoteid": "myspecialid", "type": "litemanager", "is_dynamic": 1}'
+            ]
+        ];
+    }
 
-   /**
-    * @dataProvider assetProvider
-    */
-   public function testPrepare($xml, $expected) {
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($xml);
-      $json = json_decode($data);
+    /**
+     * @dataProvider assetProvider
+     */
+    public function testPrepare($xml, $expected)
+    {
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\RemoteManagement($computer, $json->content->remote_mgmt);
-      $asset->setExtraData((array)$json->content);
-      $result = $asset->prepare();
-      $this->object($result[0])->isEqualTo(json_decode($expected));
-   }
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $asset = new \Glpi\Inventory\Asset\RemoteManagement($computer, $json->content->remote_mgmt);
+        $asset->setExtraData((array)$json->content);
+        $result = $asset->prepare();
+        $this->object($result[0])->isEqualTo(json_decode($expected));
+    }
 
-   public function testWrongMainItem() {
-      $mainasset = getItemByTypeName('Printer', '_test_printer_all');
-      $asset = new \Glpi\Inventory\Asset\RemoteManagement($mainasset);
-      $this->exception(
-         function () use ($asset) {
-            $asset->prepare();
-         }
-      )->message->contains('Remote Management are handled for following types only:');
-   }
+    public function testWrongMainItem()
+    {
+        $mainasset = getItemByTypeName('Printer', '_test_printer_all');
+        $asset = new \Glpi\Inventory\Asset\RemoteManagement($mainasset);
+        $this->exception(
+            function () use ($asset) {
+                $asset->prepare();
+            }
+        )->message->contains('Remote Management are handled for following types only:');
+    }
 
-   public function testHandle() {
-       global $DB;
-      $computer = getItemByTypeName('Computer', '_test_pc01');
+    public function testHandle()
+    {
+        global $DB;
+        $computer = getItemByTypeName('Computer', '_test_pc01');
 
-      //first, check there are no remote management linked to this computer
-      $mgmt = new \Item_RemoteManagement;
-      $this->boolean(
-         $mgmt->getFromDbByCrit([
-            'itemtype' => $computer->getType(),
-            'items_id' => $computer->fields['id']
-         ])
-      )->isFalse('An remote management is already linked to computer!');
+       //first, check there are no remote management linked to this computer
+        $mgmt = new \Item_RemoteManagement();
+        $this->boolean(
+            $mgmt->getFromDbByCrit([
+                'itemtype' => $computer->getType(),
+                'items_id' => $computer->fields['id']
+            ])
+        )->isFalse('An remote management is already linked to computer!');
 
-      //convert data
-      $expected = $this->assetProvider()[0];
+       //convert data
+        $expected = $this->assetProvider()[0];
 
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($expected['xml']);
-      $json = json_decode($data);
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($expected['xml']);
+        $json = json_decode($data);
 
-      $asset = new \Glpi\Inventory\Asset\RemoteManagement($computer, $json->content->remote_mgmt);
-      $asset->setExtraData((array)$json->content);
-      $result = $asset->prepare();
-      $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
+        $asset = new \Glpi\Inventory\Asset\RemoteManagement($computer, $json->content->remote_mgmt);
+        $asset->setExtraData((array)$json->content);
+        $result = $asset->prepare();
+        $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
 
-      //handle
-      $asset->handleLinks();
+       //handle
+        $asset->handleLinks();
 
-      $asset->handle();
-      $this->boolean(
-         $mgmt->getFromDbByCrit([
-            'itemtype' => $computer->getType(),
-            'items_id' => $computer->fields['id']
-         ])
-      )->isTrue('Remote Management has not been linked to computer :(');
-   }
+        $asset->handle();
+        $this->boolean(
+            $mgmt->getFromDbByCrit([
+                'itemtype' => $computer->getType(),
+                'items_id' => $computer->fields['id']
+            ])
+        )->isTrue('Remote Management has not been linked to computer :(');
+    }
 
-   public function testUpdate() {
-       $this->testHandle();
+    public function testUpdate()
+    {
+        $this->testHandle();
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
+        $computer = getItemByTypeName('Computer', '_test_pc01');
 
-      //first, check there are no remote management linked to this computer
-      $mgmt = new \Item_RemoteManagement;
-      $this->boolean(
-         $mgmt->getFromDbByCrit([
-            'itemtype' => $computer->getType(),
-            'items_id' => $computer->fields['id']
-         ])
-      )->isTrue('No remote management linked to computer!');
+       //first, check there are no remote management linked to this computer
+        $mgmt = new \Item_RemoteManagement();
+        $this->boolean(
+            $mgmt->getFromDbByCrit([
+                'itemtype' => $computer->getType(),
+                'items_id' => $computer->fields['id']
+            ])
+        )->isTrue('No remote management linked to computer!');
 
-      $expected = $this->assetProvider()[0];
-      $json_expected = json_decode($expected['expected']);
-      $xml = $expected['xml'];
-      //change version
-      $xml = str_replace('<ID>123456789</ID>', '<ID>987654321</ID>', $xml);
-      $json_expected->remoteid = '987654321';
+        $expected = $this->assetProvider()[0];
+        $json_expected = json_decode($expected['expected']);
+        $xml = $expected['xml'];
+       //change version
+        $xml = str_replace('<ID>123456789</ID>', '<ID>987654321</ID>', $xml);
+        $json_expected->remoteid = '987654321';
 
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($xml);
-      $json = json_decode($data);
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
 
-      $asset = new \Glpi\Inventory\Asset\RemoteManagement($computer, $json->content->remote_mgmt);
-      $asset->setExtraData((array)$json->content);
-      $result = $asset->prepare();
-      $this->object($result[0])->isEqualTo($json_expected);
+        $asset = new \Glpi\Inventory\Asset\RemoteManagement($computer, $json->content->remote_mgmt);
+        $asset->setExtraData((array)$json->content);
+        $result = $asset->prepare();
+        $this->object($result[0])->isEqualTo($json_expected);
 
-      $asset->handleLinks();
-      $asset->handle();
-      $this->boolean(
-         $mgmt->getFromDbByCrit([
-            'itemtype' => $computer->getType(),
-            'items_id' => $computer->fields['id']
-         ])
-      )->isTrue();
+        $asset->handleLinks();
+        $asset->handle();
+        $this->boolean(
+            $mgmt->getFromDbByCrit([
+                'itemtype' => $computer->getType(),
+                'items_id' => $computer->fields['id']
+            ])
+        )->isTrue();
 
-      $this->string($mgmt->fields['remoteid'])->isIdenticalTo('987654321');
-   }
+        $this->string($mgmt->fields['remoteid'])->isIdenticalTo('987654321');
+    }
 
-   public function testInventoryUpdate() {
-      $computer = new \Computer();
-      $mgmt = new \Item_RemoteManagement;
+    public function testInventoryUpdate()
+    {
+        $computer = new \Computer();
+        $mgmt = new \Item_RemoteManagement();
 
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <REMOTE_MGMT>
@@ -217,68 +224,68 @@ class RemoteManagement extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      //create manually a computer, with 3 remote managements
-      $computers_id = $computer->add([
-         'name'   => 'pc002',
-         'serial' => 'ggheb7ne7',
-         'entities_id' => 0
-      ]);
-      $this->integer($computers_id)->isGreaterThan(0);
+       //create manually a computer, with 3 remote managements
+        $computers_id = $computer->add([
+            'name'   => 'pc002',
+            'serial' => 'ggheb7ne7',
+            'entities_id' => 0
+        ]);
+        $this->integer($computers_id)->isGreaterThan(0);
 
-      $this->integer(
-         $mgmt->add([
-            'itemtype' => 'Computer',
-            'items_id' => $computers_id,
-            'type' => 'teamviewer',
-            'remoteid' => '123456789'
-         ])
-      )->isGreaterThan(0);
+        $this->integer(
+            $mgmt->add([
+                'itemtype' => 'Computer',
+                'items_id' => $computers_id,
+                'type' => 'teamviewer',
+                'remoteid' => '123456789'
+            ])
+        )->isGreaterThan(0);
 
-      $this->integer(
-         $mgmt->add([
-            'itemtype' => 'Computer',
-            'items_id' => $computers_id,
-            'type' => 'anydesk',
-            'remoteid' => 'abcdyz'
-         ])
-      )->isGreaterThan(0);
+        $this->integer(
+            $mgmt->add([
+                'itemtype' => 'Computer',
+                'items_id' => $computers_id,
+                'type' => 'anydesk',
+                'remoteid' => 'abcdyz'
+            ])
+        )->isGreaterThan(0);
 
-      $this->integer(
-         $mgmt->add([
-            'itemtype' => 'Computer',
-            'items_id' => $computers_id,
-            'type' => 'mymgmt',
-            'remoteid' => 'qwertyuiop'
-         ])
-      )->isGreaterThan(0);
+        $this->integer(
+            $mgmt->add([
+                'itemtype' => 'Computer',
+                'items_id' => $computers_id,
+                'type' => 'mymgmt',
+                'remoteid' => 'qwertyuiop'
+            ])
+        )->isGreaterThan(0);
 
-      $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($mgmts))->isIdenticalTo(3);
-      foreach ($mgmts as $m) {
-         $this->variable($m['is_dynamic'])->isEqualTo(0);
-      }
+        $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($mgmts))->isIdenticalTo(3);
+        foreach ($mgmts as $m) {
+            $this->variable($m['is_dynamic'])->isEqualTo(0);
+        }
 
-      //computer inventory knows only "teamviewer" and "anydesk" remote managements
-      $this->doInventory($xml_source, true);
+       //computer inventory knows only "teamviewer" and "anydesk" remote managements
+        $this->doInventory($xml_source, true);
 
-      //we still have 3 remote managements
-      $mgmts = $mgmt->find();
-      $this->integer(count($mgmts))->isIdenticalTo(3);
+       //we still have 3 remote managements
+        $mgmts = $mgmt->find();
+        $this->integer(count($mgmts))->isIdenticalTo(3);
 
-      //we still have 3 remote managements items linked to the computer
-      $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($mgmts))->isIdenticalTo(3);
+       //we still have 3 remote managements items linked to the computer
+        $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($mgmts))->isIdenticalTo(3);
 
-      //remote managements present in the inventory source are now dynamic
-      $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
-      $this->integer(count($mgmts))->isIdenticalTo(2);
+       //remote managements present in the inventory source are now dynamic
+        $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($mgmts))->isIdenticalTo(2);
 
-      //remote management not present in the inventory is still not dynamic
-      $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
-      $this->integer(count($mgmts))->isIdenticalTo(1);
+       //remote management not present in the inventory is still not dynamic
+        $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+        $this->integer(count($mgmts))->isIdenticalTo(1);
 
-      //Redo inventory, but with removed "anydesk" remote managements
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+       //Redo inventory, but with removed "anydesk" remote managements
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <REMOTE_MGMT>
@@ -297,22 +304,22 @@ class RemoteManagement extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      $this->doInventory($xml_source, true);
+        $this->doInventory($xml_source, true);
 
-      //we now have only 2 remote managements
-      $mgmts = $mgmt->find();
-      $this->integer(count($mgmts))->isIdenticalTo(2);
+       //we now have only 2 remote managements
+        $mgmts = $mgmt->find();
+        $this->integer(count($mgmts))->isIdenticalTo(2);
 
-      //we now have 2 remote managements linked to computer only
-      $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($mgmts))->isIdenticalTo(2);
+       //we now have 2 remote managements linked to computer only
+        $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($mgmts))->isIdenticalTo(2);
 
-      //remote management present in the inventory source is still dynamic
-      $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
-      $this->integer(count($mgmts))->isIdenticalTo(1);
+       //remote management present in the inventory source is still dynamic
+        $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($mgmts))->isIdenticalTo(1);
 
-      //remote management not present in the inventory is still not dynamic
-      $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
-      $this->integer(count($mgmts))->isIdenticalTo(1);
-   }
+       //remote management not present in the inventory is still not dynamic
+        $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+        $this->integer(count($mgmts))->isIdenticalTo(1);
+    }
 }

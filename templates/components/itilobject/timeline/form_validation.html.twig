@@ -1,7 +1,7 @@
 {#
  # ---------------------------------------------------------------------
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2021 Teclib' and contributors.
+ # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
@@ -32,13 +32,39 @@
 {% extends 'components/itilobject/timeline/form_timeline_item.html.twig' %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
+{% set params = params|default({}) %}
+
 {% block timeline_card %}
    {% if form_mode == 'view' %}
-      <div class="read-only-content">
-         {{ entry_i['content']|enhanced_html({
-            'user_mentions': true,
-            'images_gallery': true
-         }) }}
+      <div class="read-only-content w-100">
+         {{ entry_i['content']|raw }}
+
+         {% if entry_i['comment_submission']|length %}
+            <div class='alert alert-info mt-2'>
+                <div class='d-flex'>
+                    <div><i class='ti ti-quote me-2'></i></div>
+                    <div>
+                        {{ entry_i['comment_submission']|enhanced_html({
+                            'user_mentions': true,
+                            'images_gallery': true
+                        }) }}
+                    </div>
+                </div>
+            </div>
+         {% endif %}
+         {% if entry_i['comment_validation']|length %}
+            <div class='alert alert-info mt-2'>
+                <div class='d-flex'>
+                    <div><i class='ti ti-quote me-2'></i></div>
+                    <div>
+                        {{ entry_i['comment_validation']|enhanced_html({
+                            'user_mentions': true,
+                            'images_gallery': true
+                        }) }}
+                    </div>
+                </div>
+            </div>
+         {% endif %}
 
          {% if entry_i['can_answer'] %}
             <hr class="my-2" />
@@ -48,7 +74,7 @@
                <input type="hidden" name="id" value="{{ entry_i['id'] }}" />
                <input type="hidden" name="users_id_validate" value="{{ entry_i['users_id_validate'] }}" />
                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-               {{ call_plugin_hook('pre_item_form', {"item": subitem}) }}
+               {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
 
                <div class="mb-3 comment-part">
                   {{ fields.textareaField(
@@ -79,6 +105,43 @@
             </form>
          {% endif %}
       </div>
+   {% elseif form_mode == 'answer' %}
+      <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post"
+            action="{{ subitem.getFormURL() }}" enctype="multipart/form-data" data-track-changes="true" data-submit-once>
+
+         <input type="hidden" name="id" value="{{ subitem.fields['id'] }}" />
+         <input type="hidden" name="users_id_validate" value="{{ subitem.fields['users_id_validate'] }}" />
+         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+
+         {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
+
+         <div class="mb-3 comment-part">
+            {{ fields.textareaField(
+               'comment_validation',
+               subitem.fields['comment_validation'],
+               _n('Comment', 'Comments', 1),
+               {
+                  'full_width': true,
+                  'enable_richtext': true,
+                  'is_horizontal': false,
+                  'enable_fileupload': true,
+                  'enable_mentions': true,
+                  'rand': rand,
+               }
+            ) }}
+         </div>
+
+         <div class="validation-footer">
+            <button type="submit" class="btn btn-outline-green" name="approval_action" value="approve">
+               <i class="fas fa-thumbs-up"></i>
+               <span class="validation-label">{{ __('Approve') }}</span>
+            </button>
+            <button type="submit" class="btn btn-outline-red" name="approval_action" value="refuse">
+               <i class="fas fa-thumbs-down"></i>
+               <span class="validation-label">{{ __('Refuse') }}</span>
+            </button>
+         </div>
+      </form>
    {% else %}
       <div class="itilvalidation">
          <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post"
@@ -142,10 +205,23 @@
                         }
                      ) }}
                   {% endif %}
+
+                  {{ fields.textareaField(
+                     'comment_submission',
+                     subitem.fields['comment_submission'],
+                     _n('Comment', 'Comments', 1),
+                     {
+                        'full_width': true,
+                        'enable_richtext': true,
+                        'enable_fileupload': true,
+                        'enable_mentions': true,
+                        'rand': rand,
+                     }
+                  ) }}
                </div>
             </div>
 
-            {{ call_plugin_hook('post_item_form', {"item": subitem}) }}
+            {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
             <div class="d-flex card-footer mx-n3 mb-n3">
                {% if subitem.fields['id'] <= 0 %}
                   <button class="btn btn-primary me-2" type="submit" name="add">

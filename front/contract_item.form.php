@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -36,28 +37,34 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkCentralAccess();
 
 $contract_item   = new Contract_Item();
 
 if (isset($_POST["add"])) {
-   if (!isset($_POST['contracts_id']) || empty($_POST['contracts_id'])) {
-      $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),
-                         Contract::getTypeName(1));
-      Session::addMessageAfterRedirect($message, false, ERROR);
-      Html::back();
-   }
+    if (!isset($_POST['contracts_id']) || empty($_POST['contracts_id'])) {
+        $message = sprintf(
+            __('Mandatory fields are not filled. Please correct: %s'),
+            Contract::getTypeName(1)
+        );
+        Session::addMessageAfterRedirect($message, false, ERROR);
+        Html::back();
+    }
 
-   $contract_item->check(-1, CREATE, $_POST);
-   if ($contract_item->add($_POST)) {
-      Event::log($_POST["contracts_id"], "contracts", 4, "financial",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
-   }
-   Html::back();
-
+    $contract_item->check(-1, CREATE, $_POST);
+    if ($contract_item->add($_POST)) {
+        Event::log(
+            $_POST["contracts_id"],
+            "contracts",
+            4,
+            "financial",
+            //TRANS: %s is the user login
+            sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"])
+        );
+    }
+    Html::back();
 }
 
 Html::displayErrorAndDie("lost");

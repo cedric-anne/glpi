@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -44,51 +45,56 @@ use Supplier;
  */
 class SupplierParameters extends TreeDropdownParameters
 {
-   public static function getDefaultNodeName(): string {
-      return 'supplier';
-   }
+    public static function getDefaultNodeName(): string
+    {
+        return 'supplier';
+    }
 
-   public static function getObjectLabel(): string {
-      return Supplier::getTypeName(1);
-   }
+    public static function getObjectLabel(): string
+    {
+        return Supplier::getTypeName(1);
+    }
 
-   protected function getTargetClasses(): array {
-      return [Supplier::class];
-   }
+    protected function getTargetClasses(): array
+    {
+        return [Supplier::class];
+    }
 
-   public function getAvailableParameters(): array {
-      return [
-         new AttributeParameter("id", __('ID')),
-         new AttributeParameter("name", __('Name')),
-         new AttributeParameter("address", __('Address')),
-         new AttributeParameter("city", __('City')),
-         new AttributeParameter("postcode", __('Postal code')),
-         new AttributeParameter("state", _x('location', 'State')),
-         new AttributeParameter("country", __('Country')),
-         new AttributeParameter("phone", _n('Phone', 'Phones', 1)),
-         new AttributeParameter("fax", __('Fax')),
-         new AttributeParameter("email", _n('Email', 'Emails', 1)),
-         new AttributeParameter("website", __('Website')),
-      ];
-   }
+    public function getAvailableParameters(): array
+    {
+        return [
+            new AttributeParameter("id", __('ID')),
+            new AttributeParameter("name", __('Name')),
+            new AttributeParameter("address", __('Address')),
+            new AttributeParameter("city", __('City')),
+            new AttributeParameter("postcode", __('Postal code')),
+            new AttributeParameter("state", _x('location', 'State')),
+            new AttributeParameter("country", __('Country')),
+            new AttributeParameter("phone", _n('Phone', 'Phones', 1)),
+            new AttributeParameter("fax", __('Fax')),
+            new AttributeParameter("email", _n('Email', 'Emails', 1)),
+            new AttributeParameter("website", __('Website')),
+        ];
+    }
 
-   protected function defineValues(CommonDBTM $user): array {
+    protected function defineValues(CommonDBTM $user): array
+    {
 
-      // Output "unsanitized" values
-      $fields = Sanitizer::unsanitize($user->fields);
+       // Output "unsanitized" values
+        $fields = Sanitizer::unsanitize($user->fields);
 
-      return [
-         'id'        => $fields['id'],
-         'name'      => $fields['name'],
-         'address'   => $fields['address'],
-         'city'      => $fields['town'],
-         'postcode'  => $fields['postcode'],
-         'state'     => $fields['state'],
-         'country'   => $fields['country'],
-         'phone'     => $fields['phonenumber'],
-         'fax'       => $fields['fax'],
-         'email'     => $fields['email'],
-         'website'   => $fields['website'],
-      ];
-   }
+        return [
+            'id'        => $fields['id'],
+            'name'      => $fields['name'],
+            'address'   => $fields['address'],
+            'city'      => $fields['town'],
+            'postcode'  => $fields['postcode'],
+            'state'     => $fields['state'],
+            'country'   => $fields['country'],
+            'phone'     => $fields['phonenumber'],
+            'fax'       => $fields['fax'],
+            'email'     => $fields['email'],
+            'website'   => $fields['website'],
+        ];
+    }
 }

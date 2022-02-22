@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,7 +31,13 @@
  * ---------------------------------------------------------------------
  */
 
-$migration->addField('glpi_networknames', 'ipnetworks_id', 'int', [
-   'after' => 'fqdns_id'
+/**
+ * @var Migration $migration
+ */
+
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+
+$migration->addField('glpi_networknames', 'ipnetworks_id', "int {$default_key_sign} NOT NULL DEFAULT '0'", [
+    'after' => 'fqdns_id'
 ]);
 $migration->addKey('glpi_networknames', 'ipnetworks_id', 'ipnetworks_id');

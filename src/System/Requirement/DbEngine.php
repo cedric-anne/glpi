@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -35,42 +36,50 @@ namespace Glpi\System\Requirement;
 /**
  * @since 9.5.0
  */
-class DbEngine extends AbstractRequirement {
+class DbEngine extends AbstractRequirement
+{
+    /**
+     * DB instance.
+     *
+     * @var \DBmysql
+     */
+    private $db;
 
-   /**
-    * DB instance.
-    *
-    * @var \DBmysql
-    */
-   private $db;
+    public function __construct(\DBmysql $db)
+    {
+        $this->title = __('DB engine version');
+        $this->db = $db;
+    }
 
-   public function __construct(\DBmysql $db) {
-      $this->title = __('DB engine version');
-      $this->db = $db;
-   }
+    protected function check()
+    {
+        $version_string = $this->db->getVersion();
 
-   protected function check() {
-      $version_string = $this->db->getVersion();
+        $server  = preg_match('/-MariaDB/', $version_string) ? 'MariaDB' : 'MySQL';
+        $version = preg_replace('/^((\d+\.?)+).*$/', '$1', $version_string);
 
-      $server  = preg_match('/-MariaDB/', $version_string) ? 'MariaDB': 'MySQL';
-      $version = preg_replace('/^((\d+\.?)+).*$/', '$1', $version_string);
+        switch ($server) {
+            case 'MariaDB':
+                $min_version = '10.2';
+                break;
+            case 'MySQL':
+            default:
+                $min_version = '5.7';
+                break;
+        }
+        $is_supported = version_compare($version, $min_version, '>=');
 
-      $is_supported = $server === 'MariaDB'
-         ? version_compare($version, '10.2', '>=')
-         : version_compare($version, '5.7', '>=');
-
-      if ($is_supported) {
-         $this->validated = true;
-         $this->validation_messages[] = sprintf(
-            __('Database engine version (%s) is supported.'),
-            $version
-         );
-      } else {
-         $this->validated = false;
-         $this->validation_messages[] = sprintf(
-            __('Database engine version (%s) is not supported.'),
-            $version
-         );
-      }
-   }
+        if ($is_supported) {
+            $this->validated = true;
+            $this->validation_messages[] = sprintf(
+                __('Database engine version (%s) is supported.'),
+                $version
+            );
+        } else {
+            $msg = sprintf(__('Database engine version (%s) is not supported.'), $version);
+            $msg .= ' ' . sprintf('Minimum required version is %s %s.', $server, $min_version);
+            $this->validated = false;
+            $this->validation_messages[] = $msg;
+        }
+    }
 }

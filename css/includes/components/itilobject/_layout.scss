@@ -1,7 +1,7 @@
-/**
+/*!
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,68 +30,142 @@
  */
 
 .itil-object {
-   @include media-breakpoint-up(sm) {
-      height: calc(100vh - 178px);
+    .status-recall {
+        display: none;
+    }
 
-      .itil-left-side,
-      .itil-right-side {
-         overflow-y: auto;
-         transition: all 400ms ease;
-      }
+    @include media-breakpoint-up(sm) {
+        height: calc(100vh - 187px);
 
-      .itil-left-side {
-         height: 100%;
-         border-top: 0 !important;
-         left: 0;
-      }
+        .itil-left-side,
+        .itil-right-side {
+            overflow-y: auto;
+            transition: all 400ms ease;
+        }
 
-      .itil-right-side {
-         height: calc(100% + 4px);
-         position: relative;
-         border: 0;
-         border-left: 1px solid $border-color;
+        .itil-left-side {
+            height: 100%;
+            border-top: 0 !important;
+            left: 0;
+        }
 
-         .accordion-item {
-            background: none;
+        .itil-right-side {
+            height: calc(100% + 4px);
+            position: relative;
+            border: 0;
+            border-left: 1px solid $border-color;
 
-            .accordion-button {
-               background-color: $accordion-button-bg;
+            .accordion-item {
+                background: none;
+
+                .accordion-button {
+                    background-color: $accordion-button-bg;
+                }
             }
-         }
-      }
-   }
 
-   // fix entity and sla badge long display
-   .badge.itil-badge {
-      white-space: normal;
-      line-height: inherit;
-      height: auto;
-      text-align: left;
-      display: inline-flex;
-      flex-wrap: wrap;
-      align-items: flex-start;
-      justify-content: left;
-      gap: 0.5rem;
-      text-transform: none;
-      overflow: inherit;
+            #heading-main-item .accordion-button.collapsed {
+                .status-recall {
+                    display: inline-block;
+                }
 
-      .badge {
-         text-transform: none;
-         margin: calc(-0.25rem + 1px) -0.25rem;
-      }
-   }
+                .item-icon {
+                    display: none;
+                }
+            }
+
+            .switch-panel-width {
+                display: none;
+            }
+        }
+    }
+
+    // fix entity and sla badge long display
+    .badge.itil-badge {
+        white-space: normal;
+        line-height: inherit;
+        height: auto;
+        text-align: left;
+        display: inline-flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: left;
+        gap: 0.5rem;
+        text-transform: none;
+        overflow: inherit;
+
+        .badge {
+            text-transform: none;
+            margin: calc(-0.25rem + 1px) -0.25rem;
+        }
+    }
+}
+
+#itil-object-container {
+    @include media-breakpoint-up(sm) {
+        &.right-expanded {
+            .itil-footer {
+                .collapse-panel {
+                    display: none;
+                }
+            }
+        }
+
+        &.right-collapsed {
+            .itil-left-side {
+                width: calc(100% - 90px);
+            }
+
+            .itil-right-side {
+                overflow: hidden;
+                width: 90px;
+
+                #itil-data { // accordion
+                    .item-title {
+                        display: none;
+                    }
+
+                    .accordion-collapse {
+                        display: none;
+                    }
+
+                    .accordion-button::after {
+                        display: none;
+                    }
+                }
+
+                .switch-panel-width {
+                    display: inline-block;
+                }
+            }
+
+            .itil-footer {
+                .timeline-buttons {
+                    flex: 1 1 auto;
+                }
+
+                .form-buttons {
+                    flex: inherit;
+                }
+
+                .switch-panel-width,
+                .collapse-panel {
+                    display: none;
+                }
+            }
+        }
+    }
 }
 
 .horizontal-layout {
-   .itil-object {
-      @include media-breakpoint-up(sm) {
-         height: calc(100vh - 257px);
-      }
-   }
+    .itil-object {
+        @include media-breakpoint-up(sm) {
+            height: calc(100vh - 257px);
+        }
+    }
 }
 
 #itil-object-container ~ #debugajax {
-   position: fixed;
-   bottom: 10px;
-   left: 45%;
+    position: fixed;
+    bottom: 10px;
+    left: 45%;
 }

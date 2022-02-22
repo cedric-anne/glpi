@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,7 +33,7 @@
 
 use Glpi\Cache\CacheManager;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 Session::checkRight("config", READ);
 
 if (isset($_GET['check_version'])) {
@@ -45,50 +46,47 @@ if (isset($_GET['check_version'])) {
 $config = new Config();
 $_POST['id'] = 1;
 if (!empty($_POST["update_auth"])) {
-   $config->update($_POST);
-   Html::back();
+    $config->update($_POST);
+    Html::back();
 }
 if (!empty($_POST["update"])) {
-   $context = array_key_exists('config_context', $_POST) ? $_POST['config_context'] : 'core';
+    $context = array_key_exists('config_context', $_POST) ? $_POST['config_context'] : 'core';
 
-   $glpikey = new GLPIKey();
-   foreach (array_keys($_POST) as $field) {
-      if ($glpikey->isConfigSecured($context, $field)) {
-         // Field must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
-         $_POST[$field] = $_UPOST[$field];
-      }
-   }
+    $glpikey = new GLPIKey();
+    foreach (array_keys($_POST) as $field) {
+        if ($glpikey->isConfigSecured($context, $field)) {
+           // Field must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
+            $_POST[$field] = $_UPOST[$field];
+        }
+    }
 
-   $config->update($_POST);
-   Html::redirect(Toolbox::getItemTypeFormURL('Config'));
+    $config->update($_POST);
+    Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }
 if (!empty($_POST['reset_opcache'])) {
-   $config->checkGlobal(UPDATE);
-   if (opcache_reset()) {
-      Session::addMessageAfterRedirect(__('PHP OPcache reset successful'));
-   }
-   Html::redirect(Toolbox::getItemTypeFormURL('Config'));
+    $config->checkGlobal(UPDATE);
+    if (opcache_reset()) {
+        Session::addMessageAfterRedirect(__('PHP OPcache reset successful'));
+    }
+    Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }
 if (!empty($_POST['reset_core_cache'])) {
-   $config->checkGlobal(UPDATE);
-   $cache_manager = new CacheManager();
-   if ($cache_manager->getCoreCacheInstance()->clear()) {
-      Session::addMessageAfterRedirect(__('GLPI cache reset successful'));
-   }
-   Html::redirect(Toolbox::getItemTypeFormURL('Config'));
+    $config->checkGlobal(UPDATE);
+    $cache_manager = new CacheManager();
+    if ($cache_manager->getCoreCacheInstance()->clear()) {
+        Session::addMessageAfterRedirect(__('GLPI cache reset successful'));
+    }
+    Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }
 if (!empty($_POST['reset_translation_cache'])) {
-   $config->checkGlobal(UPDATE);
-   $cache_manager = new CacheManager();
-   if ($cache_manager->getTranslationsCacheInstance()->clear()) {
-      Session::addMessageAfterRedirect(__('Translation cache reset successful'));
-   }
-   Html::redirect(Toolbox::getItemTypeFormURL('Config'));
+    $config->checkGlobal(UPDATE);
+    $cache_manager = new CacheManager();
+    if ($cache_manager->getTranslationsCacheInstance()->clear()) {
+        Session::addMessageAfterRedirect(__('Translation cache reset successful'));
+    }
+    Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }
 
-Html::header(Config::getTypeName(1), $_SERVER['PHP_SELF'], "config", "config");
-$config->display([
-   'id'           => 1,
-   'formoptions'  => "data-track-changes=true"
+Config::displayFullPageForItem(1, ["config", "config"], [
+    'formoptions'  => "data-track-changes=true"
 ]);
-Html::footer();

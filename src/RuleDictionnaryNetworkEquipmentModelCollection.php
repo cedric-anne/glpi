@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,15 +31,16 @@
  * ---------------------------------------------------------------------
  */
 
-class RuleDictionnaryNetworkEquipmentModelCollection extends RuleDictionnaryDropdownCollection {
-   public $item_table  = "glpi_networkequipmentmodels";
-   public $menu_option = "model.networking";
+class RuleDictionnaryNetworkEquipmentModelCollection extends RuleDictionnaryDropdownCollection
+{
+    public $item_table  = "glpi_networkequipmentmodels";
+    public $menu_option = "model.networking";
 
-   /**
-    * @see RuleCollection::getTitle()
-   **/
-   function getTitle() {
-      return __('Dictionnary of networking equipment models');
-   }
-
+    /**
+     * @see RuleCollection::getTitle()
+     **/
+    public function getTitle()
+    {
+        return __('Dictionnary of networking equipment models');
+    }
 }

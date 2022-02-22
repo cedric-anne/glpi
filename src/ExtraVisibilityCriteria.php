@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,14 +33,14 @@
 
 interface ExtraVisibilityCriteria
 {
-   /**
-    * Return visibility joins to add to DBIterator parameters
-    *
-    * @since 9.5
-    *
-    * @param boolean $forceall force all joins (false by default)
-    *
-    * @return array
-    */
-   public static function getVisibilityCriteria(bool $forceall = false): array;
+    /**
+     * Return visibility joins to add to DBIterator parameters
+     *
+     * @since 9.5
+     *
+     * @param boolean $forceall force all joins (false by default)
+     *
+     * @return array
+     */
+    public static function getVisibilityCriteria(bool $forceall = false): array;
 }

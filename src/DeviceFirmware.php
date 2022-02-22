@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,147 +31,163 @@
  * ---------------------------------------------------------------------
  */
 
-class DeviceFirmware extends CommonDevice {
+class DeviceFirmware extends CommonDevice
+{
+    protected static $forward_entity_to = ['Item_DeviceFirmware', 'Infocom'];
 
-   static protected $forward_entity_to = ['Item_DeviceFirmware', 'Infocom'];
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Firmware', 'Firmware', $nb);
+    }
 
-   static function getTypeName($nb = 0) {
-      return _n('Firmware', 'Firmware', $nb);
-   }
 
+    public function getAdditionalFields()
+    {
 
-   function getAdditionalFields() {
-
-      return array_merge(
-         parent::getAdditionalFields(),
-         [
+        return array_merge(
+            parent::getAdditionalFields(),
             [
-               'name'  => 'devicefirmwaretypes_id',
-               'label' => _n('Type', 'Types', 1),
-               'type'  => 'dropdownValue'
-            ],
-            [
-               'name'   => 'date',
-               'label'  => __('Release date'),
-               'type'   => 'date'
-            ],
-            [
-               'name'   => 'version',
-               'label'  => _n('Version', 'Versions', 1),
-               'type'   => 'text'
-            ],
-            [
-               'name'   => 'devicefirmwaremodels_id',
-               'label'  => _n('Model', 'Models', 1),
-               'type'   => 'dropdownValue'
+                [
+                    'name'  => 'devicefirmwaretypes_id',
+                    'label' => _n('Type', 'Types', 1),
+                    'type'  => 'dropdownValue'
+                ],
+                [
+                    'name'   => 'date',
+                    'label'  => __('Release date'),
+                    'type'   => 'date'
+                ],
+                [
+                    'name'   => 'version',
+                    'label'  => _n('Version', 'Versions', 1),
+                    'type'   => 'text'
+                ],
+                [
+                    'name'   => 'devicefirmwaremodels_id',
+                    'label'  => _n('Model', 'Models', 1),
+                    'type'   => 'dropdownValue'
+                ]
             ]
-         ]
-      );
-   }
+        );
+    }
 
 
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'date',
-         'name'               => __('Release date'),
-         'datatype'           => 'date'
-      ];
+        $tab[] = [
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'date',
+            'name'               => __('Release date'),
+            'datatype'           => 'date'
+        ];
 
-      $tab[] = [
-         'id'                 => '12',
-         'table'              => 'glpi_devicefirmwaremodels',
-         'field'              => 'name',
-         'name'               => _n('Model', 'Models', 1),
-         'datatype'           => 'dropdown'
-      ];
+        $tab[] = [
+            'id'                 => '12',
+            'table'              => 'glpi_devicefirmwaremodels',
+            'field'              => 'name',
+            'name'               => _n('Model', 'Models', 1),
+            'datatype'           => 'dropdown'
+        ];
 
-      $tab[] = [
-         'id'                 => '13',
-         'table'              => 'glpi_devicefirmwaretypes',
-         'field'              => 'name',
-         'name'               => _n('Type', 'Types', 1),
-         'datatype'           => 'dropdown'
-      ];
+        $tab[] = [
+            'id'                 => '13',
+            'table'              => 'glpi_devicefirmwaretypes',
+            'field'              => 'name',
+            'name'               => _n('Type', 'Types', 1),
+            'datatype'           => 'dropdown'
+        ];
 
-      $tab[] = [
-         'id'                 => '14',
-         'table'              => 'glpi_devicefirmwares',
-         'field'              => 'version',
-         'name'               => _n('Version', 'Versions', 1),
-      ];
+        $tab[] = [
+            'id'                 => '14',
+            'table'              => 'glpi_devicefirmwares',
+            'field'              => 'version',
+            'name'               => _n('Version', 'Versions', 1),
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
-   static function getHTMLTableHeader($itemtype, HTMLTableBase $base,
-                                      HTMLTableSuperHeader $super = null,
-                                      HTMLTableHeader $father = null, array $options = []) {
-      global $CFG_GLPI;
-      $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
+    public static function getHTMLTableHeader(
+        $itemtype,
+        HTMLTableBase $base,
+        HTMLTableSuperHeader $super = null,
+        HTMLTableHeader $father = null,
+        array $options = []
+    ) {
+        global $CFG_GLPI;
+        $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
-      if ($column == $father) {
-         return $father;
-      }
+        if ($column == $father) {
+            return $father;
+        }
 
-      if (in_array($itemtype, $CFG_GLPI['itemdevicefirmware_types'])) {
-         Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-         $base->addHeader('devicefirmware_type', _n('Type', 'Types', 1), $super, $father);
-         $base->addHeader('version', _n('Version', 'Versions', 1), $super, $father);
-         $base->addHeader('date', __('Release date'), $super, $father);
-      }
-   }
+        if (in_array($itemtype, $CFG_GLPI['itemdevicefirmware_types'])) {
+            Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+            $base->addHeader('devicefirmware_type', _n('Type', 'Types', 1), $super, $father);
+            $base->addHeader('version', _n('Version', 'Versions', 1), $super, $father);
+            $base->addHeader('date', __('Release date'), $super, $father);
+        }
+    }
 
-   function getHTMLTableCellForItem(HTMLTableRow $row = null, CommonDBTM $item = null,
-                                    HTMLTableCell $father = null, array $options = []) {
-      global $CFG_GLPI;
-      $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
+    public function getHTMLTableCellForItem(
+        HTMLTableRow $row = null,
+        CommonDBTM $item = null,
+        HTMLTableCell $father = null,
+        array $options = []
+    ) {
+        global $CFG_GLPI;
+        $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
-      if ($column == $father) {
-         return $father;
-      }
+        if ($column == $father) {
+            return $father;
+        }
 
-      if (in_array($item->getType(), $CFG_GLPI['itemdevicefirmware_types'])) {
-         Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
+        if (in_array($item->getType(), $CFG_GLPI['itemdevicefirmware_types'])) {
+            Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
 
-         if ($this->fields["devicefirmwaretypes_id"]) {
+            if ($this->fields["devicefirmwaretypes_id"]) {
+                $row->addCell(
+                    $row->getHeaderByName('devicefirmware_type'),
+                    Dropdown::getDropdownName(
+                        "glpi_devicefirmwaretypes",
+                        $this->fields["devicefirmwaretypes_id"]
+                    ),
+                    $father
+                );
+            }
             $row->addCell(
-               $row->getHeaderByName('devicefirmware_type'),
-               Dropdown::getDropdownName("glpi_devicefirmwaretypes",
-               $this->fields["devicefirmwaretypes_id"]),
-               $father
-            );
-         }
-         $row->addCell(
-            $row->getHeaderByName('version'), $this->fields["version"],
-            $father
+                $row->getHeaderByName('version'),
+                $this->fields["version"],
+                $father
             );
 
-         if ($this->fields["date"]) {
-            $row->addCell(
-               $row->getHeaderByName('date'),
-               Html::convDate($this->fields["date"]),
-               $father
-            );
-         }
-      }
-   }
+            if ($this->fields["date"]) {
+                $row->addCell(
+                    $row->getHeaderByName('date'),
+                    Html::convDate($this->fields["date"]),
+                    $father
+                );
+            }
+        }
+    }
 
-   function getImportCriteria() {
+    public function getImportCriteria()
+    {
 
-      return [
-         'designation'              => 'equal',
-         'devicefirmwaretypes_id'   => 'equal',
-         'manufacturers_id'         => 'equal',
-         'version'                  => 'equal'
-      ];
-   }
+        return [
+            'designation'              => 'equal',
+            'devicefirmwaretypes_id'   => 'equal',
+            'manufacturers_id'         => 'equal',
+            'version'                  => 'equal'
+        ];
+    }
 
 
-   static function getIcon() {
-      return "fas fa-microchip";
-   }
+    public static function getIcon()
+    {
+        return "fas fa-microchip";
+    }
 }

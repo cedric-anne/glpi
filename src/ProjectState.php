@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -34,56 +35,63 @@
  * ProjectState Class
  *
  * @since 0.85
-**/
-class ProjectState extends CommonDropdown {
+ **/
+class ProjectState extends CommonDropdown
+{
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Project state', 'Project states', $nb);
+    }
 
 
-   static function getTypeName($nb = 0) {
-      return _n('Project state', 'Project states', $nb);
-   }
+    public function post_getEmpty()
+    {
+        $this->fields['color'] = '#dddddd';
+    }
 
 
-   function post_getEmpty() {
-      $this->fields['color'] = '#dddddd';
-   }
+    public function getAdditionalFields()
+    {
+
+        return [['name'     => 'color',
+            'label'    => __('Color'),
+            'type'     => 'color',
+            'list'     => true
+        ],
+            ['name'     => 'is_finished',
+                'label'    => __('Finished state'),
+                'type'     => 'bool',
+                'list'     => true
+            ],
+        ];
+    }
 
 
-   function getAdditionalFields() {
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      return [['name'     => 'color',
-                         'label'    => __('Color'),
-                         'type'     => 'color',
-                         'list'     => true],
-                   ['name'     => 'is_finished',
-                         'label'    => __('Finished state'),
-                         'type'     => 'bool',
-                         'list'     => true],];
-   }
+        $tab[] = [
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'color',
+            'name'               => __('Color'),
+            'datatype'           => 'color'
+        ];
 
+        $tab[] = [
+            'id'                 => '12',
+            'table'              => $this->getTable(),
+            'field'              => 'is_finished',
+            'name'               => __('Finished state'),
+            'datatype'           => 'bool'
+        ];
 
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+        return $tab;
+    }
 
-      $tab[] = [
-         'id'                 => '11',
-         'table'              => $this->getTable(),
-         'field'              => 'color',
-         'name'               => __('Color'),
-         'datatype'           => 'color'
-      ];
-
-      $tab[] = [
-         'id'                 => '12',
-         'table'              => $this->getTable(),
-         'field'              => 'is_finished',
-         'name'               => __('Finished state'),
-         'datatype'           => 'bool'
-      ];
-
-      return $tab;
-   }
-
-   static function getIcon() {
-      return "fas fa-columns";
-   }
+    public static function getIcon()
+    {
+        return "fas fa-columns";
+    }
 }

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -39,22 +40,27 @@ use Psr\SimpleCache\CacheInterface;
  *
  * /!\ For internal use only.
  */
-class I18nCache {
-   private $cache;
+class I18nCache
+{
+    private $cache;
 
-   public function __construct(CacheInterface $cache) {
-      $this->cache = $cache;
-   }
+    public function __construct(CacheInterface $cache)
+    {
+        $this->cache = $cache;
+    }
 
-   public function getItem($key) {
-      return $this->cache->get($key);
-   }
+    public function getItem($key)
+    {
+        return $this->cache->get($key);
+    }
 
-   public function setItem($key, $value) {
-      return $this->cache->set($key, $value);
-   }
+    public function setItem($key, $value)
+    {
+        return $this->cache->set($key, $value);
+    }
 
-   public function removeItem($key) {
-      return $this->cache->delete($key);
-   }
+    public function removeItem($key)
+    {
+        return $this->cache->delete($key);
+    }
 }

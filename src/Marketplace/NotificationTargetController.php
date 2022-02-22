@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -44,8 +45,8 @@ class NotificationTargetController extends NotificationTarget {
     * Overwrite the function in NotificationTarget because there's only one target to be notified
     *
     * @see NotificationTarget::addNotificationTargets()
-   **/
-   function addNotificationTargets($entity) {
+    **/
+   public function addNotificationTargets($entity) {
 
       $this->addProfilesToTargets();
       $this->addGroupsToTargets($entity);
@@ -53,12 +54,12 @@ class NotificationTargetController extends NotificationTarget {
    }
 
 
-   function getEvents() {
+   public function getEvents() {
       return ['checkpluginsupdate' => __('Check all plugin updates')];
    }
 
 
-   function addDataForTemplate($event, $options = []) {
+   public function addDataForTemplate($event, $options = []) {
       $updated_plugins = $options['plugins'];
       $plugin = new Plugin;
       foreach ($updated_plugins as $plugin_key => $version) {
@@ -81,7 +82,7 @@ class NotificationTargetController extends NotificationTarget {
    }
 
 
-   function getTags() {
+   public function getTags() {
       //Tags with just lang
       $tags = [
          'plugins_updates_available' => __('Some updates are available for your installed plugins!')

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -34,15 +35,15 @@
  * @since 0.84.3
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session ::checkLoginUser();
 
 $pr = new PlanningRecall();
 
 if (isset($_POST["update"])) {
-   $pr->manageDatas($_POST['_planningrecall']);
-   Html::back();
+    $pr->manageDatas($_POST['_planningrecall']);
+    Html::back();
 }
 
 Html::displayErrorAndDie("lost");

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,21 +33,21 @@
 
 /**
  * Relation between item and devices
-**/
-class Item_DeviceMotherboard extends Item_Devices {
+ **/
+class Item_DeviceMotherboard extends Item_Devices
+{
+    public static $itemtype_2 = 'DeviceMotherboard';
+    public static $items_id_2 = 'devicemotherboards_id';
 
-   static public $itemtype_2 = 'DeviceMotherboard';
-   static public $items_id_2 = 'devicemotherboards_id';
-
-   static protected $notable = false;
+    protected static $notable = false;
 
 
-   static function getSpecificities($specif = '') {
-      return ['serial' => parent::getSpecificities('serial'),
-                  'otherserial' => parent::getSpecificities('otherserial'),
-                  'locations_id' => parent::getSpecificities('locations_id'),
-                   'states_id' => parent::getSpecificities('states_id')
-                  ];
-   }
-
+    public static function getSpecificities($specif = '')
+    {
+        return ['serial' => parent::getSpecificities('serial'),
+            'otherserial' => parent::getSpecificities('otherserial'),
+            'locations_id' => parent::getSpecificities('locations_id'),
+            'states_id' => parent::getSpecificities('states_id')
+        ];
+    }
 }

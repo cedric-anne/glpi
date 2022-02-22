@@ -1,7 +1,7 @@
 {#
  # ---------------------------------------------------------------------
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2021 Teclib' and contributors.
+ # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
@@ -38,7 +38,7 @@
       <h4 class="card-title ps-4">
          {{ __('Inventory information') }}
       </h4>
-      {% set inventory_filename = item is usingtrait('Glpi\\Features\\Inventoriable') ? item.getInventoryFileName() : null %}
+      {% set inventory_filename = item is usingtrait('Glpi\\Features\\Inventoriable') ? item.getInventoryFileName(false) : null %}
       {% if inventory_filename is not null %}
          <a href="{{ path('front/document.send.php?file=_inventory/' ~ inventory_filename) }}"
             class="btn btn-sm btn-secondary ms-auto" target="_blank"
@@ -53,11 +53,6 @@
          </span>
       {% endif %}
    </div>
-   {% if item.fields['id'] > 0 and item.isField('is_dynamic') %}
-      <div class="card-body row">
-         {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::AUTOINVENTORY_INFORMATION'), item) }}
-      </div>
-   {% endif %}
    {% set agent = item is usingtrait('Glpi\\Features\\Inventoriable') ? item.getInventoryAgent() : null %}
    {% if agent is not null %}
       <div class="card-body row">
@@ -89,18 +84,21 @@
                {{ __('Agent status') }}
                <i id="update-status" class="fas fa-sync" role="button" title="{{ __('Ask agent about its current status') }}"></i>
             </label>
-            {# TODO status #}
-            <span>{{ __('Unknown') }}</span>
+            <span id='agent_status'>{{ __('Unknown') }}</span>
          </div>
 
          <div class="mb-3 col-12 col-sm-6">
             <label class="form-label" >
                {{ __('Request inventory') }}
-               <i id="update-status" class="fas fa-sync" role="button" title="{{ __('Request agent to proceed an new inventory') }}"></i>
+               <i id="update-inventory" class="fas fa-sync" role="button" title="{{ __('Request agent to proceed an new inventory') }}"></i>
             </label>
-            {# TODO status #}
-            <span>{{ __('Unknown') }}</span>
+            <span id='inventory_status'>{{ __('Unknown') }}</span>
          </div>
+
+         {% if item.fields['id'] > 0 and item.isField('is_dynamic') %}
+            {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::AUTOINVENTORY_INFORMATION'), item) }}
+         {% endif %}
+
       </div>
 
       <script>
@@ -109,35 +107,40 @@
             var icon = $(this);
             icon.addClass('fa-spin');
             $.ajax({
-               type: 'GET',
+               type: 'POST',
                url: '{{ path('/ajax/agent.php') }}',
-               timeout: 3000, //3 seconds timeout
+               timeout: 30000, // 30 seconds timeout
                dataType: 'json',
                data: {
                   action: '{{ constant('Agent::ACTION_STATUS') }}',
                   id: '{{ agent.fields['id'] }}'
                },
                success: function(json) {
-                  icon.removeClass('fa-spin');
                   $('#agent_status').html(json.answer);
+               },
+               complete: function() {
+                  icon.removeClass('fa-spin');
                }
             });
          });
 
          $('#update-inventory').on('click', function() {
+            var icon = $(this);
             icon.addClass("fa-spin");
             $.ajax({
-               type: 'GET',
+               type: 'POST',
                url: '{{ path('/ajax/agent.php') }}',
-               timeout: 3000, //3 seconds timeout
+               timeout: 30000, // 30 seconds timeout
                dataType: 'json',
                data: {
                   action: '{{ constant('Agent::ACTION_INVENTORY') }}',
                   id: '{{ agent.fields['id'] }}'
                },
                success: function(json) {
-                  icon.removeClass('fa-spin');
                   $('#inventory_status').html(json.answer);
+               },
+               complete: function() {
+                  icon.removeClass('fa-spin');
                }
             });
          });

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,70 +33,74 @@
 
 /**
  * SolutionTemplate Class
-**/
-class SolutionTemplate extends AbstractITILChildTemplate {
-
+ **/
+class SolutionTemplate extends AbstractITILChildTemplate
+{
    // From CommonDBTM
-   public $dohistory = true;
+    public $dohistory = true;
 
-   static $rightname = 'solutiontemplate';
+    public static $rightname = 'solutiontemplate';
 
-   public $can_be_translated = false;
-
-
-   static function getTypeName($nb = 0) {
-      return _n('Solution template', 'Solution templates', $nb);
-   }
+    public $can_be_translated = false;
 
 
-   function getAdditionalFields() {
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Solution template', 'Solution templates', $nb);
+    }
 
-      return [
-         [
-            'name'  => 'solutiontypes_id',
-            'label' => SolutionType::getTypeName(1),
-            'type'  => 'dropdownValue',
-            'list'  => true,
-         ],
-         [
-            'name'           => 'content',
-            'label'          => __('Content'),
-            'type'           => 'tinymce',
+
+    public function getAdditionalFields()
+    {
+
+        return [
+            [
+                'name'  => 'solutiontypes_id',
+                'label' => SolutionType::getTypeName(1),
+                'type'  => 'dropdownValue',
+                'list'  => true,
+            ],
+            [
+                'name'           => 'content',
+                'label'          => __('Content'),
+                'type'           => 'tinymce',
             // As content copying from template is not using the image pasting process, these images
             // are not correctly processed. Indeed, document item corresponding to the destination item is not created and
             // image src is not containing the ITIL item foreign key, so image will not be visible for helpdesk profiles.
             // As fixing it is really complex (requires lot of refactoring in images handling, both on JS and PHP side),
             // it is preferable to disable usage of images in templates.
-            'disable_images' => true,
-         ]
-      ];
-   }
+                'disable_images' => true,
+            ]
+        ];
+    }
 
 
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      $tab[] = [
-         'id'                 => '4',
-         'name'               => __('Content'),
-         'field'              => 'content',
-         'table'              => $this->getTable(),
-         'datatype'           => 'text',
-         'htmltext'           => true
-      ];
+        $tab[] = [
+            'id'                 => '4',
+            'name'               => __('Content'),
+            'field'              => 'content',
+            'table'              => $this->getTable(),
+            'datatype'           => 'text',
+            'htmltext'           => true
+        ];
 
-      $tab[] = [
-         'id'                 => '3',
-         'name'               => SolutionType::getTypeName(1),
-         'field'              => 'name',
-         'table'              => getTableForItemType('SolutionType'),
-         'datatype'           => 'dropdown'
-      ];
+        $tab[] = [
+            'id'                 => '3',
+            'name'               => SolutionType::getTypeName(1),
+            'field'              => 'name',
+            'table'              => getTableForItemType('SolutionType'),
+            'datatype'           => 'dropdown'
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
-   static function getIcon() {
-      return "fas fa-layer-group";
-   }
+    public static function getIcon()
+    {
+        return "fas fa-layer-group";
+    }
 }

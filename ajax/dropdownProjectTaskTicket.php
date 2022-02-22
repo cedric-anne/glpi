@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -34,31 +35,31 @@
  * @brief
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkLoginUser();
 
 if (isset($_POST["projects_id"])) {
-   $condition = ['glpi_projecttasks.projectstates_id' => ['<>', 3]];
+    $condition = ['glpi_projecttasks.projectstates_id' => ['<>', 3]];
 
-   if ($_POST["projects_id"] > 0) {
-      $condition['glpi_projecttasks.projects_id'] = $_POST['projects_id'];
-   }
+    if ($_POST["projects_id"] > 0) {
+        $condition['glpi_projecttasks.projects_id'] = $_POST['projects_id'];
+    }
 
-   $p = ['itemtype'     => ProjectTask::getType(),
-         'entity_restrict' => $_POST['entity_restrict'],
-         'myname'          => $_POST["myname"],
-         'condition'       => $condition,
-         'rand'            => $_POST["rand"]];
+    $p = ['itemtype'     => ProjectTask::getType(),
+        'entity_restrict' => $_POST['entity_restrict'],
+        'myname'          => $_POST["myname"],
+        'condition'       => $condition,
+        'rand'            => $_POST["rand"]
+    ];
 
-   if (isset($_POST["used"]) && !empty($_POST["used"])) {
-      if (isset($_POST["used"])) {
-         $p["used"] = $_POST["used"];
-      }
-   }
+    if (isset($_POST["used"]) && !empty($_POST["used"])) {
+        if (isset($_POST["used"])) {
+            $p["used"] = $_POST["used"];
+        }
+    }
 
-   ProjectTask::dropdown($p);
-
+    ProjectTask::dropdown($p);
 }

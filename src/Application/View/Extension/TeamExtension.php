@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -39,19 +40,21 @@ use Twig\TwigFilter;
 /**
  * @since 10.0.0
  */
-class TeamExtension extends AbstractExtension {
+class TeamExtension extends AbstractExtension
+{
+    public function getFilters(): array
+    {
+        return [
+            new TwigFilter('team_role_name', [$this, 'getTeamRoleName']),
+        ];
+    }
 
-   public function getFilters(): array {
-      return [
-         new TwigFilter('team_role_name', [$this, 'getTeamRoleName']),
-      ];
-   }
-
-   public function getTeamRoleName($itemtype, int $role, int $nb = 1): string {
-      if (\Toolbox::hasTrait($itemtype, Teamwork::class)) {
-         /** @var Teamwork $itemtype */
-         return $itemtype::getTeamRoleName($role, $nb);
-      }
-      return '';
-   }
+    public function getTeamRoleName($itemtype, int $role, int $nb = 1): string
+    {
+        if (\Toolbox::hasTrait($itemtype, Teamwork::class)) {
+            /** @var Teamwork $itemtype */
+            return $itemtype::getTeamRoleName($role, $nb);
+        }
+        return '';
+    }
 }

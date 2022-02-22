@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -39,6 +40,6 @@ use Symfony\Component\Console\Exception\ExceptionInterface;
  *
  * @since 10.0.0
  */
-class EarlyExitException extends \Exception implements ExceptionInterface {
-
+class EarlyExitException extends \Exception implements ExceptionInterface
+{
 }

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -36,22 +37,26 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session ::checkLoginUser();
 
 $item = new ProjectTask_Ticket();
 
 if (isset($_POST["add"])) {
-   $item->check(-1, CREATE, $_POST);
+    $item->check(-1, CREATE, $_POST);
 
-   if ($item->add($_POST)) {
-      Event::log($_POST["projecttasks_id"], "projecttask", 4, "maintain",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
-   }
-   Html::back();
-
+    if ($item->add($_POST)) {
+        Event::log(
+            $_POST["projecttasks_id"],
+            "projecttask",
+            4,
+            "maintain",
+            //TRANS: %s is the user login
+            sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"])
+        );
+    }
+    Html::back();
 }
 
 Html::displayErrorAndDie("lost");

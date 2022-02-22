@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -34,18 +35,19 @@ namespace tests\units\Glpi\ContentTemplates\Parameters;
 
 class UserTitleParameters extends AbstractParameters
 {
-   public function testGetValues(): void {
-      $this->createItem('UserTitle', [
-         'name' => 'usertitle_testGetValues',
-      ]);
+    public function testGetValues(): void
+    {
+        $this->createItem('UserTitle', [
+            'name' => 'usertitle_testGetValues',
+        ]);
 
-      $parameters = $this->newTestedInstance();
-      $values = $parameters->getValues(getItemByTypeName('UserTitle', 'usertitle_testGetValues'));
-      $this->array($values)->isEqualTo([
-         'id'   => getItemByTypeName('UserTitle', 'usertitle_testGetValues', true),
-         'name' => 'usertitle_testGetValues',
-      ]);
+        $parameters = $this->newTestedInstance();
+        $values = $parameters->getValues(getItemByTypeName('UserTitle', 'usertitle_testGetValues'));
+        $this->array($values)->isEqualTo([
+            'id'   => getItemByTypeName('UserTitle', 'usertitle_testGetValues', true),
+            'name' => 'usertitle_testGetValues',
+        ]);
 
-      $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
-   }
+        $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
+    }
 }

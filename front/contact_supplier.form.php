@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -36,22 +37,29 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkCentralAccess();
 $contactsupplier = new Contact_Supplier();
 if (isset($_POST["add"])) {
-   $contactsupplier->check(-1, CREATE, $_POST);
+    $contactsupplier->check(-1, CREATE, $_POST);
 
-   if (isset($_POST["contacts_id"]) && ($_POST["contacts_id"] > 0)
-       && isset($_POST["suppliers_id"]) && ($_POST["suppliers_id"] > 0)) {
-      if ($contactsupplier->add($_POST)) {
-         Event::log($_POST["contacts_id"], "contacts", 4, "financial",
-                    //TRANS: %s is the user login
-                    sprintf(__('%s adds a link with a supplier'), $_SESSION["glpiname"]));
-      }
-   }
-   Html::back();
+    if (
+        isset($_POST["contacts_id"]) && ($_POST["contacts_id"] > 0)
+        && isset($_POST["suppliers_id"]) && ($_POST["suppliers_id"] > 0)
+    ) {
+        if ($contactsupplier->add($_POST)) {
+            Event::log(
+                $_POST["contacts_id"],
+                "contacts",
+                4,
+                "financial",
+                //TRANS: %s is the user login
+                sprintf(__('%s adds a link with a supplier'), $_SESSION["glpiname"])
+            );
+        }
+    }
+    Html::back();
 }
 
 Html::displayErrorAndDie('Lost');

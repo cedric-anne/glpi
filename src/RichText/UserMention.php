@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -44,186 +45,186 @@ use NotificationEvent;
 use SimpleXMLElement;
 use User;
 
-final class UserMention {
+final class UserMention
+{
+    /**
+     * Handle user mentions.
+     * Add newly mention users to observers and send them a notification.
+     *
+     * @return void
+     */
+    public static function handleUserMentions(CommonDBTM $item): void
+    {
 
-   /**
-    * Handle user mentions.
-    * Add newly mention users to observers and send them a notification.
-    *
-    * @return void
-    */
-   public static function handleUserMentions(CommonDBTM $item): void {
-
-      $content_fields = $item instanceof CommonITILValidation
+        $content_fields = $item instanceof CommonITILValidation
          ? ['comment_submission', 'comment_validation']
          : ['content'];
 
-      $previously_mentionned_actors_ids = [];
-      $mentionned_actors_ids = [];
+        $previously_mentionned_actors_ids = [];
+        $mentionned_actors_ids = [];
 
-      foreach ($content_fields as $content_field) {
-         if (!array_key_exists($content_field, $item->fields) && !array_key_exists($content_field, $item->input)) {
-            // Field is not define in both `$item->fields` and `$item->input`, it means that
-            // it is certainly not a valid field for current item.
-            continue;
-         }
-
-         if (property_exists($item, 'oldvalues') && array_key_exists($content_field, $item->oldvalues)) {
-            // Update case: content field was updated
-            $previous_value = $item->oldvalues[$content_field];
-         } else if (property_exists($item, 'updates')) {
-            // Update case: content field was not updated
-            $previous_value = $item->fields[$content_field];
-         } else {
-            // Creation case
-            $previous_value = null;
-         }
-
-         $new_value = $item->input[$content_field] ?? null;
-
-         if ($new_value !== null) {
-            $mentionned_actors_ids = array_merge(
-               $mentionned_actors_ids,
-               self::getUserIdsFromUserMentions($new_value, true)
-            );
-         }
-
-         if ($previous_value !== null) {
-            $previously_mentionned_actors_ids = array_merge(
-               $previously_mentionned_actors_ids,
-               self::getUserIdsFromUserMentions($previous_value, true)
-            );
-         }
-      }
-
-      // Keep only newly mentioned actors
-      $mentionned_actors_ids = array_diff($mentionned_actors_ids, $previously_mentionned_actors_ids);
-
-      if (empty($mentionned_actors_ids)) {
-         return;
-      }
-
-      // Retrieve main item
-      $main_item = $item;
-      $options = [];
-      if ($item instanceof CommonITILTask) {
-         $options = [
-            'task_id'    => $item->fields['id'],
-            'is_private' => $item->isPrivate(),
-         ];
-
-         $main_item = $item->getItem();
-      } else if ($item instanceof CommonITILValidation) {
-         $options = [
-            'validation_id'     => $item->fields['id'],
-            'validation_status' => $item->fields['status']
-         ];
-
-         $main_item = getItemForItemtype($item->getItilObjectItemType());
-         $main_item->getFromDB($item->fields[$item::$items_id]);
-      } else if ($item instanceof ITILFollowup) {
-         $options = [
-            'followup_id' => $item->fields['id'],
-            'is_private'  => $item->isPrivate(),
-         ];
-
-         $main_item = getItemForItemtype($item->fields['itemtype']);
-         $main_item->getFromDB($item->fields['items_id']);
-      } else if ($item instanceof ITILSolution) {
-         $main_item = getItemForItemtype($item->fields['itemtype']);
-         $main_item->getFromDB($item->fields['items_id']);
-      }
-
-      // Send a "you have been mentioned" notification
-      foreach ($mentionned_actors_ids as $user_id) {
-         $options['users_id'] = $user_id;
-         NotificationEvent::raiseEvent('user_mention', $main_item, $options);
-      }
-
-      if ($main_item instanceof CommonITILObject) {
-         if (empty($main_item->userlinkclass) || !class_exists($main_item->userlinkclass)) {
-            return; // Cannot add observers
-         }
-
-         // Retrieve current actors list
-         $userlink = new $main_item->userlinkclass();
-         $current_actors_ids = [];
-         $current_actors = $userlink->getActors($main_item->fields['id']);
-         foreach ($current_actors as $actors) {
-            foreach ($actors as $actor) {
-               $current_actors_ids[] = $actor['users_id'];
-            }
-         }
-
-         // Add newly mentioned actors as observers
-         foreach ($mentionned_actors_ids as $user_id) {
-            if (in_array($user_id, $current_actors_ids)) {
-               continue;
+        foreach ($content_fields as $content_field) {
+            if (!array_key_exists($content_field, $item->fields) && !array_key_exists($content_field, $item->input)) {
+                // Field is not define in both `$item->fields` and `$item->input`, it means that
+                // it is certainly not a valid field for current item.
+                continue;
             }
 
-            $input = [
-               'type'                            => CommonITILActor::OBSERVER,
-               'users_id'                        => $user_id,
-               $main_item->getForeignKeyField()  => $main_item->fields['id'],
-               '_do_not_compute_takeintoaccount' => true,
-               '_from_object'                    => true,
+            if (property_exists($item, 'oldvalues') && array_key_exists($content_field, $item->oldvalues)) {
+               // Update case: content field was updated
+                $previous_value = $item->oldvalues[$content_field];
+            } else if (property_exists($item, 'updates')) {
+               // Update case: content field was not updated
+                $previous_value = $item->fields[$content_field];
+            } else {
+               // Creation case
+                $previous_value = null;
+            }
+
+            $new_value = $item->input[$content_field] ?? null;
+
+            if ($new_value !== null) {
+                $mentionned_actors_ids = array_merge(
+                    $mentionned_actors_ids,
+                    self::getUserIdsFromUserMentions($new_value)
+                );
+            }
+
+            if ($previous_value !== null) {
+                $previously_mentionned_actors_ids = array_merge(
+                    $previously_mentionned_actors_ids,
+                    self::getUserIdsFromUserMentions($previous_value)
+                );
+            }
+        }
+
+       // Keep only newly mentioned actors
+        $mentionned_actors_ids = array_diff($mentionned_actors_ids, $previously_mentionned_actors_ids);
+
+        if (empty($mentionned_actors_ids)) {
+            return;
+        }
+
+       // Retrieve main item
+        $main_item = $item;
+        $options = [];
+        if ($item instanceof CommonITILTask) {
+            $options = [
+                'task_id'    => $item->fields['id'],
+                'is_private' => $item->isPrivate(),
             ];
-            $userlink->add($input);
-         }
-      }
-   }
 
-   /**
-    * Extract ids of mentioned users.
-    *
-    * @param string $content
-    * @param bool $sanitized
-    *
-    * @return int[]
-    */
-   public static function getUserIdsFromUserMentions(string $content, bool $sanitized = false) {
-      $ids = [];
+            $main_item = $item->getItem();
+        } else if ($item instanceof CommonITILValidation) {
+            $options = [
+                'validation_id'     => $item->fields['id'],
+                'validation_status' => $item->fields['status']
+            ];
 
-      try {
-         if ($sanitized) {
-            $content = Sanitizer::unsanitize($content, true);
-         }
-         libxml_use_internal_errors(true);
-         $content_as_xml = new SimpleXMLElement('<div>' . $content . '</div>');
-      } catch (\Throwable $e) {
-         // Sanitize process does not handle correctly `<` and `>` chars that are not surrounding html tags.
-         // This generates invalid HTML that cannot be loaded by `SimpleXMLElement`.
-         return [];
-      }
+            $main_item = getItemForItemtype($item->getItilObjectItemType());
+            $main_item->getFromDB($item->fields[$item::$items_id]);
+        } else if ($item instanceof ITILFollowup) {
+            $options = [
+                'followup_id' => $item->fields['id'],
+                'is_private'  => $item->isPrivate(),
+            ];
 
-      $mention_elements = $content_as_xml->xpath('//*[@data-user-mention="true"]');
-      foreach ($mention_elements as $mention_element) {
-         $ids[] = (int)$mention_element->attributes()->{'data-user-id'};
-      }
+            $main_item = getItemForItemtype($item->fields['itemtype']);
+            $main_item->getFromDB($item->fields['items_id']);
+        } else if ($item instanceof ITILSolution) {
+            $main_item = getItemForItemtype($item->fields['itemtype']);
+            $main_item->getFromDB($item->fields['items_id']);
+        }
 
-      return $ids;
-   }
+       // Send a "you have been mentioned" notification
+        foreach ($mentionned_actors_ids as $user_id) {
+            $options['users_id'] = $user_id;
+            NotificationEvent::raiseEvent('user_mention', $main_item, $options);
+        }
 
-   /**
-    * Refresh user mentions HTML in order to display them.
-    * User name is updated, and a link to user page could be added on mention.
-    *
-    * @param string $content
-    *
-    * @return string
-    */
-   public static function refreshUserMentionsHtmlToDisplay(string $content): string {
+        if ($main_item instanceof CommonITILObject) {
+            if (empty($main_item->userlinkclass) || !class_exists($main_item->userlinkclass)) {
+                return; // Cannot add observers
+            }
 
-      $mentionned_users_ids = self::getUserIdsFromUserMentions($content);
+           // Retrieve current actors list
+            $userlink = new $main_item->userlinkclass();
+            $current_actors_ids = [];
+            $current_actors = $userlink->getActors($main_item->fields['id']);
+            foreach ($current_actors as $actors) {
+                foreach ($actors as $actor) {
+                    $current_actors_ids[] = $actor['users_id'];
+                }
+            }
 
-      foreach ($mentionned_users_ids as $user_id) {
-         $user = new User();
-         if (!$user->getFromDB($user_id)) {
-            // User does not exist anymore, keep the mention but do not add link.
-            continue;
-         }
+           // Add newly mentioned actors as observers
+            foreach ($mentionned_actors_ids as $user_id) {
+                if (in_array($user_id, $current_actors_ids)) {
+                    continue;
+                }
 
-         $pattern = '/'
+                $input = [
+                    'type'                            => CommonITILActor::OBSERVER,
+                    'users_id'                        => $user_id,
+                    $main_item->getForeignKeyField()  => $main_item->fields['id'],
+                    '_do_not_compute_takeintoaccount' => true,
+                    '_from_object'                    => true,
+                ];
+                $userlink->add($input);
+            }
+        }
+    }
+
+    /**
+     * Extract ids of mentioned users.
+     *
+     * @param string $content
+     *
+     * @return int[]
+     */
+    public static function getUserIdsFromUserMentions(string $content)
+    {
+        $ids = [];
+
+        try {
+            $content = Sanitizer::getVerbatimValue($content);
+            libxml_use_internal_errors(true);
+            $content_as_xml = new SimpleXMLElement('<div>' . $content . '</div>');
+        } catch (\Throwable $e) {
+           // Sanitize process does not handle correctly `<` and `>` chars that are not surrounding html tags.
+           // This generates invalid HTML that cannot be loaded by `SimpleXMLElement`.
+            return [];
+        }
+
+        $mention_elements = $content_as_xml->xpath('//*[@data-user-mention="true"]');
+        foreach ($mention_elements as $mention_element) {
+            $ids[] = (int)$mention_element->attributes()->{'data-user-id'};
+        }
+
+        return $ids;
+    }
+
+    /**
+     * Refresh user mentions HTML in order to display them.
+     * User name is updated, and a link to user page could be added on mention.
+     *
+     * @param string $content
+     *
+     * @return string
+     */
+    public static function refreshUserMentionsHtmlToDisplay(string $content): string
+    {
+
+        $mentionned_users_ids = self::getUserIdsFromUserMentions($content);
+
+        foreach ($mentionned_users_ids as $user_id) {
+            $user = new User();
+            if (!$user->getFromDB($user_id)) {
+                // User does not exist anymore, keep the mention but do not add link.
+                continue;
+            }
+
+            $pattern = '/'
             // <span data-user-mention="true" ...>
             . '<span[^>]*'
             . '('
@@ -237,14 +238,14 @@ final class UserMention {
             // span closing
             . '<\/span>'
             . '/';
-         $replacement = sprintf(
-            '<a class="user-mention" href="%s">@%s</a>',
-            $user->getLinkURL(),
-            $user->getFriendlyName()
-         );
-         $content = preg_replace($pattern, $replacement, $content);
-      }
+            $replacement = sprintf(
+                '<a class="user-mention" href="%s">@%s</a>',
+                $user->getLinkURL(),
+                $user->getFriendlyName()
+            );
+            $content = preg_replace($pattern, $replacement, $content);
+        }
 
-      return $content;
-   }
+        return $content;
+    }
 }

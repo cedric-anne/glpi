@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -33,131 +34,136 @@
 /**
  * Store ports connections log
  */
-class NetworkPortConnectionLog extends CommonDBChild {
+class NetworkPortConnectionLog extends CommonDBChild
+{
+    public static $itemtype        = 'NetworkPort';
+    public static $items_id        = 'networkports_id';
+    public $dohistory              = false;
 
-   static public $itemtype        = 'NetworkPort';
-   static public $items_id        = 'networkports_id';
-   public $dohistory              = false;
 
+    /**
+     * Get name of this type by language of the user connected
+     *
+     * @param integer $nb number of elements
+     *
+     * @return string name of this type
+     */
+    public static function getTypeName($nb = 0)
+    {
+        return __('Port connection history');
+    }
 
-   /**
-    * Get name of this type by language of the user connected
-    *
-    * @param integer $nb number of elements
-    *
-    * @return string name of this type
-    */
-   static function getTypeName($nb = 0) {
-      return __('Port connection history');
-   }
+    /**
+     * Get the tab name used for item
+     *
+     * @param object $item the item object
+     * @param integer $withtemplate 1 if is a template form
+     * @return string|array name of the tab
+     */
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
 
-   /**
-    * Get the tab name used for item
-    *
-    * @param object $item the item object
-    * @param integer $withtemplate 1 if is a template form
-    * @return string|array name of the tab
-    */
-   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
+        $array_ret = [];
 
-      $array_ret = [];
+        if ($item->getType() == 'NetworkPort') {
+            $cnt = countElementsInTable([static::getTable()], $this->getCriteria($item));
+            $array_ret[] = self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $cnt);
+        }
+        return $array_ret;
+    }
 
-      if ($item->getType() == 'NetworkPort') {
-         $cnt = countElementsInTable([static::getTable()], $this->getCriteria($item));
-         $array_ret[] = self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $cnt);
-      }
-      return $array_ret;
-   }
+    public function getCriteria(NetworkPort $netport)
+    {
+        return [
+            'OR' => [
+                'networkports_id_source'      => $netport->fields['id'],
+                'networkports_id_destination' => $netport->fields['id']
+            ]
+        ];
+    }
 
-   public function getCriteria(NetworkPort $netport) {
-      return [
-         'OR' => [
-            'networkports_id_source'      => $netport->fields['id'],
-            'networkports_id_destination' => $netport->fields['id']
-         ]
-      ];
-   }
+    /**
+     * Display the content of the tab
+     *
+     * @param object $item
+     * @param integer $tabnum number of the tab to display
+     * @param integer $withtemplate 1 if is a template form
+     * @return boolean
+     */
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
+        if ($item->getType() == NetworkPort::getType() && $item->getID() > 0) {
+            $connectionlog = new self();
+            $connectionlog->showForItem($item);
+            return true;
+        }
+        return false;
+    }
 
-   /**
-    * Display the content of the tab
-    *
-    * @param object $item
-    * @param integer $tabnum number of the tab to display
-    * @param integer $withtemplate 1 if is a template form
-    * @return boolean
-    */
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
-      if ($item->getType() == NetworkPort::getType() && $item->getID() > 0) {
-         $connectionlog = new self();
-         $connectionlog->showForItem($item);
-         return true;
-      }
-      return false;
-   }
+    public function showForItem(NetworkPort $netport, $user_filters = [])
+    {
+        global $DB;
 
-   public function showForItem(NetworkPort $netport, $user_filters = []) {
-      global $DB;
+        $iterator = $DB->request([
+            'FROM'   => $this->getTable(),
+            'WHERE'  => $this->getCriteria($netport)
+        ]);
 
-      $iterator = $DB->request([
-         'FROM'   => $this->getTable(),
-         'WHERE'  => $this->getCriteria($netport)
-      ]);
+        echo "<table class='tab_cadre_fixehov'>";
+        echo "<thead><tr>";
+        echo "<th>" . _n('State', 'States', 1)  . "</th>";
+        echo "<th>" . _n('Date', 'Dates', 1)  . "</th>";
+        echo "<th>" . __('Connected item')  . "</th>";
+        echo "</tr></thead>";
 
-      echo "<table class='tab_cadre_fixehov'>";
-      echo "<thead><tr>";
-      echo "<th>" . _n('State', 'States', 1)  . "</th>";
-      echo "<th>" . _n('Date', 'Dates', 1)  . "</th>";
-      echo "<th>" . __('Connected item')  . "</th>";
-      echo "</tr></thead>";
+        echo "<tbody>";
 
-      echo "<tbody>";
+        if (!count($iterator)) {
+            echo "<tr><td colspan='4' class='center'>" . __('No result found')  . "</td></tr>";
+        }
 
-      if (!count($iterator)) {
-         echo "<tr><td colspan='4' class='center'>" . __('No result found')  . "</td></tr>";
-      }
+        foreach ($iterator as $row) {
+            echo "<tr>";
+            echo "<td>";
 
-      foreach ($iterator as $row) {
-         echo "<tr>";
-         echo "<td>";
+            if ($row['connected'] == 1) {
+                $co_class = 'fa-link netport green';
+                $title = __('Connected');
+            } else {
+                $co_class = 'fa-unlink netport red';
+                $title = __('Not connected');
+            }
+            echo "<i class='fas $co_class' title='$title'></i> <span class='sr-only'>$title</span>";
+            echo "</td>";
+            echo "<td>" . $row['date']  . "</td>";
+            echo "<td>";
 
-         if ($row['connected'] == 1) {
-            $co_class = 'fa-link netport green';
-            $title = __('Connected');
-         } else {
-            $co_class = 'fa-unlink netport red';
-            $title = __('Not connected');
-         }
-         echo "<i class='fas $co_class' title='$title'></i> <span class='sr-only'>$title</span>";
-         echo "</td>";
-         echo "<td>" . $row['date']  . "</td>";
-         echo "<td>";
+            $is_source = $netport->fields['id'] == $row['networkports_id_source'];
+            $netports_id = $row[($is_source ? 'networkports_id_destination' : 'networkports_id_source')];
 
-         $is_source = $netport->fields['id'] == $row['networkports_id_source'];
-         $netports_id = $row[($is_source ? 'networkports_id_destination' : 'networkports_id_source')];
+            $cport = new NetworkPort();
+            if ($cport->getFromDB($netports_id)) {
+                $citem = new $cport->fields["itemtype"]();
+                $citem->getFromDB($cport->fields["items_id"]);
 
-         $cport = new NetworkPort();
-         if ($cport->getFromDB($netports_id)) {
-            $citem = new $cport->fields["itemtype"];
-            $citem->getFromDB($cport->fields["items_id"]);
+                $cport_link = sprintf(
+                    "<a href='%1\$s'>%2\$s</a>",
+                    $cport->getFormURLWithID($cport->fields['id']),
+                    (trim($cport->fields['name']) == '' ? __('Without name') : $cport->fields['name'])
+                );
 
-            $cport_link = sprintf(
-               "<a href='%1\$s'>%2\$s</a>",
-               $cport->getFormURLWithID($cport->fields['id']),
-               (trim($cport->fields['name']) == '' ? __('Without name') : $cport->fields['name'])
-            );
+                echo sprintf(
+                    '%1$s on %2$s',
+                    $cport_link,
+                    $citem->getLink(1)
+                );
+            } else if ($row['connected'] == 1) {
+                echo __('No longer exists in database');
+            }
 
-            echo sprintf(
-               '%1$s on %2$s',
-               $cport_link,
-               $citem->getLink(1)
-            );
-         } else if ($row['connected'] == 1) {
-            echo __('No longer exists in database');
-         }
-
-         echo "</td>";
-         echo "</tr>";
-      }
-      echo "</tbody>";
-   }
+            echo "</td>";
+            echo "</tr>";
+        }
+        echo "</tbody>";
+    }
 }

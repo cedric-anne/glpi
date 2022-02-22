@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,13 +32,11 @@
  */
 
 /// Class Problem_User
-class Problem_User extends CommonITILActor {
-
+class Problem_User extends CommonITILActor
+{
    // From CommonDBRelation
-   static public $itemtype_1 = 'Problem';
-   static public $items_id_1 = 'problems_id';
-   static public $itemtype_2 = 'User';
-   static public $items_id_2 = 'users_id';
-
-
+    public static $itemtype_1 = 'Problem';
+    public static $items_id_1 = 'problems_id';
+    public static $itemtype_2 = 'User';
+    public static $items_id_2 = 'users_id';
 }

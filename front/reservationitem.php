@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,27 +31,27 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRightsOr('reservation', [READ, ReservationItem::RESERVEANITEM]);
 
 if (Session::getCurrentInterface() == "helpdesk") {
-   Html::helpHeader(__('Simplified interface'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
+    Html::helpHeader(__('Simplified interface'));
 } else {
-   Html::header(Reservation::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "reservationitem");
+    Html::header(Reservation::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "reservationitem");
 }
 
 $res = new ReservationItem();
 $res->display($_GET);
 
 if (isset($_POST['submit'])) {
-   $_SESSION['glpi_saved']['ReservationItem'] = $_POST;
+    $_SESSION['glpi_saved']['ReservationItem'] = $_POST;
 } else {
-   unset($_SESSION['glpi_saved']['ReservationItem']);
+    unset($_SESSION['glpi_saved']['ReservationItem']);
 }
 
 if (Session::getCurrentInterface() == "helpdesk") {
-   Html::helpFooter();
+    Html::helpFooter();
 } else {
-   Html::footer();
+    Html::footer();
 }

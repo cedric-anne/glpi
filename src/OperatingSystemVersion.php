@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,13 +32,13 @@
  */
 
 /// Class OperatingSystemVersion
-class OperatingSystemVersion extends CommonDropdown {
+class OperatingSystemVersion extends CommonDropdown
+{
+    public $can_be_translated = false;
 
-   public $can_be_translated = false;
 
-
-   static function getTypeName($nb = 0) {
-      return _n('Version of the operating system', 'Versions of the operating systems', $nb);
-
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Version of the operating system', 'Versions of the operating systems', $nb);
+    }
 }

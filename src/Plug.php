@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,23 +32,25 @@
  */
 
 /// Class Plug
-class Plug extends CommonDropdown {
+class Plug extends CommonDropdown
+{
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Plug', 'Plugs', $nb);
+    }
 
+    public function cleanDBonPurge()
+    {
 
-   static function getTypeName($nb = 0) {
-      return _n('Plug', 'Plugs', $nb);
-   }
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                Pdu_Plug::class,
+            ]
+        );
+    }
 
-   function cleanDBonPurge() {
-
-      $this->deleteChildrenAndRelationsFromDb(
-         [
-            Pdu_Plug::class,
-         ]
-      );
-   }
-
-   static function getIcon() {
-      return "ti ti-plug";
-   }
+    public static function getIcon()
+    {
+        return "ti ti-plug";
+    }
 }

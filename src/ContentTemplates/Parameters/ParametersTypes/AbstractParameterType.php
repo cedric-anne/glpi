@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -39,34 +40,37 @@ namespace Glpi\ContentTemplates\Parameters\ParametersTypes;
  */
 abstract class AbstractParameterType implements ParameterTypeInterface
 {
-   /**
-    * The parameter key that need to be used to retrieve its value in a template.
-    *
-    * @var string
-    */
-   protected $key;
+    /**
+     * The parameter key that need to be used to retrieve its value in a template.
+     *
+     * @var string
+     */
+    protected $key;
 
-   /**
-    * The parameter label, to be displayed in the client side autocompletion.
-    *
-    * @var string
-    */
+    /**
+     * The parameter label, to be displayed in the client side autocompletion.
+     *
+     * @var string
+     */
     protected $label;
 
-   /**
-    * @param string  $key     Key to access this value
-    * @param string  $label   Label to display in the autocompletion widget
-    */
-   public function __construct(string $key, string $label) {
-      $this->key = $key;
-      $this->label = $label;
-   }
+    /**
+     * @param string  $key     Key to access this value
+     * @param string  $label   Label to display in the autocompletion widget
+     */
+    public function __construct(string $key, string $label)
+    {
+        $this->key = $key;
+        $this->label = $label;
+    }
 
-   public function getDocumentationField(): string {
-      return $this->key;
-   }
+    public function getDocumentationField(): string
+    {
+        return $this->key;
+    }
 
-   public function getDocumentationLabel(): string {
-      return $this->label;
-   }
+    public function getDocumentationLabel(): string
+    {
+        return $this->label;
+    }
 }

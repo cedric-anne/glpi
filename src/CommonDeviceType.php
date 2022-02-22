@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,29 +31,32 @@
  * ---------------------------------------------------------------------
  */
 
-abstract class CommonDeviceType extends CommonType {
+abstract class CommonDeviceType extends CommonType
+{
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Device type', 'Device types', $nb);
+    }
 
-   static function getTypeName($nb = 0) {
-      return _n('Device type', 'Device types', $nb);
-   }
+    public static function getFormURL($full = true)
+    {
+        global $CFG_GLPI;
 
-   static function getFormURL($full = true) {
-      global $CFG_GLPI;
+        $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+        $itemtype = get_called_class();
+        $link = "$dir/front/devicetype.form.php?itemtype=$itemtype";
 
-      $dir = ($full ? $CFG_GLPI['root_doc'] : '');
-      $itemtype = get_called_class();
-      $link = "$dir/front/devicetype.form.php?itemtype=$itemtype";
+        return $link;
+    }
 
-      return $link;
-   }
+    public static function getSearchURL($full = true)
+    {
+        global $CFG_GLPI;
 
-   static function getSearchURL($full = true) {
-      global $CFG_GLPI;
+        $dir = ($full ? $CFG_GLPI['root_doc'] : '');
+        $itemtype = get_called_class();
+        $link = "$dir/front/devicetype.php?itemtype=$itemtype";
 
-      $dir = ($full ? $CFG_GLPI['root_doc'] : '');
-      $itemtype = get_called_class();
-      $link = "$dir/front/devicetype.php?itemtype=$itemtype";
-
-      return $link;
-   }
+        return $link;
+    }
 }

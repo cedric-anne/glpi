@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,61 +32,66 @@
  */
 
 // Class NotificationTarget
-class NotificationTargetFieldUnicity extends NotificationTarget {
+class NotificationTargetFieldUnicity extends NotificationTarget
+{
+    public function getEvents()
+    {
+        return ['refuse' => __('Alert on duplicate record')];
+    }
 
 
-   function getEvents() {
-      return ['refuse' => __('Alert on duplicate record')];
-   }
+    public function addDataForTemplate($event, $options = [])
+    {
 
+       //User who tries to add or update an item in DB
+        $action = ($options['action_user'] ? __('Add the item') : __('Update the item'));
+        $this->data['##unicity.action_type##'] = $action;
+        $this->data['##unicity.action_user##'] = $options['action_user'];
+        $this->data['##unicity.date##']        = Html::convDateTime($options['date']);
 
-   function addDataForTemplate($event, $options = []) {
-
-      //User who tries to add or update an item in DB
-      $action = ($options['action_user'] ?__('Add the item') :__('Update the item'));
-      $this->data['##unicity.action_type##'] = $action;
-      $this->data['##unicity.action_user##'] = $options['action_user'];
-      $this->data['##unicity.date##']        = Html::convDateTime($options['date']);
-
-      if ($item = getItemForItemtype($options['itemtype'])) {
-         $this->data['##unicity.itemtype##'] = $item->getTypeName(1);
-         $this->data['##unicity.message##']
+        if ($item = getItemForItemtype($options['itemtype'])) {
+            $this->data['##unicity.itemtype##'] = $item->getTypeName(1);
+            $this->data['##unicity.message##']
                   = $item->getUnicityErrorMessage($options['label'], $options['field'], $options['double']);
-      }
-      $this->data['##unicity.entity##']      = Dropdown::getDropdownName('glpi_entities',
-                                                                          $options['entities_id']);
-      if ($options['refuse']) {
-         $this->data['##unicity.action##'] = __('Record into the database denied');
-      } else {
-         $this->data['##unicity.action##'] = __('Item successfully added but duplicate record on');
-      }
-      $this->getTags();
-      foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
-         if (!isset($this->data[$tag])) {
-            $this->data[$tag] = $values['label'];
-         }
-      }
-   }
+        }
+        $this->data['##unicity.entity##']      = Dropdown::getDropdownName(
+            'glpi_entities',
+            $options['entities_id']
+        );
+        if ($options['refuse']) {
+            $this->data['##unicity.action##'] = __('Record into the database denied');
+        } else {
+            $this->data['##unicity.action##'] = __('Item successfully added but duplicate record on');
+        }
+        $this->getTags();
+        foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
+            if (!isset($this->data[$tag])) {
+                $this->data[$tag] = $values['label'];
+            }
+        }
+    }
 
 
-   function getTags() {
+    public function getTags()
+    {
 
-      $tags = ['unicity.message'     => __('Message'),
-                    'unicity.action_user' => __('Doer'),
-                    'unicity.action_type' => __('Intended action'),
-                    'unicity.date'        => _n('Date', 'Dates', 1),
-                    'unicity.itemtype'    => _n('Type', 'Types', 1),
-                    'unicity.entity'      => Entity::getTypeName(1),
-                    'unicity.action'      => __('Alert on duplicate record')];
+        $tags = ['unicity.message'     => __('Message'),
+            'unicity.action_user' => __('Doer'),
+            'unicity.action_type' => __('Intended action'),
+            'unicity.date'        => _n('Date', 'Dates', 1),
+            'unicity.itemtype'    => _n('Type', 'Types', 1),
+            'unicity.entity'      => Entity::getTypeName(1),
+            'unicity.action'      => __('Alert on duplicate record')
+        ];
 
-      foreach ($tags as $tag => $label) {
-         $this->addTagToList(['tag'   => $tag,
-                                   'label' => $label,
-                                   'value' => true]);
-      }
+        foreach ($tags as $tag => $label) {
+            $this->addTagToList(['tag'   => $tag,
+                'label' => $label,
+                'value' => true
+            ]);
+        }
 
-      asort($this->tag_descriptions);
-      return $this->tag_descriptions;
-   }
-
+        asort($this->tag_descriptions);
+        return $this->tag_descriptions;
+    }
 }

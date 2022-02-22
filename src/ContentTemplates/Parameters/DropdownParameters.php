@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -43,21 +44,23 @@ use Glpi\Toolbox\Sanitizer;
  */
 abstract class DropdownParameters extends AbstractParameters
 {
-   public function getAvailableParameters(): array {
-      return [
-         new AttributeParameter("id", __('ID')),
-         new AttributeParameter("name", __('Name')),
-      ];
-   }
+    public function getAvailableParameters(): array
+    {
+        return [
+            new AttributeParameter("id", __('ID')),
+            new AttributeParameter("name", __('Name')),
+        ];
+    }
 
-   protected function defineValues(CommonDBTM $item): array {
+    protected function defineValues(CommonDBTM $item): array
+    {
 
-      // Output "unsanitized" values
-      $fields = Sanitizer::unsanitize($item->fields);
+       // Output "unsanitized" values
+        $fields = Sanitizer::unsanitize($item->fields);
 
-      return [
-         'id'   => $fields['id'],
-         'name' => $fields['name'],
-      ];
-   }
+        return [
+            'id'   => $fields['id'],
+            'name' => $fields['name'],
+        ];
+    }
 }

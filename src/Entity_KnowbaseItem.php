@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,41 +33,41 @@
 
 /// Class Entity_KnowbaseItem
 /// since version 0.83
-class Entity_KnowbaseItem extends CommonDBRelation {
-
+class Entity_KnowbaseItem extends CommonDBRelation
+{
    // From CommonDBRelation
-   static public $itemtype_1          = 'KnowbaseItem';
-   static public $items_id_1          = 'knowbaseitems_id';
-   static public $itemtype_2          = 'Entity';
-   static public $items_id_2          = 'entities_id';
+    public static $itemtype_1          = 'KnowbaseItem';
+    public static $items_id_1          = 'knowbaseitems_id';
+    public static $itemtype_2          = 'Entity';
+    public static $items_id_2          = 'entities_id';
 
-   static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
-   static public $logs_for_item_2     = false;
+    public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
+    public static $logs_for_item_2     = false;
 
 
-   /**
-    * Get entities for a knowbaseitem
-    *
-    * @param integer $knowbaseitems_id ID of the knowbaseitem
-    *
-    * @return array of entities linked to a knowbaseitem
-   **/
-   static function getEntities($knowbaseitems_id) {
-      global $DB;
+    /**
+     * Get entities for a knowbaseitem
+     *
+     * @param integer $knowbaseitems_id ID of the knowbaseitem
+     *
+     * @return array of entities linked to a knowbaseitem
+     **/
+    public static function getEntities($knowbaseitems_id)
+    {
+        global $DB;
 
-      $ent   = [];
+        $ent   = [];
 
-      $iterator = $DB->request([
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'knowbaseitems_id' => $knowbaseitems_id
-         ]
-      ]);
+        $iterator = $DB->request([
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'knowbaseitems_id' => $knowbaseitems_id
+            ]
+        ]);
 
-      foreach ($iterator as $data) {
-         $ent[$data['entities_id']][] = $data;
-      }
-      return $ent;
-   }
-
+        foreach ($iterator as $data) {
+            $ent[$data['entities_id']][] = $data;
+        }
+        return $ent;
+    }
 }

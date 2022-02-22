@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -35,19 +36,19 @@ namespace Glpi\Features;
 /**
  * Objects lists that can be cached
  **/
-interface CacheableListInterface {
+interface CacheableListInterface
+{
+    /**
+     * Get cache key
+     *
+     * @return string
+     */
+    public function getListCacheKey(): string;
 
-   /**
-    * Get cache key
-    *
-    * @return string
-    */
-   public function getListCacheKey(): string;
-
-   /**
-    * Clean cache
-    *
-    * @return void
-    */
-   public function invalidateListCache(): void;
+    /**
+     * Clean cache
+     *
+     * @return void
+     */
+    public function invalidateListCache(): void;
 }

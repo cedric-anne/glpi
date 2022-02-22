@@ -1,7 +1,7 @@
-/**
+/*!
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -38,7 +38,7 @@ $secondary-fg: #f3f3f3;
 .btn-primary,
 .btn-outline-primary,
 .btn-ghost-primary {
-   --tblr-btn-color-text: red;
+    --tblr-btn-color-text: red;
 }
 
 $dark: #242323;
@@ -73,4 +73,4 @@ $table-head-bg: #2c3b4f;
 $table-head-color: $light;
 $itil-secondary-bg: #222121 !default;
 
-@import "includes";
+@import "../includes/palette_dark";

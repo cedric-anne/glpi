@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,20 +33,23 @@
 
 namespace Glpi\Tests;
 
-class BootstrapUtils {
-
-   /**
-    * Create subdirectories of GLPI_VAR_DIR based on defined constants.
-    *
-    * @return void
-    */
-   public static function initVarDirectories(): void {
-      foreach (get_defined_constants() as $name => $value) {
-         if (preg_match('/^GLPI_[\w]+_DIR$/', $name)
-             && preg_match('/^' . preg_quote(GLPI_VAR_DIR, '/') . '\//', $value)
-             && !is_dir($value)) {
-            mkdir($value, 0755, true);
-         }
-      }
-   }
+class BootstrapUtils
+{
+    /**
+     * Create subdirectories of GLPI_VAR_DIR based on defined constants.
+     *
+     * @return void
+     */
+    public static function initVarDirectories(): void
+    {
+        foreach (get_defined_constants() as $name => $value) {
+            if (
+                preg_match('/^GLPI_[\w]+_DIR$/', $name)
+                && preg_match('/^' . preg_quote(GLPI_VAR_DIR, '/') . '\//', $value)
+                && !is_dir($value)
+            ) {
+                mkdir($value, 0755, true);
+            }
+        }
+    }
 }

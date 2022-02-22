@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,7 +33,7 @@
 
 use Glpi\Event;
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkCentralAccess();
 
@@ -40,12 +41,17 @@ $link          = new Link();
 $link_itemtype = new Link_Itemtype();
 
 if (isset($_POST["add"])) {
-   $link->check(-1, CREATE, $_POST);
+    $link->check(-1, CREATE, $_POST);
 
-   if ($link_itemtype->add($_POST)) {
-      Event::log($_POST["links_id"], "links", 4, "setup",
-               //TRANS: %s is the user login
-               sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
-   }
-   Html::redirect($link->getFormURLWithID($_POST["links_id"]));
+    if ($link_itemtype->add($_POST)) {
+        Event::log(
+            $_POST["links_id"],
+            "links",
+            4,
+            "setup",
+            //TRANS: %s is the user login
+            sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"])
+        );
+    }
+    Html::redirect($link->getFormURLWithID($_POST["links_id"]));
 }

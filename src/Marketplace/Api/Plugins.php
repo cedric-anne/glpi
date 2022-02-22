@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -60,9 +61,9 @@ class Plugins {
     */
    protected $is_list_truncated = false;
 
-   static $plugins = null;
+  public static  $plugins = null;
 
-   function __construct(bool $connect = false) {
+   public function __construct(bool $connect = false) {
       global $CFG_GLPI;
 
       $options = [
@@ -191,7 +192,7 @@ class Plugins {
     *
     * @return array collection of plugins
     */
-   function getAllPlugins(
+   public function getAllPlugins(
       bool $force_refresh = false,
       string $tag_filter = "",
       string $string_filter = "",
@@ -300,7 +301,7 @@ class Plugins {
     *
     * @return array full collection
     */
-   function getPaginatedPlugins(
+   public function getPaginatedPlugins(
       bool $force_refresh = false,
       string $tag_filter = "",
       string $string_filter = "",
@@ -322,7 +323,7 @@ class Plugins {
     *
     * @return int number of plugins
     */
-   function getNbPlugins(string $tag_filter = "") {
+   public function getNbPlugins(string $tag_filter = "") {
       $plugins = $this->getAllPlugins(false, $tag_filter);
 
       return count($plugins);
@@ -398,10 +399,7 @@ class Plugins {
    public function getPluginsForTag(string $tag = "", bool $force_refresh = false): array {
       global $GLPI_CACHE;
 
-      $plugins_colct = [];
-      if (!$force_refresh && $GLPI_CACHE->has("marketplace_tag_$tag")) {
-         $plugins_colct = $GLPI_CACHE->get("marketplace_tag_$tag");
-      }
+      $plugins_colct = !$force_refresh ? $GLPI_CACHE->get("marketplace_tag_$tag", []) : [];
 
       if (!count($plugins_colct)) {
          $plugins_colct = $this->getPaginatedCollection("tags/{$tag}/plugin");

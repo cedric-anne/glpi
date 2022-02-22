@@ -1,7 +1,7 @@
-/**
+/*!
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,12 +31,12 @@
 
 // @TODO Encapsulate all styles inside a common class
 .reservations-planning {
-   a .fc-time,
-   .fc-title {
-      color: initial;
-   }
+    a .fc-time,
+    .fc-title {
+        color: initial;
+    }
 
-   .defaultDate {
-      background: #e3fce8;
-   }
+    .defaultDate {
+        background: #e3fce8;
+    }
 }

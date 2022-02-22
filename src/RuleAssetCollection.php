@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,24 +31,25 @@
  * ---------------------------------------------------------------------
  */
 
-class RuleAssetCollection extends RuleCollection {
-
+class RuleAssetCollection extends RuleCollection
+{
    // From RuleCollection
-   public $stop_on_first_match = false;
-   static $rightname           = 'rule_asset';
-   public $menu_option         = 'ruleasset';
+    public $stop_on_first_match = false;
+    public static $rightname           = 'rule_asset';
+    public $menu_option         = 'ruleasset';
 
-   function getTitle() {
-      return __('Business rules for assets');
-   }
+    public function getTitle()
+    {
+        return __('Business rules for assets');
+    }
 
 
-   function cleanTestOutputCriterias(array $output) {
+    public function cleanTestOutputCriterias(array $output)
+    {
 
-      if (isset($output["_rule_process"])) {
-         unset($output["_rule_process"]);
-      }
-      return $output;
-   }
-
+        if (isset($output["_rule_process"])) {
+            unset($output["_rule_process"]);
+        }
+        return $output;
+    }
 }

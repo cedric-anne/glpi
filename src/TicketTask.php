@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,226 +31,257 @@
  * ---------------------------------------------------------------------
  */
 
-class TicketTask extends CommonITILTask {
-
-   static $rightname = 'task';
-
-
-   static function getTypeName($nb = 0) {
-      return _n('Ticket task', 'Ticket tasks', $nb);
-   }
+class TicketTask extends CommonITILTask
+{
+    public static $rightname = 'task';
 
 
-   static function canCreate() {
-      return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Ticket task', 'Ticket tasks', $nb);
+    }
+
+
+    public static function canCreate()
+    {
+        return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
               || Session::haveRight('ticket', Ticket::OWN));
-   }
+    }
 
 
-   static function canView() {
-      return (Session::haveRightsOr(self::$rightname, [parent::SEEPUBLIC, parent::SEEPRIVATE])
+    public static function canView()
+    {
+        return (Session::haveRightsOr(self::$rightname, [parent::SEEPUBLIC, parent::SEEPRIVATE])
               || Session::haveRight('ticket', Ticket::OWN));
-   }
+    }
 
 
-   static function canUpdate() {
-      return (Session::haveRight(self::$rightname, parent::UPDATEALL)
+    public static function canUpdate()
+    {
+        return (Session::haveRight(self::$rightname, parent::UPDATEALL)
               || Session::haveRight('ticket', Ticket::OWN));
-   }
+    }
 
 
-   function canViewPrivates() {
-      return Session::haveRight(self::$rightname, parent::SEEPRIVATE);
-   }
+    public function canViewPrivates()
+    {
+        return Session::haveRight(self::$rightname, parent::SEEPRIVATE);
+    }
 
 
-   function canEditAll() {
-      return Session::haveRight(self::$rightname, parent::UPDATEALL);
-   }
+    public function canEditAll()
+    {
+        return Session::haveRight(self::$rightname, parent::UPDATEALL);
+    }
 
 
-   /**
-    * Does current user have right to show the current task?
-    *
-    * @return boolean
-   **/
-   function canViewItem() {
+    /**
+     * Does current user have right to show the current task?
+     *
+     * @return boolean
+     **/
+    public function canViewItem()
+    {
 
-      if (!$this->canReadITILItem()) {
-         return false;
-      }
+        if (!$this->canReadITILItem()) {
+            return false;
+        }
 
-      if (Session::haveRight(self::$rightname, parent::SEEPRIVATE)) {
-         return true;
-      }
+        if (Session::haveRight(self::$rightname, parent::SEEPRIVATE)) {
+            return true;
+        }
 
-      if (!$this->fields['is_private']
-          && Session::haveRight(self::$rightname, parent::SEEPUBLIC)) {
-         return true;
-      }
+        if (
+            !$this->fields['is_private']
+            && Session::haveRight(self::$rightname, parent::SEEPUBLIC)
+        ) {
+            return true;
+        }
 
-      // see task created or affected to me
-      if (Session::getCurrentInterface() == "central"
-          && ($this->fields["users_id"] === Session::getLoginUserID())
-              || ($this->fields["users_id_tech"] === Session::getLoginUserID())) {
-         return true;
-      }
+       // see task created or affected to me
+        if (
+            Session::getCurrentInterface() == "central"
+            && ($this->fields["users_id"] === Session::getLoginUserID())
+              || ($this->fields["users_id_tech"] === Session::getLoginUserID())
+        ) {
+            return true;
+        }
 
-      if ($this->fields["groups_id_tech"] && ($this->fields["groups_id_tech"] > 0)
-          && isset($_SESSION["glpigroups"])
-          && in_array($this->fields["groups_id_tech"], $_SESSION["glpigroups"])) {
-         return true;
-      }
+        if (
+            $this->fields["groups_id_tech"] && ($this->fields["groups_id_tech"] > 0)
+            && isset($_SESSION["glpigroups"])
+            && in_array($this->fields["groups_id_tech"], $_SESSION["glpigroups"])
+        ) {
+            return true;
+        }
 
-      return false;
-   }
+        return false;
+    }
 
 
-   /**
-    * Does current user have right to create the current task?
-    *
-    * @return boolean
-   **/
-   function canCreateItem() {
+    /**
+     * Does current user have right to create the current task?
+     *
+     * @return boolean
+     **/
+    public function canCreateItem()
+    {
 
-      if (!$this->canReadITILItem()) {
-         return false;
-      }
+        if (!$this->canReadITILItem()) {
+            return false;
+        }
 
-      $ticket = new Ticket();
-      if ($ticket->getFromDB($this->fields['tickets_id'])
-          // No validation for closed tickets
-          && !in_array($ticket->fields['status'], $ticket->getClosedStatusArray())) {
-         return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
+        $ticket = new Ticket();
+        if (
+            $ticket->getFromDB($this->fields['tickets_id'])
+            // No validation for closed tickets
+            && !in_array($ticket->fields['status'], $ticket->getClosedStatusArray())
+        ) {
+            return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
                  || $ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                  || (isset($_SESSION["glpigroups"])
-                     && $ticket->haveAGroup(CommonITILActor::ASSIGN,
-                                            $_SESSION['glpigroups'])));
-      }
-      return false;
-   }
+                     && $ticket->haveAGroup(
+                         CommonITILActor::ASSIGN,
+                         $_SESSION['glpigroups']
+                     )));
+        }
+        return false;
+    }
 
 
-   /**
-    * Does current user have right to update the current task?
-    *
-    * @return boolean
-   **/
-   function canUpdateItem() {
+    /**
+     * Does current user have right to update the current task?
+     *
+     * @return boolean
+     **/
+    public function canUpdateItem()
+    {
 
-      if (!$this->canReadITILItem()) {
-         return false;
-      }
+        if (!$this->canReadITILItem()) {
+            return false;
+        }
 
-      $ticket = new Ticket();
-      if ($ticket->getFromDB($this->fields['tickets_id'])
-         && in_array($ticket->fields['status'], $ticket->getClosedStatusArray())) {
-         return false;
-      }
+        $ticket = new Ticket();
+        if (
+            $ticket->getFromDB($this->fields['tickets_id'])
+            && in_array($ticket->fields['status'], $ticket->getClosedStatusArray())
+        ) {
+            return false;
+        }
 
-      if (($this->fields["users_id"] != Session::getLoginUserID())
-          && !Session::haveRight(self::$rightname, parent::UPDATEALL)) {
-         return false;
-      }
+        if (
+            ($this->fields["users_id"] != Session::getLoginUserID())
+            && !Session::haveRight(self::$rightname, parent::UPDATEALL)
+        ) {
+            return false;
+        }
 
-      return true;
-   }
-
-
-   /**
-    * Does current user have right to purge the current task?
-    *
-    * @return boolean
-   **/
-   function canPurgeItem() {
-      $ticket = new Ticket();
-      if ($ticket->getFromDB($this->fields['tickets_id'])
-         && in_array($ticket->fields['status'], $ticket->getClosedStatusArray())) {
-         return false;
-      }
-
-      return Session::haveRight(self::$rightname, PURGE);
-   }
+        return true;
+    }
 
 
-   /**
-    * Populate the planning with planned ticket tasks
-    *
-    * @param $options   array of possible options:
-    *    - who          ID of the user (0 = undefined)
-    *    - whogroup     ID of the group of users (0 = undefined)
-    *    - begin        Date
-    *    - end          Date
-    *
-    * @return array of planning item
-   **/
-   static function populatePlanning($options = []) :array {
-      return parent::genericPopulatePlanning(__CLASS__, $options);
-   }
+    /**
+     * Does current user have right to purge the current task?
+     *
+     * @return boolean
+     **/
+    public function canPurgeItem()
+    {
+        $ticket = new Ticket();
+        if (
+            $ticket->getFromDB($this->fields['tickets_id'])
+            && in_array($ticket->fields['status'], $ticket->getClosedStatusArray())
+        ) {
+            return false;
+        }
+
+        return Session::haveRight(self::$rightname, PURGE);
+    }
 
 
-   /**
-    * Populate the planning with planned ticket tasks
-    *
-    * @param $options   array of possible options:
-    *    - who          ID of the user (0 = undefined)
-    *    - whogroup     ID of the group of users (0 = undefined)
-    *    - begin        Date
-    *    - end          Date
-    *
-    * @return array of planning item
-   **/
-   static function populateNotPlanned($options = []) :array {
-      return parent::genericPopulateNotPlanned(__CLASS__, $options);
-   }
+    /**
+     * Populate the planning with planned ticket tasks
+     *
+     * @param $options   array of possible options:
+     *    - who          ID of the user (0 = undefined)
+     *    - whogroup     ID of the group of users (0 = undefined)
+     *    - begin        Date
+     *    - end          Date
+     *
+     * @return array of planning item
+     **/
+    public static function populatePlanning($options = []): array
+    {
+        return parent::genericPopulatePlanning(__CLASS__, $options);
+    }
 
 
-   /**
-    * Display a Planning Item
-    *
-    * @param array           $val       array of the item to display
-    * @param integer         $who       ID of the user (0 if all)
-    * @param string          $type      position of the item in the time block (in, through, begin or end)
-    * @param integer|boolean $complete  complete display (more details)
-    *
-    * @return string
-    */
-   static function displayPlanningItem(array $val, $who, $type = "", $complete = 0) {
-      return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
-   }
+    /**
+     * Populate the planning with planned ticket tasks
+     *
+     * @param $options   array of possible options:
+     *    - who          ID of the user (0 = undefined)
+     *    - whogroup     ID of the group of users (0 = undefined)
+     *    - begin        Date
+     *    - end          Date
+     *
+     * @return array of planning item
+     **/
+    public static function populateNotPlanned($options = []): array
+    {
+        return parent::genericPopulateNotPlanned(__CLASS__, $options);
+    }
 
 
-   /**
-    * @since 0.85
-    *
-    * @see commonDBTM::getRights()
-    **/
-   function getRights($interface = 'central') {
+    /**
+     * Display a Planning Item
+     *
+     * @param array           $val       array of the item to display
+     * @param integer         $who       ID of the user (0 if all)
+     * @param string          $type      position of the item in the time block (in, through, begin or end)
+     * @param integer|boolean $complete  complete display (more details)
+     *
+     * @return string
+     */
+    public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
+    {
+        return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
+    }
 
-      $values = parent::getRights();
-      unset($values[UPDATE], $values[CREATE], $values[READ]);
 
-      if ($interface == 'central') {
-         $values[parent::UPDATEALL]      = __('Update all');
-         $values[parent::ADDALLITEM  ]   = __('Add to all items');
-         $values[parent::SEEPRIVATE]     = __('See private ones');
-      }
+    /**
+     * @since 0.85
+     *
+     * @see commonDBTM::getRights()
+     **/
+    public function getRights($interface = 'central')
+    {
 
-      $values[parent::SEEPUBLIC]   = __('See public ones');
+        $values = parent::getRights();
+        unset($values[UPDATE], $values[CREATE], $values[READ]);
 
-      if ($interface == 'helpdesk') {
-         unset($values[PURGE]);
-      }
+        if ($interface == 'central') {
+            $values[parent::UPDATEALL]      = __('Update all');
+            $values[parent::ADDALLITEM  ]   = __('Add to all items');
+            $values[parent::SEEPRIVATE]     = __('See private ones');
+        }
 
-      return $values;
-   }
+        $values[parent::SEEPUBLIC]   = __('See public ones');
 
-   /**
-    * Build parent condition for search
-    *
-    * @return string
-    */
-   public static function buildParentCondition() {
-      return "(0 = 1 " . Ticket::buildCanViewCondition("tickets_id") . ") ";
-   }
+        if ($interface == 'helpdesk') {
+            unset($values[PURGE]);
+        }
+
+        return $values;
+    }
+
+    /**
+     * Build parent condition for search
+     *
+     * @return string
+     */
+    public static function buildParentCondition()
+    {
+        return "(0 = 1 " . Ticket::buildCanViewCondition("tickets_id") . ") ";
+    }
 }

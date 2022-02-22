@@ -1,7 +1,7 @@
 {#
  # ---------------------------------------------------------------------
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2021 Teclib' and contributors.
+ # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
@@ -394,11 +394,23 @@
                      {% endif %}
 
                      {% if item.isField('is_global') %}
+                        {% set management_restrict = 0 %}
+                        {% if item_type == 'Monitor' %}
+                           {% set management_restrict = config('monitors_management_restrict') %}
+                        {% elseif item_type == 'Peripheral' %}
+                           {% set management_restrict = config('peripherals_management_restrict') %}
+                        {% elseif item_type == 'Phone' %}
+                           {% set management_restrict = config('phones_management_restrict') %}
+                        {% elseif item_type == 'Printer' %}
+                           {% set management_restrict = config('printers_management_restrict') %}
+                        {% else %}
+                           {% set management_restrict = 0 %}
+                        {% endif %}
                         {% set dd_globalswitch %}
                            {% do call('Dropdown::showGlobalSwitch', [item.fields['id'], {
                               'withtemplate': withtemplate,
                               'value': item.fields['is_global'],
-                              'management_restrict': config('monitors_management_restrict'),
+                              'management_restrict': management_restrict,
                               'target': target,
                               'width': '100%',
                            }]) %}
@@ -415,6 +427,10 @@
                            'size',
                            item.fields['size'],
                            __('Size'),
+                           {
+                              'min': 0,
+                              'step': 0.01
+                           },
                         ) }}
                      {% endif %}
 
@@ -552,8 +568,7 @@
    {{ include('components/form/buttons.html.twig') }}
    {{ include('components/form/inventory_info.html.twig') }}
 
-
-   {% if params['formfooter'] == null %}
+   {% if params['formfooter'] is null or params['formfooter'] == true %}
       <div class="card-footer mx-n2 mb-n2 mt-4">
          {{ include('components/form/dates.html.twig') }}
       </div>

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -37,114 +38,120 @@ use Item_Devices;
 
 abstract class Device extends InventoryAsset
 {
-   protected $id_class;
+    protected $id_class;
 
-   /**
-    * Constructor
-    *
-    * @param CommonDBTM $item    Item instance
-    * @param array      $data    Data part
-    * @param string     $idclass Item device class
-    */
-   public function __construct(CommonDBTM $item, array $data = null, $id_class) {
-      parent::__construct($item, $data);
-      $this->id_class = $id_class;
-   }
+    /**
+     * Constructor
+     *
+     * @param CommonDBTM $item    Item instance
+     * @param array      $data    Data part
+     * @param string     $idclass Item device class
+     */
+    public function __construct(CommonDBTM $item, array $data = null, $id_class)
+    {
+        parent::__construct($item, $data);
+        $this->id_class = $id_class;
+    }
 
-   /**
-    * Get existing entries from database
-    *
-    * @return array
-    */
-   protected function getExisting($itemdevicetable, $fk): array {
-      global $DB;
+    /**
+     * Get existing entries from database
+     *
+     * @return array
+     */
+    protected function getExisting($itemdevicetable, $fk): array
+    {
+        global $DB;
 
-      $db_existing = [];
+        $db_existing = [];
 
-      $iterator = $DB->request([
-         'SELECT'    => [
-            "$itemdevicetable.$fk",
-            "is_dynamic"
-         ],
-         'FROM'      => $itemdevicetable,
-         'WHERE'     => [
-            "$itemdevicetable.items_id"     => $this->item->fields['id'],
-            "$itemdevicetable.itemtype"     => $this->item->getType()
-         ]
-      ]);
+        $iterator = $DB->request([
+            'SELECT'    => [
+                "$itemdevicetable.$fk",
+                "is_dynamic"
+            ],
+            'FROM'      => $itemdevicetable,
+            'WHERE'     => [
+                "$itemdevicetable.items_id"     => $this->item->fields['id'],
+                "$itemdevicetable.itemtype"     => $this->item->getType()
+            ]
+        ]);
 
-      foreach ($iterator as $row) {
-         $db_existing[$row[$fk]] = $row;
-      }
+        foreach ($iterator as $row) {
+            $db_existing[$row[$fk]] = $row;
+        }
 
-      return $db_existing;
-   }
+        return $db_existing;
+    }
 
-   public function handle() {
-      global $DB;
+    public function handle()
+    {
+        global $DB;
 
-      $devicetypes = Item_Devices::getItemAffinities($this->item->getType());
+        $devicetypes = Item_Devices::getItemAffinities($this->item->getType());
 
-      $itemdevicetype = $this->id_class;
-      if (in_array($this->id_class, $devicetypes)) {
-         $value = $this->data;
-         $itemdevice = new $itemdevicetype;
+        $itemdevicetype = $this->id_class;
+        if (in_array($this->id_class, $devicetypes)) {
+            $value = $this->data;
+            $itemdevice = new $itemdevicetype();
 
-         $itemdevicetable = getTableForItemType($itemdevicetype);
-         $devicetype      = $itemdevicetype::getDeviceType();
-         $device          = new $devicetype;
-         $devicetable     = getTableForItemType($devicetype);
-         $fk              = getForeignKeyFieldForTable($devicetable);
+            $itemdevicetable = getTableForItemType($itemdevicetype);
+            $devicetype      = $itemdevicetype::getDeviceType();
+            $device          = new $devicetype();
+            $devicetable     = getTableForItemType($devicetype);
+            $fk              = getForeignKeyFieldForTable($devicetable);
 
-         $existing = $this->getExisting($itemdevicetable, $fk);
-         $deleted_items = [];
+            $existing = $this->getExisting($itemdevicetable, $fk);
+            $deleted_items = [];
 
-         foreach ($value as $val) {
-            if (!isset($val->designation) || $val->designation == '') {
-               //cannot be empty
-               $val->designation = $itemdevice->getTypeName(1);
+            foreach ($value as $val) {
+                if (!isset($val->designation) || $val->designation == '') {
+                   //cannot be empty
+                    $val->designation = $itemdevice->getTypeName(1);
+                }
+
+                //create device or get existing device ID
+                $device_id = $device->import(\Toolbox::addslashes_deep((array)$val));
+
+                //remove all existing instances
+                if (!isset($deleted_items[$device_id])) {
+                    $DB->delete(
+                        $itemdevice->getTable(),
+                        [
+                            $fk => $device_id,
+                            'items_id'     => $this->item->fields['id'],
+                            'itemtype'     => $this->item->getType(),
+                        ]
+                    );
+                    $deleted_items[$device_id] = $device_id;
+                }
+
+                $itemdevice_data = \Toolbox::addslashes_deep([
+                    $fk                  => $device_id,
+                    'itemtype'           => $this->item->getType(),
+                    'items_id'           => $this->item->fields['id'],
+                    'is_dynamic'         => 1
+                ] + (array)$val);
+                $itemdevice->add($itemdevice_data, [], isset($existing[$device_id]) ? $this->withHistory() : false);
+                $this->itemdeviceAdded($itemdevice, $val);
+                unset($existing[$device_id]);
             }
 
-            //create device or get existing device ID
-            $device_id = $device->import(\Toolbox::addslashes_deep((array)$val));
-
-            //remove all existing instances
-            if (!isset($deleted_items[$device_id])) {
-               $DB->delete(
-                  $itemdevice->getTable(), [
-                     $fk => $device_id,
-                     'items_id'     => $this->item->fields['id'],
-                     'itemtype'     => $this->item->getType(),
-                  ]
-               );
-               $deleted_items[$device_id] = $device_id;
+            foreach ($existing as $deviceid => $data) {
+               //first, remove items
+                if ($data['is_dynamic'] == 1) {
+                    $DB->delete(
+                        $itemdevice->getTable(),
+                        [
+                            $fk => $deviceid
+                        ]
+                    );
+                }
             }
+        }
+    }
 
-            $itemdevice_data = \Toolbox::addslashes_deep([
-               $fk                  => $device_id,
-               'itemtype'           => $this->item->getType(),
-               'items_id'           => $this->item->fields['id'],
-               'is_dynamic'         => 1
-            ] + (array)$val);
-            $itemdevice->add($itemdevice_data, [], isset($existing[$device_id]) ? $this->withHistory() : false);
-            $this->itemdeviceAdded($itemdevice, $val);
-            unset($existing[$device_id]);
-         }
-
-         foreach ($existing as $deviceid => $data) {
-            //first, remove items
-            if ($data['is_dynamic'] == 1) {
-               $DB->delete(
-                  $itemdevice->getTable(), [
-                     $fk => $deviceid
-                  ]
-               );
-            }
-         }
-      }
-   }
-
-   protected function itemdeviceAdded(Item_Devices $itemdevice, $val) {
-      //to be overrided
-   }
+    protected function itemdeviceAdded(Item_Devices $itemdevice, $val)
+    {
+       //to be overrided
+    }
 }

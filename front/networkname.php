@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,12 +31,17 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("internet", READ);
 
-Html::header(NetworkName::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'config', 'commondropdown',
-            'NetworkName');
+Html::header(
+    NetworkName::getTypeName(Session::getPluralNumber()),
+    $_SERVER['PHP_SELF'],
+    'config',
+    'commondropdown',
+    'NetworkName'
+);
 
 Search::show('NetworkName');
 

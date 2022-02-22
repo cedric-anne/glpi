@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -36,73 +37,75 @@ use DbTestCase;
 
 /* Test for inc/notificationmailing.class.php .class.php */
 
-class NotificationMailing extends DbTestCase {
+class NotificationMailing extends DbTestCase
+{
+    /**
+     * @ignore
+     * @see https://gitlab.alpinelinux.org/alpine/aports/issues/7392
+     */
+    public function testCheck()
+    {
+        $instance = new \NotificationMailing();
 
-   /**
-    * @ignore
-    * @see https://gitlab.alpinelinux.org/alpine/aports/issues/7392
-    */
-   public function testCheck() {
-      $instance = new \NotificationMailing();
+        $this->boolean($instance->check('user'))->isFalse();
+        $this->boolean($instance->check('user@localhost'))->isTrue();
+        $this->boolean($instance->check('user@localhost.dot'))->isTrue();
+        if (!getenv('GLPI_SKIP_ONLINE')) {
+            $this->boolean($instance->check('user@localhost.dot', ['checkdns' => true]))->isFalse();
+            $this->boolean($instance->check('user@glpi-project.org', ['checkdns' => true]))->isTrue();
+        }
+    }
 
-      $this->boolean($instance->check('user'))->isFalse();
-      $this->boolean($instance->check('user@localhost'))->isTrue();
-      $this->boolean($instance->check('user@localhost.dot'))->isTrue();
-      if (!getenv('GLPI_SKIP_ONLINE')) {
-          $this->boolean($instance->check('user@localhost.dot', ['checkdns' => true]))->isFalse();
-          $this->boolean($instance->check('user@glpi-project.org', ['checkdns' => true]))->isTrue();
-      }
-   }
+    public function testSendNotification()
+    {
+       //setup
+        $this->login();
 
-   public function testSendNotification() {
-      //setup
-      $this->login();
+        $instance = new \NotificationMailing();
+        $res = $instance->sendNotification([
+            '_itemtype'                   => 'NotificationMailing',
+            '_items_id'                   => 1,
+            '_notificationtemplates_id'   => 0,
+            '_entities_id'                => 0,
+            'fromname'                    => 'TEST',
+            'subject'                     => 'Test notification',
+            'content_text'                => "Hello, this is a test notification.",
+            'to'                          => \Session::getLoginUserID(),
+            'from'                        => 'glpi@tests',
+            'toname'                      => ''
+        ]);
+        $this->boolean($res)->isTrue();
 
-      $instance = new \NotificationMailing();
-      $res = $instance->sendNotification([
-         '_itemtype'                   => 'NotificationMailing',
-         '_items_id'                   => 1,
-         '_notificationtemplates_id'   => 0,
-         '_entities_id'                => 0,
-         'fromname'                    => 'TEST',
-         'subject'                     => 'Test notification',
-         'content_text'                => "Hello, this is a test notification.",
-         'to'                          => \Session::getLoginUserID(),
-         'from'                        => 'glpi@tests',
-         'toname'                      => ''
-      ]);
-      $this->boolean($res)->isTrue();
+        $data = getAllDataFromTable('glpi_queuednotifications');
+        $this->array($data)->hasSize(1);
 
-      $data = getAllDataFromTable('glpi_queuednotifications');
-      $this->array($data)->hasSize(1);
+        $row = array_pop($data);
+        unset($row['id']);
+        unset($row['create_time']);
+        unset($row['send_time']);
 
-      $row = array_pop($data);
-      unset($row['id']);
-      unset($row['create_time']);
-      unset($row['send_time']);
-
-      $this->array($row)
+        $this->array($row)
          ->isIdenticalTo([
-            'itemtype'                 => 'NotificationMailing',
-            'items_id'                 => 1,
-            'notificationtemplates_id' => 0,
-            'entities_id'              => 0,
-            'is_deleted'               => 0,
-            'sent_try'                 => 0,
-            'sent_time'                => null,
-            'name'                     => 'Test notification',
-            'sender'                   => 'glpi@tests',
-            'sendername'               => 'TEST',
-            'recipient'                => '6',
-            'recipientname'            => '',
-            'replyto'                  => null,
-            'replytoname'              => null,
-            'headers'                  => '{"Auto-Submitted":"auto-generated","X-Auto-Response-Suppress":"OOF, DR, NDR, RN, NRN"}',
-            'body_html'                => null,
-            'body_text'                => 'Hello, this is a test notification.',
-            'messageid'                => null,
-            'documents'                => '',
-            'mode'                     => 'mailing'
+             'itemtype'                 => 'NotificationMailing',
+             'items_id'                 => 1,
+             'notificationtemplates_id' => 0,
+             'entities_id'              => 0,
+             'is_deleted'               => 0,
+             'sent_try'                 => 0,
+             'sent_time'                => null,
+             'name'                     => 'Test notification',
+             'sender'                   => 'glpi@tests',
+             'sendername'               => 'TEST',
+             'recipient'                => '7',
+             'recipientname'            => '',
+             'replyto'                  => null,
+             'replytoname'              => null,
+             'headers'                  => '{"Auto-Submitted":"auto-generated","X-Auto-Response-Suppress":"OOF, DR, NDR, RN, NRN"}',
+             'body_html'                => null,
+             'body_text'                => 'Hello, this is a test notification.',
+             'messageid'                => null,
+             'documents'                => '',
+             'mode'                     => 'mailing'
          ]);
-   }
+    }
 }

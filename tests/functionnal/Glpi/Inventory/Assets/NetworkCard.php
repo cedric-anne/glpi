@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -36,12 +37,13 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/networkcard.class.php */
 
-class NetworkCard extends AbstractInventoryAsset {
-
-   protected function assetProvider() :array {
-      return [
-         [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+class NetworkCard extends AbstractInventoryAsset
+{
+    protected function assetProvider(): array
+    {
+        return [
+            [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <NETWORKS>
@@ -59,10 +61,10 @@ class NetworkCard extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "lo", "ipaddress": "127.0.0.1", "ipmask": "255.0.0.0", "ipsubnet": "127.0.0.0", "status": "up", "type": "loopback", "virtualdev": true, "mac": "00:00:00:00:00:00"}',
-            'virtual'   => true
-         ], [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"description": "lo", "ipaddress": "127.0.0.1", "ipmask": "255.0.0.0", "ipsubnet": "127.0.0.0", "status": "up", "type": "loopback", "virtualdev": true, "mac": "00:00:00:00:00:00"}',
+                'virtual'   => true
+            ], [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <NETWORKS>
@@ -80,10 +82,10 @@ class NetworkCard extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "lo", "ipaddress6": "::1", "ipmask6": "fff0::", "ipsubnet6": "::", "status": "up", "type": "loopback", "virtualdev": true, "mac": "00:00:00:00:00:00"}',
-            'virtual'   => true
-         ], [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"description": "lo", "ipaddress6": "::1", "ipmask6": "fff0::", "ipsubnet6": "::", "status": "up", "type": "loopback", "virtualdev": true, "mac": "00:00:00:00:00:00"}',
+                'virtual'   => true
+            ], [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <NETWORKS>
@@ -109,10 +111,10 @@ class NetworkCard extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "wlp58s0", "driver": "iwlwifi", "ipaddress": "192.168.1.119", "ipgateway": "192.168.1.1", "ipmask": "255.255.255.0", "ipsubnet": "192.168.1.0", "pciid": "8086:24F3:8086:0050", "pcislot": "0000:3a:00.0", "status": "up", "type": "wifi", "virtualdev": false, "wifi_bssid": "58:6D:8F:C2:19:BF", "wifi_mode": "Managed", "wifi_ssid": "teclib", "wifi_version": "802.11", "mac": "44:85:00:2b:90:bc"}',
-            'virtual'   => false
-         ], [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"description": "wlp58s0", "driver": "iwlwifi", "ipaddress": "192.168.1.119", "ipgateway": "192.168.1.1", "ipmask": "255.255.255.0", "ipsubnet": "192.168.1.0", "pciid": "8086:24F3:8086:0050", "pcislot": "0000:3a:00.0", "status": "up", "type": "wifi", "virtualdev": false, "wifi_bssid": "58:6D:8F:C2:19:BF", "wifi_mode": "Managed", "wifi_ssid": "teclib", "wifi_version": "802.11", "mac": "44:85:00:2b:90:bc"}',
+                'virtual'   => false
+            ], [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <NETWORKS>
@@ -137,10 +139,10 @@ class NetworkCard extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "wlp58s0", "driver": "iwlwifi", "ipaddress6": "fe80::92a4:26c6:99dd:2d60", "ipmask6": "ffff:ffff:ffff:ffff::", "ipsubnet6": "fe80::", "pciid": "8086:24F3:8086:0050", "pcislot": "0000:3a:00.0", "status": "up", "type": "wifi", "virtualdev": false, "wifi_bssid": "58:6D:8F:C2:19:BF", "wifi_mode": "Managed", "wifi_ssid": "teclib", "wifi_version": "802.11", "mac": "44:85:00:2b:90:bc"}',
-            'virtual'   => false
-         ], [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"description": "wlp58s0", "driver": "iwlwifi", "ipaddress6": "fe80::92a4:26c6:99dd:2d60", "ipmask6": "ffff:ffff:ffff:ffff::", "ipsubnet6": "fe80::", "pciid": "8086:24F3:8086:0050", "pcislot": "0000:3a:00.0", "status": "up", "type": "wifi", "virtualdev": false, "wifi_bssid": "58:6D:8F:C2:19:BF", "wifi_mode": "Managed", "wifi_ssid": "teclib", "wifi_version": "802.11", "mac": "44:85:00:2b:90:bc"}',
+                'virtual'   => false
+            ], [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <NETWORKS>
@@ -159,10 +161,10 @@ class NetworkCard extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "virbr0", "ipaddress": "192.168.122.1", "ipmask": "255.255.255.0", "ipsubnet": "192.168.122.0", "status": "up", "type": "bridge", "virtualdev": true, "mac": "52:54:00:fa:20:0e"}',
-            'virtual'   => true
-         ], [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"description": "virbr0", "ipaddress": "192.168.122.1", "ipmask": "255.255.255.0", "ipsubnet": "192.168.122.0", "status": "up", "type": "bridge", "virtualdev": true, "mac": "52:54:00:fa:20:0e"}',
+                'virtual'   => true
+            ], [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <NETWORKS>
@@ -177,10 +179,10 @@ class NetworkCard extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "virbr0-nic", "speed": "10", "status": "down", "virtualdev": true, "mac": "52:54:00:fa:20:0e"}',
-            'virtual'   => true
-         ], [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"description": "virbr0-nic", "speed": "10", "status": "down", "virtualdev": true, "mac": "52:54:00:fa:20:0e"}',
+                'virtual'   => true
+            ], [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <NETWORKS>
@@ -197,10 +199,10 @@ class NetworkCard extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "tun0", "ipaddress": "192.168.11.47", "ipmask": "255.255.255.0", "ipsubnet": "192.168.11.0", "speed": "10", "status": "up", "virtualdev": true}',
-            'virtual'   => true
-         ], [
-            'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                'expected'  => '{"description": "tun0", "ipaddress": "192.168.11.47", "ipmask": "255.255.255.0", "ipsubnet": "192.168.11.0", "speed": "10", "status": "up", "virtualdev": true}',
+                'virtual'   => true
+            ], [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <NETWORKS>
@@ -217,85 +219,89 @@ class NetworkCard extends AbstractInventoryAsset {
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-            'expected'  => '{"description": "tun0", "ipaddress6": "fe80::c33a:59c7:61c5:339e", "ipmask6": "ffff:ffff:ffff:ffff::", "ipsubnet6": "fe80::", "speed": "10", "status": "up", "virtualdev": true}',
-            'virtual'   => true
-         ]
-      ];
-   }
+                'expected'  => '{"description": "tun0", "ipaddress6": "fe80::c33a:59c7:61c5:339e", "ipmask6": "ffff:ffff:ffff:ffff::", "ipsubnet6": "fe80::", "speed": "10", "status": "up", "virtualdev": true}',
+                'virtual'   => true
+            ]
+        ];
+    }
 
-   /**
-    * @dataProvider assetProvider
-    */
-   public function testPrepare($xml, $expected, $virtual) {
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($xml);
-      $json = json_decode($data);
+    /**
+     * @dataProvider assetProvider
+     */
+    public function testPrepare($xml, $expected, $virtual)
+    {
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\NetworkCard($computer, $json->content->networks);
-      $asset->setExtraData((array)$json->content);
-      $conf = new \Glpi\Inventory\Conf();
-      $asset->checkConf($conf);
-      $result = $asset->prepare();
-      $this->object($result[0])->isEqualTo(json_decode($expected));
-   }
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $asset = new \Glpi\Inventory\Asset\NetworkCard($computer, $json->content->networks);
+        $asset->setExtraData((array)$json->content);
+        $conf = new \Glpi\Inventory\Conf();
+        $asset->checkConf($conf);
+        $result = $asset->prepare();
+        $this->object($result[0])->isEqualTo(json_decode($expected));
+    }
 
-   /**
-    * @dataProvider assetProvider
-    */
-   public function testNoVirtuals($xml, $expected, $virtual) {
-      $this->login();
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($xml);
-      $json = json_decode($data);
+    /**
+     * @dataProvider assetProvider
+     */
+    public function testNoVirtuals($xml, $expected, $virtual)
+    {
+        $this->login();
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\NetworkCard($computer, $json->content->networks);
-      $asset->setExtraData((array)$json->content);
-      $conf = new \Glpi\Inventory\Conf();
-      $this->boolean($conf->saveConf(['component_networkcardvirtual' => 0]))->isTrue();
-      $asset->checkConf($conf);
-      $result = $asset->prepare();
-      $this->boolean($conf->saveConf(['component_networkcardvirtual' => 1]))->isTrue();
-      if ($virtual) {
-         $this->array($result)->isEmpty();
-      } else {
-         $this->object($result[0])->isEqualTo(json_decode($expected));
-      }
-   }
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $asset = new \Glpi\Inventory\Asset\NetworkCard($computer, $json->content->networks);
+        $asset->setExtraData((array)$json->content);
+        $conf = new \Glpi\Inventory\Conf();
+        $this->boolean($conf->saveConf(['component_networkcardvirtual' => 0]))->isTrue();
+        $asset->checkConf($conf);
+        $result = $asset->prepare();
+        $this->boolean($conf->saveConf(['component_networkcardvirtual' => 1]))->isTrue();
+        if ($virtual) {
+            $this->array($result)->isEmpty();
+        } else {
+            $this->object($result[0])->isEqualTo(json_decode($expected));
+        }
+    }
 
-   public function testHandle() {
-      $computer = getItemByTypeName('Computer', '_test_pc01');
+    public function testHandle()
+    {
+        $computer = getItemByTypeName('Computer', '_test_pc01');
 
-      //first, check there are no controller linked to this computer
-      $idn = new \Item_DeviceNetworkCard();
-      $this->boolean($idn->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+       //first, check there are no controller linked to this computer
+        $idn = new \Item_DeviceNetworkCard();
+        $this->boolean($idn->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isFalse('A network card is already linked to computer!');
 
-      //convert data
-      $expected = $this->assetProvider()[0];
+       //convert data
+        $expected = $this->assetProvider()[0];
 
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($expected['xml']);
-      $json = json_decode($data);
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($expected['xml']);
+        $json = json_decode($data);
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
-      $asset = new \Glpi\Inventory\Asset\NetworkCard($computer, $json->content->networks);
-      $asset->setExtraData((array)$json->content);
-      $conf = new \Glpi\Inventory\Conf();
-      $asset->checkConf($conf);
-      $result = $asset->prepare();
-      $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $asset = new \Glpi\Inventory\Asset\NetworkCard($computer, $json->content->networks);
+        $asset->setExtraData((array)$json->content);
+        $conf = new \Glpi\Inventory\Conf();
+        $asset->checkConf($conf);
+        $result = $asset->prepare();
+        $this->object($result[0])->isEqualTo(json_decode($expected['expected']));
 
-      //handle
-      $asset->handleLinks();
-      $asset->handle();
-      $this->boolean($idn->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+       //handle
+        $asset->handleLinks();
+        $asset->handle();
+        $this->boolean($idn->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isTrue('Network card has not been linked to computer :(');
-   }
+    }
 
-   public function testAllNetwork() {
-      $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+    public function testAllNetwork()
+    {
+        $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <CONTROLLERS>
@@ -693,27 +699,27 @@ class NetworkCard extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
   </REQUEST>";
 
-      $computer = getItemByTypeName('Computer', '_test_pc01');
+        $computer = getItemByTypeName('Computer', '_test_pc01');
 
-      //first, check there are no controller linked to this computer
-      $idn = new \Item_DeviceNetworkCard();
-      $this->boolean($idn->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
+       //first, check there are no controller linked to this computer
+        $idn = new \Item_DeviceNetworkCard();
+        $this->boolean($idn->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']))
            ->isFalse('A network card is already linked to computer!');
 
-      //convert data
-      $converter = new \Glpi\Inventory\Converter;
-      $data = $converter->convert($xml);
-      $json = json_decode($data);
+       //convert data
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
 
-      $asset = new \Glpi\Inventory\Asset\NetworkCard($computer, $json->content->networks);
-      $asset->setExtraData((array)$json->content);
-      $conf = new \Glpi\Inventory\Conf();
-      $asset->checkConf($conf);
-      $result = $asset->prepare();
+        $asset = new \Glpi\Inventory\Asset\NetworkCard($computer, $json->content->networks);
+        $asset->setExtraData((array)$json->content);
+        $conf = new \Glpi\Inventory\Conf();
+        $asset->checkConf($conf);
+        $result = $asset->prepare();
 
-      $this->array($result)->isEmpty();
-      $ports = $asset->getNetworkPorts();
-      $this->array($ports)
+        $this->array($result)->isEmpty();
+        $ports = $asset->getNetworkPorts();
+        $this->array($ports)
          ->hasSize(5)
          ->hasKey('lo-00:00:00:00:00:00')
          ->hasKey('wlp58s0-44:85:00:2b:90:bc')
@@ -721,27 +727,28 @@ class NetworkCard extends AbstractInventoryAsset {
          ->hasKey('virbr0-nic-52:54:00:fa:20:0e')
          ->hasKey('tun0-');
 
-      $this->array($ports['lo-00:00:00:00:00:00']->ipaddress)
+        $this->array($ports['lo-00:00:00:00:00:00']->ipaddress)
          ->contains('127.0.0.1')
          ->contains('::1');
 
-      $this->array($ports['wlp58s0-44:85:00:2b:90:bc']->ipaddress)
+        $this->array($ports['wlp58s0-44:85:00:2b:90:bc']->ipaddress)
          ->contains('192.168.1.119')
          ->contains('fe80::92a4:26c6:99dd:2d60');
 
-      //handle
-      $asset->handleLinks();
-      $asset->handle();
+       //handle
+        $asset->handleLinks();
+        $asset->handle();
 
-      //TODO: check for created values in database
-   }
+       //TODO: check for created values in database
+    }
 
-   public function testInventoryUpdate() {
-      $computer = new \Computer();
-      $device_net = new \DeviceNetworkCard();
-      $item_net = new \Item_DeviceNetworkCard();
+    public function testInventoryUpdate()
+    {
+        $computer = new \Computer();
+        $device_net = new \DeviceNetworkCard();
+        $item_net = new \Item_DeviceNetworkCard();
 
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <CONTROLLERS>
@@ -800,92 +807,92 @@ class NetworkCard extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      //create manually a computer, with 3 network cards
-      $computers_id = $computer->add([
-         'name'   => 'pc002',
-         'serial' => 'ggheb7ne7',
-         'entities_id' => 0
-      ]);
-      $this->integer($computers_id)->isGreaterThan(0);
+       //create manually a computer, with 3 network cards
+        $computers_id = $computer->add([
+            'name'   => 'pc002',
+            'serial' => 'ggheb7ne7',
+            'entities_id' => 0
+        ]);
+        $this->integer($computers_id)->isGreaterThan(0);
 
-      $manufacturer = new \Manufacturer();
-      $manufacturers_id = $manufacturer->add([
-         'name' => 'Intel Corporation'
-      ]);
-      $this->integer($manufacturers_id)->isGreaterThan(0);
+        $manufacturer = new \Manufacturer();
+        $manufacturers_id = $manufacturer->add([
+            'name' => 'Intel Corporation'
+        ]);
+        $this->integer($manufacturers_id)->isGreaterThan(0);
 
-      $card_1_id = $device_net->add([
-         'designation' => '82540EM Gigabit Ethernet Controller',
-         'manufacturers_id' => $manufacturers_id,
-         'mac_default' => '08:00:27:16:9C:60',
-         'entities_id'  => 0
-      ]);
-      $this->integer($card_1_id)->isGreaterThan(0);
+        $card_1_id = $device_net->add([
+            'designation' => '82540EM Gigabit Ethernet Controller',
+            'manufacturers_id' => $manufacturers_id,
+            'mac_default' => '08:00:27:16:9C:60',
+            'entities_id'  => 0
+        ]);
+        $this->integer($card_1_id)->isGreaterThan(0);
 
-      $item_card_1_id = $item_net->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicenetworkcards_id' => $card_1_id
-      ]);
-      $this->integer($item_card_1_id)->isGreaterThan(0);
+        $item_card_1_id = $item_net->add([
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicenetworkcards_id' => $card_1_id
+        ]);
+        $this->integer($item_card_1_id)->isGreaterThan(0);
 
-      $card_2_id = $device_net->add([
-         'designation' => 'Ethernet Connection I219-LM',
-         'manufacturers_id' => $manufacturers_id,
-         'mac_default' => '18:db:f2:29:99:35',
-         'entities_id'  => 0
-      ]);
-      $this->integer($card_2_id)->isGreaterThan(0);
+        $card_2_id = $device_net->add([
+            'designation' => 'Ethernet Connection I219-LM',
+            'manufacturers_id' => $manufacturers_id,
+            'mac_default' => '18:db:f2:29:99:35',
+            'entities_id'  => 0
+        ]);
+        $this->integer($card_2_id)->isGreaterThan(0);
 
-      $item_card_2_id = $item_net->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicenetworkcards_id' => $card_2_id
-      ]);
-      $this->integer($item_card_2_id)->isGreaterThan(0);
+        $item_card_2_id = $item_net->add([
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicenetworkcards_id' => $card_2_id
+        ]);
+        $this->integer($item_card_2_id)->isGreaterThan(0);
 
-      $card_3_id = $device_net->add([
-         'designation' => 'Me Ethernet Controller',
-         'manufacturers_id' => $manufacturers_id,
-         'mac_default' => '00:b1:00:00:00',
-         'entities_id'  => 0
-      ]);
-      $this->integer($card_3_id)->isGreaterThan(0);
+        $card_3_id = $device_net->add([
+            'designation' => 'Me Ethernet Controller',
+            'manufacturers_id' => $manufacturers_id,
+            'mac_default' => '00:b1:00:00:00',
+            'entities_id'  => 0
+        ]);
+        $this->integer($card_3_id)->isGreaterThan(0);
 
-      $item_card_3_id = $item_net->add([
-         'items_id'     => $computers_id,
-         'itemtype'     => 'Computer',
-         'devicenetworkcards_id' => $card_3_id
-      ]);
-      $this->integer($item_card_3_id)->isGreaterThan(0);
+        $item_card_3_id = $item_net->add([
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'devicenetworkcards_id' => $card_3_id
+        ]);
+        $this->integer($item_card_3_id)->isGreaterThan(0);
 
-      $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($cards))->isIdenticalTo(3);
-      foreach ($cards as $card) {
-         $this->variable($card['is_dynamic'])->isEqualTo(0);
-      }
+        $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($cards))->isIdenticalTo(3);
+        foreach ($cards as $card) {
+            $this->variable($card['is_dynamic'])->isEqualTo(0);
+        }
 
-      //computer inventory knows only 2 network cards
-      $this->doInventory($xml_source, true);
+       //computer inventory knows only 2 network cards
+        $this->doInventory($xml_source, true);
 
-      //we still have 3 network cards
-      $cards = $device_net->find();
-      $this->integer(count($cards))->isIdenticalTo(3);
+       //we still have 3 network cards
+        $cards = $device_net->find();
+        $this->integer(count($cards))->isIdenticalTo(3);
 
-      //we still have 3 network cards items linked to the computer
-      $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($cards))->isIdenticalTo(3);
+       //we still have 3 network cards items linked to the computer
+        $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($cards))->isIdenticalTo(3);
 
-      //network cards present in the inventory source are now dynamic
-      $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
-      $this->integer(count($cards))->isIdenticalTo(2);
+       //network cards present in the inventory source are now dynamic
+        $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($cards))->isIdenticalTo(2);
 
-      //network card not present in the inventory is still not dynamic
-      $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
-      $this->integer(count($cards))->isIdenticalTo(1);
+       //network card not present in the inventory is still not dynamic
+        $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+        $this->integer(count($cards))->isIdenticalTo(1);
 
-      //Redo inventory, but with removed last network card
-      $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+       //Redo inventory, but with removed last network card
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
     <CONTROLLERS>
@@ -922,22 +929,22 @@ class NetworkCard extends AbstractInventoryAsset {
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-      $this->doInventory($xml_source, true);
+        $this->doInventory($xml_source, true);
 
-      //we still have 3 network cards
-      $cards = $device_net->find();
-      $this->integer(count($cards))->isIdenticalTo(3);
+       //we still have 3 network cards
+        $cards = $device_net->find();
+        $this->integer(count($cards))->isIdenticalTo(3);
 
-      //we now have 2 network cards linked to computer only
-      $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-      $this->integer(count($cards))->isIdenticalTo(2);
+       //we now have 2 network cards linked to computer only
+        $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->integer(count($cards))->isIdenticalTo(2);
 
-      //network card present in the inventory source is still dynamic
-      $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
-      $this->integer(count($cards))->isIdenticalTo(1);
+       //network card present in the inventory source is still dynamic
+        $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
+        $this->integer(count($cards))->isIdenticalTo(1);
 
-      //network card not present in the inventory is still not dynamic
-      $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
-      $this->integer(count($cards))->isIdenticalTo(1);
-   }
+       //network card not present in the inventory is still not dynamic
+        $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
+        $this->integer(count($cards))->isIdenticalTo(1);
+    }
 }

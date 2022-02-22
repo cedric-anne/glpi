@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -33,11 +34,12 @@
 /**
  * Class to manage certificate types
  */
-class CertificateType extends CommonType {
+class CertificateType extends CommonType
+{
+    public $can_be_translated = true;
 
-   var $can_be_translated = true;
-
-   static function getTypeName($nb = 0) {
-      return _n('Certificate type', 'Certificate types', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Certificate type', 'Certificate types', $nb);
+    }
 }

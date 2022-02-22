@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,27 +33,32 @@
 
 /**
  * Relation between item and devices
-**/
-class Item_DeviceGraphicCard extends Item_Devices {
+ **/
+class Item_DeviceGraphicCard extends Item_Devices
+{
+    public static $itemtype_2 = 'DeviceGraphicCard';
+    public static $items_id_2 = 'devicegraphiccards_id';
 
-   static public $itemtype_2 = 'DeviceGraphicCard';
-   static public $items_id_2 = 'devicegraphiccards_id';
-
-   static protected $notable = false;
+    protected static $notable = false;
 
 
-   static function getSpecificities($specif = '') {
+    public static function getSpecificities($specif = '')
+    {
 
-      return ['memory' => ['long name'  => sprintf(__('%1$s (%2$s)'), _n('Memory', 'Memories', 1),
-                                                            __('Mio')),
-                                     'short name' => _n('Memory', 'Memories', 1),
-                                     'size'       => 10,
-                                     'id'         => 20,
-                   ],
-                   'serial' => parent::getSpecificities('serial'),
-                   'otherserial' => parent::getSpecificities('otherserial'),
-                   'locations_id' => parent::getSpecificities('locations_id'),
-                   'states_id' => parent::getSpecificities('states_id'),
-                   'busID'  => parent::getSpecificities('busID')];
-   }
+        return ['memory' => ['long name'  => sprintf(
+            __('%1$s (%2$s)'),
+            _n('Memory', 'Memories', 1),
+            __('Mio')
+        ),
+            'short name' => _n('Memory', 'Memories', 1),
+            'size'       => 10,
+            'id'         => 20,
+        ],
+            'serial' => parent::getSpecificities('serial'),
+            'otherserial' => parent::getSpecificities('otherserial'),
+            'locations_id' => parent::getSpecificities('locations_id'),
+            'states_id' => parent::getSpecificities('states_id'),
+            'busID'  => parent::getSpecificities('busID')
+        ];
+    }
 }

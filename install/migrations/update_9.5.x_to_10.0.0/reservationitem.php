@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -48,16 +49,16 @@ $migration->dropField($tmp_table, "is_deleted");
 
 // Add unicity key
 $migration->addKey(
-   $tmp_table,
-   ['itemtype', 'items_id'],
-   'unicity',
-   'UNIQUE'
+    $tmp_table,
+    ['itemtype', 'items_id'],
+    'unicity',
+    'UNIQUE'
 );
 
 // Insert without duplicates
 $quote_tmp_table = $DB->quoteName($tmp_table);
 $select = $DB->request([
-   'FROM' => $table
+    'FROM' => $table
 ])->getSql();
 
 // "IGNORE" keyword used to avoid duplicates

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -37,15 +38,17 @@ use Ticket;
 
 class StatDataClosed extends StatDataLocation
 {
-   public function getKey(): string {
-      return "closed";
-   }
+    public function getKey(): string
+    {
+        return "closed";
+    }
 
-   public function getTitle(): string {
-      return sprintf(
-         __('Closed %1$s (%2$s)'),
-         Ticket::getTypeName(Session::getPluralNumber()),
-         $this->getTotal()
-      );
-   }
+    public function getTitle(): string
+    {
+        return sprintf(
+            __('Closed %1$s (%2$s)'),
+            Ticket::getTypeName(Session::getPluralNumber()),
+            $this->getTotal()
+        );
+    }
 }

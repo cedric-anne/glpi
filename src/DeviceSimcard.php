@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,86 +32,93 @@
  */
 
 /// Class DeviceSimcard
-class DeviceSimcard extends CommonDevice {
-   static protected $forward_entity_to = ['Item_DeviceSimcard', 'Infocom'];
+class DeviceSimcard extends CommonDevice
+{
+    protected static $forward_entity_to = ['Item_DeviceSimcard', 'Infocom'];
 
-   static function getTypeName($nb = 0) {
-      return _n('Simcard', 'Simcards', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Simcard', 'Simcards', $nb);
+    }
 
-   function getAdditionalFields() {
+    public function getAdditionalFields()
+    {
 
-      return array_merge(
-         parent::getAdditionalFields(),
-         [
+        return array_merge(
+            parent::getAdditionalFields(),
             [
-               'name'  => 'devicesimcardtypes_id',
-               'label' => _n('Type', 'Types', 1),
-               'type'  => 'dropdownValue'
-            ],
-            [
-               'name'  => 'voltage',
-               'label' => __('Voltage'),
-               'type'  => 'text',
-               'unit'  => 'mV'
-            ],
-            [
-                  'name'  => 'allow_voip',
-                  'label' => __('Allow VOIP'),
-                  'type'  => 'bool'
-            ],
-         ]
-      );
-   }
+                [
+                    'name'  => 'devicesimcardtypes_id',
+                    'label' => _n('Type', 'Types', 1),
+                    'type'  => 'dropdownValue'
+                ],
+                [
+                    'name'  => 'voltage',
+                    'label' => __('Voltage'),
+                    'type'  => 'integer',
+                    'min'   => 0,
+                    'unit'  => 'mV'
+                ],
+                [
+                    'name'  => 'allow_voip',
+                    'label' => __('Allow VOIP'),
+                    'type'  => 'bool'
+                ],
+            ]
+        );
+    }
 
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      $tab[] = [
+        $tab[] = [
             'id'                 => '12',
             'table'              => $this->getTable(),
             'field'              => 'voltage',
             'name'               => __('Voltage'),
             'datatype'           => 'string',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
             'id'                 => '13',
             'table'              => 'glpi_devicesimcardtypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'dropdown'
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
             'id'                 => '14',
             'table'              => $this->getTable(),
             'field'              => 'allow_voip',
             'name'               => __('Allow VOIP'),
             'datatype'           => 'bool'
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
-   /**
-    * Criteria used for import function
-    *
-    * @see CommonDevice::getImportCriteria()
-    *
-    * @since 9.2
-    **/
-   function getImportCriteria() {
+    /**
+     * Criteria used for import function
+     *
+     * @see CommonDevice::getImportCriteria()
+     *
+     * @since 9.2
+     **/
+    public function getImportCriteria()
+    {
 
-      return [
+        return [
             'designation'             => 'equal',
             'manufacturers_id'        => 'equal',
             'devicesensortypes_id'    => 'equal',
-      ];
-   }
+        ];
+    }
 
 
-   static function getIcon() {
-      return "fas fa-sim-card";
-   }
+    public static function getIcon()
+    {
+        return "fas fa-sim-card";
+    }
 }

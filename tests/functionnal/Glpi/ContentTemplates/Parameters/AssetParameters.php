@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -34,29 +35,30 @@ namespace tests\units\Glpi\ContentTemplates\Parameters;
 
 class AssetParameters extends AbstractParameters
 {
-   public function testGetValues(): void {
-      $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
+    public function testGetValues(): void
+    {
+        $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
 
-      $this->createItem('Computer', [
-         'name'        => 'pc_testGetValues',
-         'serial'      => 'abcd1234',
-         'entities_id' => $test_entity_id
-      ]);
+        $this->createItem('Computer', [
+            'name'        => 'pc_testGetValues',
+            'serial'      => 'abcd1234',
+            'entities_id' => $test_entity_id
+        ]);
 
-      $parameters = $this->newTestedInstance();
-      $values = $parameters->getValues(getItemByTypeName('Computer', 'pc_testGetValues'));
-      $this->array($values)->isEqualTo([
-         'id'          => getItemByTypeName('Computer', 'pc_testGetValues', true),
-         'name'        => 'pc_testGetValues',
-         'itemtype'    => 'Computer',
-         'serial'      => 'abcd1234',
-         'entity' => [
-            'id'           => $test_entity_id,
-            'name'         => '_test_child_2',
-            'completename' => 'Root entity > _test_root_entity > _test_child_2',
-         ]
-      ]);
+        $parameters = $this->newTestedInstance();
+        $values = $parameters->getValues(getItemByTypeName('Computer', 'pc_testGetValues'));
+        $this->array($values)->isEqualTo([
+            'id'          => getItemByTypeName('Computer', 'pc_testGetValues', true),
+            'name'        => 'pc_testGetValues',
+            'itemtype'    => 'Computer',
+            'serial'      => 'abcd1234',
+            'entity' => [
+                'id'           => $test_entity_id,
+                'name'         => '_test_child_2',
+                'completename' => 'Root entity > _test_root_entity > _test_child_2',
+            ]
+        ]);
 
-      $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
-   }
+        $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
+    }
 }

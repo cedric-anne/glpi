@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -35,7 +36,8 @@ namespace tests\units;
 /* Test for inc/ticketrecurrent.class.php */
 class TicketRecurrent extends CommonITILRecurrent
 {
-   protected function getChildClass() {
-      return \TicketRecurrent::class;
-   }
+    protected function getChildClass()
+    {
+        return \TicketRecurrent::class;
+    }
 }

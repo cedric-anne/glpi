@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,47 +31,44 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 if (!isset($_GET["id"])) {
-   $_GET["id"] = "";
+    $_GET["id"] = "";
 }
 
 if (!isset($_GET["withtemplate"])) {
-   $_GET["withtemplate"] = "";
+    $_GET["withtemplate"] = "";
 }
 
 $savedsearch = new SavedSearch();
 if (isset($_POST["add"])) {
    //Add a new saved search
-   $savedsearch->check(-1, CREATE, $_POST);
-   if ($savedsearch->add($_POST)) {
-      if ($_SESSION['glpibackcreated']) {
-         Html::redirect($savedsearch->getLinkURL());
-      }
-   }
-   Html::back();
+    $savedsearch->check(-1, CREATE, $_POST);
+    if ($savedsearch->add($_POST)) {
+        if ($_SESSION['glpibackcreated']) {
+            Html::redirect($savedsearch->getLinkURL());
+        }
+    }
+    Html::back();
 } else if (isset($_POST["purge"])) {
    // delete a saved search
-   $savedsearch->check($_POST['id'], PURGE);
-   $savedsearch->delete($_POST, 1);
-   $savedsearch->redirectToList();
+    $savedsearch->check($_POST['id'], PURGE);
+    $savedsearch->delete($_POST, 1);
+    $savedsearch->redirectToList();
 } else if (isset($_POST["update"])) {
    //update a saved search
-   $savedsearch->check($_POST['id'], UPDATE);
-   $savedsearch->update($_POST);
-   Html::back();
+    $savedsearch->check($_POST['id'], UPDATE);
+    $savedsearch->update($_POST);
+    Html::back();
 } else if (isset($_GET['create_notif'])) {
-   $savedsearch->check($_GET['id'], UPDATE);
-   $savedsearch->createNotif();
-   Html::back();
-} else {//print computer information
-   if (Session::getCurrentInterface() == "helpdesk") {
-      Html::helpHeader(SavedSearch::getTypeName(Session::getPluralNumber()));
-   } else {
-      Html::header(SavedSearch::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'tools', 'savedsearch');
-   }
-   //show computer form to add
-   $savedsearch->display(['id' => $_GET["id"]]);
-   Html::footer();
+    $savedsearch->check($_GET['id'], UPDATE);
+    $savedsearch->createNotif();
+    Html::back();
+} else {
+    $menus = [
+        'central'  => ['tools', 'savedsearch'],
+        'helpdesk' => [],
+    ];
+    SavedSearch::displayFullPageForItem($_GET["id"], $menus);
 }

@@ -1,7 +1,7 @@
-/**
+/*!
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -143,59 +143,9 @@
    }
 
    /* ################--------------- form ---------------#################### */
-   .submit {
-     text-align: center;
-   }
-
-   select:not(.form-select) {
-      font-size: 11px;
-      line-height: 19px;
-
-      option {
-         border: 1px solid #ccc;
-         background-color: #ffffff;
-      }
-   }
-
-   textarea:not(.form-control), input:not(.submit):not(.form-control):not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not(.numInput) {
-     border: var(--input-border-width) solid var(--input-border-color);
-     border-radius: var(--input-border-radius);
-     padding: 0 5px;
-   }
-
-
-   textarea:not(.form-control):focus, input:not([type=submit]):not(.form-control):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field):not(.numInput):focus {
-     border-color: #5897fb;
-   }
-
-   input:not(.btn):not(.form-control) {
-     height: 17px;
-     vertical-align: middle;
-
-     &:required {
-        border: 1px rgba(255, 0, 0, 0.6) solid !important;
-        border-left-width: 3px !important;
-        padding-right: 0 !important;
-        box-shadow: none;
-     }
-   }
-
-   .tox-tinymce.required,
-   textarea:required {
+   .tox-tinymce.required {
       border: 1px rgba(255, 0, 0, 0.6) solid !important;
       border-left-width: 3px !important;
-      padding-right: 0 !important;
-      box-shadow: none;
-   }
-
-   input:required:valid,
-   textarea:required:valid {
-      border: 1px solid rgb(211, 211, 211) !important;
-   }
-
-   input:not(.submit):not([type=submit]):not([type=reset]):not([type=checkbox]):not([type=radio]):not(.select2-search__field)[type=color] {
-     padding: 0;
-     width: 3em;
    }
 
    span.required {
@@ -218,35 +168,6 @@
         background-color: transparent;
         border: 0;
      }
-
-     &.submit {
-        padding: 5px;
-        cursor: pointer;
-        height: auto;
-        font: bold 12px Arial, Helvetica;
-        color: #8f5a0a;
-        background-color: #FEC95C;
-        border: 0;
-        white-space: nowrap;
-        display: inline-block;
-     }
-   }
-
-   .vsubmit {
-     padding: 5px;
-     cursor: pointer;
-     height: auto;
-     font: bold 12px Arial, Helvetica;
-     color: #8f5a0a;
-     background-color: #FEC95C;
-     border: 0;
-     white-space: nowrap;
-     display: inline-block;
-   }
-
-   .submit:hover, .vsubmit:hover {
-     opacity: .9;
-     box-shadow: 0px 1px 1px #999;
    }
 
    .submit[type=reset] {
@@ -256,44 +177,6 @@
 
    .tox-tinymce.tox-fullscreen {
       top: 105px !important;
-   }
-
-   #kb_browse {
-     display: flex;
-     align-items: stretch;
-     border: 1px solid #E6E6E6;
-     height: 100%;
-     min-height: 60vh;
-     margin-left: -10px;
-     margin-top: -5px;
-
-     .kb_tree {
-        flex-basis: 250px;
-        flex-shrink: 0;
-        padding-right: 10px;
-        text-align: left;
-        background-color: #F8F8F8;
-     }
-
-     .kb_tree_search {
-        width: 100%;
-        margin: 5px;
-        padding: 10px 5px;
-        border-radius: 0;
-        box-sizing: border-box;
-     }
-
-     .kb_items {
-        width: 100%;
-
-        .tab_cadre_pager {
-           width: 100%;
-        }
-     }
-
-     i.fa.sub_items {
-        color: #787878;
-     }
    }
 
    .pointer {
@@ -1280,6 +1163,12 @@
       width: 1%;
    }
 
+   .bookmark_record {
+      .active {
+         color: #fed175 !important;
+      }
+   }
+
    .fa {
       &.bookmark_record, &.reset-search, &.fold-search {
          font-size: 1.5em;
@@ -1288,10 +1177,6 @@
          &:link {
             font-size: 1.5em;
             color: #ccc !important;
-         }
-
-         &.active {
-            color: #fed175 !important;
          }
       }
 
@@ -1307,10 +1192,6 @@
 
       &.reset-search:hover, &.bookmark_record.save:hover, &.fold-search:hover {
          color: #999 !important;
-
-         &.active {
-            color: #feb010 !important;
-         }
       }
    }
 

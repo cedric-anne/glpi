@@ -1,8 +1,7 @@
-<?php
-/**
+/*!
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -29,11 +28,11 @@
  * along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  * ---------------------------------------------------------------------
  */
-/**
- * @var DB $DB
- * @var Migration $migration
- */
 
-// Add a config entry for default central tabl.
-Config::setConfigurationValues('core', ['default_central_tab' => 0]);
-$migration->addField("glpi_users", "default_central_tab", "tinyint DEFAULT 0");
+// reset change in tabler : https://github.com/tabler/tabler/commit/a9075f6717958300afad13fe51311f7e78bb7e91#diff-340d6988403d25d9ca8e073d798e79a801f5c4fcf9a67366dee207d2ed9fef54L2
+@mixin tabler-badge-fix {
+    display: inline-flex;
+    font-size: 0.625rem;
+    height: 1.25rem;
+    vertical-align: inherit;
+}

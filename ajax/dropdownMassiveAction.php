@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,19 +31,19 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 try {
-   $ma = new MassiveAction($_POST, $_GET, 'specialize');
+    $ma = new MassiveAction($_POST, $_GET, 'specialize');
 } catch (\Exception $e) {
-   echo "<div class='center'><img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='".
-      __s('Warning')."'><br><br>";
-   echo "<span class='b'>".$e->getMessage()."</span><br>";
-   echo "</div>";
-   exit();
+    echo "<div class='center'><img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='" .
+      __s('Warning') . "'><br><br>";
+    echo "<span class='b'>" . $e->getMessage() . "</span><br>";
+    echo "</div>";
+    exit();
 }
 
 $ma->showSubForm();

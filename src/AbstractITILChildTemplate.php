@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -40,86 +41,91 @@ use Glpi\ContentTemplates\TemplateManager;
  */
 abstract class AbstractITILChildTemplate extends CommonDropdown
 {
-   function showForm($ID, array $options = []) {
-      parent::showForm($ID, $options);
+    public function showForm($ID, array $options = [])
+    {
+        parent::showForm($ID, $options);
 
-      // Add autocompletion for ticket properties (twig templates)
-      $parameters = ParametersPreset::getForAbstractTemplates();
-      Html::activateUserTemplateAutocompletion(
-         'textarea[name=content]',
-         TemplateManager::computeParameters($parameters)
-      );
+       // Add autocompletion for ticket properties (twig templates)
+        $parameters = ParametersPreset::getForAbstractTemplates();
+        Html::activateUserTemplateAutocompletion(
+            'textarea[name=content]',
+            TemplateManager::computeParameters($parameters)
+        );
 
-      // Add related documentation
-      Html::addTemplateDocumentationLinkJS(
-         'textarea[name=content]',
-         ParametersPreset::ITIL_CHILD_TEMPLATE
-      );
-   }
+       // Add related documentation
+        Html::addTemplateDocumentationLinkJS(
+            'textarea[name=content]',
+            ParametersPreset::ITIL_CHILD_TEMPLATE
+        );
+    }
 
-   function prepareInputForAdd($input) {
-      $input = parent::prepareInputForUpdate($input);
+    public function prepareInputForAdd($input)
+    {
+        $input = parent::prepareInputForUpdate($input);
 
-      if (!$this->validateContentInput($input)) {
-         return false;
-      }
+        if (!$this->validateContentInput($input)) {
+            return false;
+        }
 
-      return $input;
-   }
+        return $input;
+    }
 
-   function prepareInputForUpdate($input) {
-      $input = parent::prepareInputForUpdate($input);
+    public function prepareInputForUpdate($input)
+    {
+        $input = parent::prepareInputForUpdate($input);
 
-      if (!$this->validateContentInput($input)) {
-         return false;
-      }
+        if (!$this->validateContentInput($input)) {
+            return false;
+        }
 
-      return $input;
-   }
+        return $input;
+    }
 
-   /**
-    * Validate 'content' field from input.
-    *
-    * @param array $input
-    *
-    * @return bool
-    */
-   protected function validateContentInput(array $input): bool {
-      if (!isset($input['content'])) {
-         return true;
-      }
+    /**
+     * Validate 'content' field from input.
+     *
+     * @param array $input
+     *
+     * @return bool
+     */
+    protected function validateContentInput(array $input): bool
+    {
+        if (!isset($input['content'])) {
+            return true;
+        }
 
-      $err_msg = null;
-      if (!TemplateManager::validate($input['content'], $err_msg)) {
-         Session::addMessageAfterRedirect(
-            sprintf('%s: %s', __('Content'), $err_msg),
-            false,
-            ERROR
-         );
-         $this->saveInput();
-         return false;
-      }
+        $err_msg = null;
+        if (!TemplateManager::validate($input['content'], $err_msg)) {
+            Session::addMessageAfterRedirect(
+                sprintf('%s: %s', __('Content'), $err_msg),
+                false,
+                ERROR
+            );
+            $this->saveInput();
+            return false;
+        }
 
-      return true;
-   }
+        return true;
+    }
 
-   /**
-    * Get content rendered by template engine, using given ITIL item to build parameters.
-    *
-    * @param CommonITILObject $itil_item
-    *
-    * @return string
-    */
-   public function getRenderedContent(CommonITILObject $itil_item): string {
-      $html = TemplateManager::renderContentForCommonITIL(
-         $itil_item,
-         $this->fields['content']
-      );
+    /**
+     * Get content rendered by template engine, using given ITIL item to build parameters.
+     *
+     * @param CommonITILObject $itil_item
+     *
+     * @return string
+     */
+    public function getRenderedContent(CommonITILObject $itil_item): string
+    {
+        $html = TemplateManager::renderContentForCommonITIL(
+            $itil_item,
+            $this->fields['content']
+        );
 
-      if (!$html) {
-         $html = $this->fields['content'];
-      }
+        if (!$html) {
+            $html = $this->fields['content'];
+        }
 
-      return $html;
-   }
+        return $html;
+    }
 }

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,30 +33,33 @@
 
 class RecurrentChange extends CommonITILRecurrent
 {
-   /**
-    * @var string CommonDropdown
-    */
-   public $second_level_menu = "recurrentchange";
+    /**
+     * @var string CommonDropdown
+     */
+    public $second_level_menu = "recurrentchange";
 
-   /**
-    * @var string Right managements
-    */
-   public static $rightname = 'recurrentchange';
+    /**
+     * @var string Right managements
+     */
+    public static $rightname = 'recurrentchange';
 
-   public static function getTypeName($nb = 0) {
-      return __('Recurrent changes');
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return __('Recurrent changes');
+    }
 
-   public static function getConcreteClass() {
-      return Change::class;
-   }
+    public static function getConcreteClass()
+    {
+        return Change::class;
+    }
 
-   public static function getTemplateClass() {
-      return ChangeTemplate::class;
-   }
+    public static function getTemplateClass()
+    {
+        return ChangeTemplate::class;
+    }
 
-   public static function getPredefinedFieldsClass() {
-      return ChangeTemplatePredefinedField::class;
-   }
-
+    public static function getPredefinedFieldsClass()
+    {
+        return ChangeTemplatePredefinedField::class;
+    }
 }

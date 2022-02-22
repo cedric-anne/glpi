@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -34,72 +35,83 @@
  * NotificationTargetMailCollector Class
  *
  * @since 0.85
-**/
-class NotificationTargetMailCollector extends NotificationTarget {
+ **/
+class NotificationTargetMailCollector extends NotificationTarget
+{
+    public function getEvents()
+    {
+        return ['error' => __('Receiver errors')];
+    }
 
 
-   function getEvents() {
-      return ['error' => __('Receiver errors')];
-   }
+    public function addDataForTemplate($event, $options = [])
+    {
+
+        $events                                  = $this->getEvents();
+        $this->data['##mailcollector.action##'] = $events[$event];
+
+        foreach ($options['items'] as $id => $mailcollector) {
+            $tmp                             = [];
+            $tmp['##mailcollector.name##']   = $mailcollector['name'];
+            $tmp['##mailcollector.errors##'] = $mailcollector['errors'];
+            $tmp['##mailcollector.url##']    = $this->formatURL(
+                $options['additionnaloption']['usertype'],
+                "MailCollector_" . $id
+            );
+            $this->data['mailcollectors'][] = $tmp;
+        }
+
+        $this->getTags();
+        foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
+            if (!isset($this->data[$tag])) {
+                $this->data[$tag] = $values['label'];
+            }
+        }
+    }
 
 
-   function addDataForTemplate($event, $options = []) {
+    public function getTags()
+    {
 
-      $events                                  = $this->getEvents();
-      $this->data['##mailcollector.action##'] = $events[$event];
+        $tags = ['mailcollector.action' => _n('Event', 'Events', 1),
+            'mailcollector.name'   => __('Name'),
+            'mailcollector.errors' => __('Connection errors')
+        ];
 
-      foreach ($options['items'] as $id => $mailcollector) {
-         $tmp                             = [];
-         $tmp['##mailcollector.name##']   = $mailcollector['name'];
-         $tmp['##mailcollector.errors##'] = $mailcollector['errors'];
-         $tmp['##mailcollector.url##']    = $this->formatURL($options['additionnaloption']['usertype'],
-                                                             "MailCollector_".$id);
-         $this->data['mailcollectors'][] = $tmp;
-      }
+        foreach ($tags as $tag => $label) {
+            $this->addTagToList(['tag'   => $tag,
+                'label' => $label,
+                'value' => true
+            ]);
+        }
 
-      $this->getTags();
-      foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
-         if (!isset($this->data[$tag])) {
-            $this->data[$tag] = $values['label'];
-         }
-      }
-   }
+        $tags = ['mailcollector.url' => sprintf(
+            __('%1$s: %2$s'),
+            _n('Receiver', 'Receivers', 1),
+            __('URL')
+        )
+        ];
 
+        foreach ($tags as $tag => $label) {
+            $this->addTagToList(['tag'   => $tag,
+                'label' => $label,
+                'value' => true,
+                'lang'  => false
+            ]);
+        }
 
-   function getTags() {
+       //Foreach global tags
+        $tags = ['mailcollectors' => _n('Receiver', 'Receivers', Session::getPluralNumber())];
 
-      $tags = ['mailcollector.action' => _n('Event', 'Events', 1),
-                    'mailcollector.name'   => __('Name'),
-                    'mailcollector.errors' => __('Connection errors')];
+        foreach ($tags as $tag => $label) {
+            $this->addTagToList(['tag'     => $tag,
+                'label'   => $label,
+                'value'   => false,
+                'foreach' => true
+            ]);
+        }
 
-      foreach ($tags as $tag => $label) {
-         $this->addTagToList(['tag'   => $tag,
-                                   'label' => $label,
-                                   'value' => true]);
-      }
-
-      $tags = ['mailcollector.url' => sprintf(__('%1$s: %2$s'), _n('Receiver', 'Receivers', 1),
-                                                   __('URL'))];
-
-      foreach ($tags as $tag => $label) {
-         $this->addTagToList(['tag'   => $tag,
-                                   'label' => $label,
-                                   'value' => true,
-                                   'lang'  => false]);
-      }
-
-      //Foreach global tags
-      $tags = ['mailcollectors' => _n('Receiver', 'Receivers', Session::getPluralNumber())];
-
-      foreach ($tags as $tag => $label) {
-         $this->addTagToList(['tag'     => $tag,
-                                   'label'   => $label,
-                                   'value'   => false,
-                                   'foreach' => true]);
-      }
-
-      asort($this->tag_descriptions);
-      return $this->tag_descriptions;
-   }
-
+        asort($this->tag_descriptions);
+        return $this->tag_descriptions;
+    }
 }

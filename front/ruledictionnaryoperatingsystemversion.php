@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,8 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 $rulecollection = new RuleDictionnaryOperatingSystemVersionCollection();
 
-include (GLPI_ROOT . "/front/rule.common.php");
+include(GLPI_ROOT . "/front/rule.common.php");

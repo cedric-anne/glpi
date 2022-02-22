@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -35,81 +36,87 @@
  */
 
 
-class LineOperator extends CommonDropdown {
+class LineOperator extends CommonDropdown
+{
+    public static $rightname = 'lineoperator';
 
-   static $rightname = 'lineoperator';
+    public $can_be_translated = false;
 
-   public $can_be_translated = false;
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Line operator', 'Line operators', $nb);
+    }
 
-   static function getTypeName($nb = 0) {
-      return _n('Line operator', 'Line operators', $nb);
-   }
-
-   function getAdditionalFields() {
-      return [['name'  => 'mcc',
-                  'label' => __('Mobile Country Code'),
-                  'type'  => 'text',
-                  'list'  => true],
+    public function getAdditionalFields()
+    {
+        return [['name'  => 'mcc',
+            'label' => __('Mobile Country Code'),
+            'type'  => 'text',
+            'list'  => true
+        ],
             ['name'  => 'mnc',
-                  'label' => __('Mobile Network Code'),
-                  'type'  => 'text',
-                  'list'  => true],
-      ];
-   }
+                'label' => __('Mobile Network Code'),
+                'type'  => 'text',
+                'list'  => true
+            ],
+        ];
+    }
 
-   function rawSearchOptions() {
-      $tab = parent::rawSearchOptions();
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
 
-      $tab[] = [
+        $tab[] = [
             'id'                 => '11',
             'table'              => $this->getTable(),
             'field'              => 'mcc',
             'name'               => __('Mobile Country Code'),
             'datatype'           => 'text',
-      ];
+        ];
 
-      $tab[] = [
+        $tab[] = [
             'id'                 => '12',
             'table'              => $this->getTable(),
             'field'              => 'mnc',
             'name'               => __('Mobile Network Code'),
             'datatype'           => 'text',
-      ];
+        ];
 
-      return $tab;
-   }
+        return $tab;
+    }
 
-   public function prepareInputForAdd($input) {
-      global $DB;
+    public function prepareInputForAdd($input)
+    {
+        global $DB;
 
-      $input = parent::prepareInputForAdd($input);
+        $input = parent::prepareInputForAdd($input);
 
-      if (!isset($input['mcc'])) {
-         $input['mcc'] = 0;
-      }
-      if (!isset($input['mnc'])) {
-         $input['mnc'] = 0;
-      }
+        if (!isset($input['mcc'])) {
+            $input['mcc'] = 0;
+        }
+        if (!isset($input['mnc'])) {
+            $input['mnc'] = 0;
+        }
 
-      //check for mcc/mnc unicity
-      $result = $DB->request([
-         'COUNT'  => 'cpt',
-         'FROM'   => self::getTable(),
-         'WHERE'  => [
-            'mcc' => $input['mcc'],
-            'mnc' => $input['mnc']
-         ]
-      ])->current();
+       //check for mcc/mnc unicity
+        $result = $DB->request([
+            'COUNT'  => 'cpt',
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'mcc' => $input['mcc'],
+                'mnc' => $input['mnc']
+            ]
+        ])->current();
 
-      if ($result['cpt'] > 0) {
-         Session::addMessageAfterRedirect(
-            __('Mobile country code and network code combination must be unique!'),
-            ERROR,
-            true
-         );
-         return false;
-      }
+        if ($result['cpt'] > 0) {
+            Session::addMessageAfterRedirect(
+                __('Mobile country code and network code combination must be unique!'),
+                ERROR,
+                true
+            );
+            return false;
+        }
 
-      return $input;
-   }
+        return $input;
+    }
 }

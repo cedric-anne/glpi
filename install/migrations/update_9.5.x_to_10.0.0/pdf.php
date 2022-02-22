@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -36,54 +37,54 @@
  */
 $fonts_mapping = [
    // Arabic fonts => xbriyaz
-   'xbriyaz'      => [
-      'aealarabiya',
-      'aefurat',
-   ],
+    'xbriyaz'      => [
+        'aealarabiya',
+        'aefurat',
+    ],
    // CJK fonts => sun-exta
-   'sun-exta'     => [
-      'cid0cs',
-      'cid0ct',
-      'cid0jp',
-      'cid0kr',
-      'hysmyeongjostdmedium',
-      'kozgopromedium',
-      'kozminproregular',
-      'msungstdlight',
-      'stsongstdlight',
-   ],
+    'sun-exta'     => [
+        'cid0cs',
+        'cid0ct',
+        'cid0jp',
+        'cid0kr',
+        'hysmyeongjostdmedium',
+        'kozgopromedium',
+        'kozminproregular',
+        'msungstdlight',
+        'stsongstdlight',
+    ],
    // Adobe embedded fonts => corresponding TTF font
-   'courier'      => ['pdfacourier'],
-   'helvetica'    => ['pdfahelvetica'],
-   'symbol'       => ['pdfasymbol'],
-   'times'        => ['pdfatimes'],
-   'zapfdingbats' => ['pdfazapfdingbats'],
+    'courier'      => ['pdfacourier'],
+    'helvetica'    => ['pdfahelvetica'],
+    'symbol'       => ['pdfasymbol'],
+    'times'        => ['pdfatimes'],
+    'zapfdingbats' => ['pdfazapfdingbats'],
    // Other unsupported fonts
-   'dejavusans'   => ['dejavusansextralight'],
+    'dejavusans'   => ['dejavusansextralight'],
 ];
 
 foreach ($fonts_mapping as $new_value => $old_values) {
-   $migration->addPostQuery(
-      $DB->buildUpdate(
-         'glpi_configs',
-         [
-            'value' => $new_value,
-         ],
-         [
-            'name'  => 'pdffont',
-            'value' => $old_values,
-         ]
-      )
-   );
-   $migration->addPostQuery(
-      $DB->buildUpdate(
-         'glpi_users',
-         [
-            'pdffont' => $new_value,
-         ],
-         [
-            'pdffont' => $old_values,
-         ]
-      )
-   );
+    $migration->addPostQuery(
+        $DB->buildUpdate(
+            'glpi_configs',
+            [
+                'value' => $new_value,
+            ],
+            [
+                'name'  => 'pdffont',
+                'value' => $old_values,
+            ]
+        )
+    );
+    $migration->addPostQuery(
+        $DB->buildUpdate(
+            'glpi_users',
+            [
+                'pdffont' => $new_value,
+            ],
+            [
+                'pdffont' => $old_values,
+            ]
+        )
+    );
 }

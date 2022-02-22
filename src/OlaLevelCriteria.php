@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -38,24 +39,24 @@
 /**
  * Class OlaLevelCriteriaClass OlaLevelCriteria
  */
-class OlaLevelCriteria extends RuleCriteria {
+class OlaLevelCriteria extends RuleCriteria
+{
+    public static $itemtype  = 'OlaLevel';
+    public static $items_id  = 'olalevels_id';
+    public $dohistory        = true;
 
 
-   static public $itemtype  = 'OlaLevel';
-   static public $items_id  = 'olalevels_id';
-   public $dohistory        = true;
+    /**
+     * Constructor
+     **/
+    public function __construct()
+    {
+       // Override in order not to use glpi_rules table.
+    }
 
-
-   /**
-   * Constructor
-   **/
-   function __construct() {
-      // Override in order not to use glpi_rules table.
-   }
-
-   function rawSearchOptions() {
-      // RuleCriteria search options requires value of rules_id field which does not exists here
-      return [];
-   }
-
+    public function rawSearchOptions()
+    {
+       // RuleCriteria search options requires value of rules_id field which does not exists here
+        return [];
+    }
 }

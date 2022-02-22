@@ -1,7 +1,7 @@
 {#
  # ---------------------------------------------------------------------
  # GLPI - Gestionnaire Libre de Parc Informatique
- # Copyright (C) 2015-2021 Teclib' and contributors.
+ # Copyright (C) 2015-2022 Teclib' and contributors.
  #
  # http://glpi-project.org
  #
@@ -44,6 +44,19 @@
          <span class="form-check-label mb-1 mb-sm-0">
             <i class="ti fa-lg ti-map-2"></i>
          </span >
+      </label>
+   {% endif %}
+
+   {% if may_be_browsed %}
+      <label class="form-check form-switch btn btn-sm btn-ghost-info me-0 me-sm-1 px-1 mb-0 flex-column-reverse flex-sm-row"
+             data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Toggle browse') }}">
+         <input type="checkbox" class="form-check-input ms-0 me-1 mt-0" role="button"
+                name="browse" value="1" autocomplete="off"
+                onclick="toogle('browse','','',''); document.forms['searchform{{ itemtype|lower }}'].submit();"
+                {{ data['search']['browse'] == 1 ? 'checked' : '' }} />
+         <span class="form-check-label mb-1 mb-sm-0">
+            <i class="ti fa-lg ti-subtask"></i>
+         </span>
       </label>
    {% endif %}
 

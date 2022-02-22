@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -35,119 +36,126 @@ namespace Glpi\System\Requirement;
 /**
  * @since 9.5.0
  */
-abstract class AbstractRequirement implements RequirementInterface {
+abstract class AbstractRequirement implements RequirementInterface
+{
+    /**
+     * Flag that indicates if requirement check has already been done.
+     *
+     * @var bool
+     */
+    private $has_been_checked = false;
 
-   /**
-    * Flag that indicates if requirement check has already been done.
-    *
-    * @var bool
-    */
-   private $has_been_checked = false;
+    /**
+     * Flag that indicates if requirement is considered as optional.
+     *
+     * @var bool
+     */
+    protected $optional = false;
 
-   /**
-    * Flag that indicates if requirement is considered as optional.
-    *
-    * @var bool
-    */
-   protected $optional = false;
+    /**
+     * Flag that indicates if requirement is considered as out of context.
+     *
+     * @var bool
+     */
+    protected $out_of_context = false;
 
-   /**
-    * Flag that indicates if requirement is considered as out of context.
-    *
-    * @var bool
-    */
-   protected $out_of_context = false;
+    /**
+     * Requirement title.
+     *
+     * @var string
+     */
+    protected $title;
 
-   /**
-    * Requirement title.
-    *
-    * @var string
-    */
-   protected $title;
+    /**
+     * Requirement description.
+     *
+     * @var string
+     */
+    protected $description;
 
-   /**
-    * Requirement description.
-    *
-    * @var string
-    */
-   protected $description;
+    /**
+     * Flag that indicates if requirement is validated on system.
+     *
+     * @var bool
+     */
+    protected $validated;
 
-   /**
-    * Flag that indicates if requirement is validated on system.
-    *
-    * @var bool
-    */
-   protected $validated;
+    /**
+     * Requirement validation message.
+     *
+     * @var string[]
+     */
+    protected $validation_messages = [];
 
-   /**
-    * Requirement validation message.
-    *
-    * @var string[]
-    */
-   protected $validation_messages = [];
+    /**
+     * Check requirement.
+     *
+     * This method will be called once before access to any RequirementInterface method
+     * and should be used to compute  $validated and $validation_messages properties.
+     *
+     * @return void
+     */
+    abstract protected function check();
 
-   /**
-    * Check requirement.
-    *
-    * This method will be called once before access to any RequirementInterface method
-    * and should be used to compute  $validated and $validation_messages properties.
-    *
-    * @return void
-    */
-   abstract protected function check();
+    /**
+     * Run requirement check once.
+     *
+     * @return void
+     */
+    private function doCheck()
+    {
+        if (!$this->has_been_checked) {
+            $this->check();
+            $this->has_been_checked = true;
+        }
+    }
 
-   /**
-    * Run requirement check once.
-    *
-    * @return void
-    */
-   private function doCheck() {
-      if (!$this->has_been_checked) {
-         $this->check();
-         $this->has_been_checked = true;
-      }
-   }
+    public function getTitle(): string
+    {
+        $this->doCheck();
 
-   public function getTitle(): string {
-      $this->doCheck();
+        return $this->title;
+    }
 
-      return $this->title;
-   }
+    public function getDescription(): ?string
+    {
+        $this->doCheck();
 
-   public function getDescription(): ?string {
-      $this->doCheck();
+        return $this->description;
+    }
 
-      return $this->description;
-   }
+    public function getValidationMessages(): array
+    {
+        $this->doCheck();
 
-   public function getValidationMessages(): array {
-      $this->doCheck();
+        return $this->validation_messages;
+    }
 
-      return $this->validation_messages;
-   }
+    public function isMissing(): bool
+    {
+        $this->doCheck();
 
-   public function isMissing(): bool {
-      $this->doCheck();
+        return true !== $this->validated;
+    }
 
-      return true !== $this->validated;
-   }
+    public function isOptional(): bool
+    {
+        $this->doCheck();
 
-   public function isOptional(): bool {
-      $this->doCheck();
+        return $this->optional;
+    }
 
-      return $this->optional;
-   }
+    public function isOutOfContext(): bool
+    {
+        $this->doCheck();
 
-   public function isOutOfContext(): bool {
-      $this->doCheck();
+        return $this->out_of_context;
+    }
 
-      return $this->out_of_context;
-   }
+    public function isValidated(): bool
+    {
+        $this->doCheck();
 
-   public function isValidated(): bool {
-      $this->doCheck();
-
-      return true === $this->validated;
-   }
-
+        return true === $this->validated;
+    }
 }

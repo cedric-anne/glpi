@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,17 +31,18 @@
  * ---------------------------------------------------------------------
  */
 
-class ImageFormat extends CommonDropdown {
+class ImageFormat extends CommonDropdown
+{
+    public $can_be_translated = false;
 
-   public $can_be_translated = false;
 
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Image format', 'Image formats', $nb);
+    }
 
-   static function getTypeName($nb = 0) {
-      return _n('Image format', 'Image formats', $nb);
-   }
-
-   static function getIcon() {
-      return "far fa-file-image";
-   }
-
+    public static function getIcon()
+    {
+        return "far fa-file-image";
+    }
 }

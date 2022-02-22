@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,30 +33,30 @@
 
 /// Import rules collection class
 // @deprecated 10.0.0 @see RuleImportAssetCollection
-class RuleImportComputerCollection extends RuleCollection {
-
+class RuleImportComputerCollection extends RuleCollection
+{
    // From RuleCollection
-   public $stop_on_first_match = true;
-   static $rightname           = 'rule_import';
-   public $menu_option         = 'linkcomputer';
+    public $stop_on_first_match = true;
+    public static $rightname           = 'rule_import';
+    public $menu_option         = 'linkcomputer';
 
 
-   /**
-    * @since 0.84
-    *
-    * @return boolean
-   **/
-   function canList() {
-      if (Plugin::haveImport()) {
-         return static::canView();
-      }
-      return false;
-   }
+    /**
+     * @since 0.84
+     *
+     * @return boolean
+     **/
+    public function canList()
+    {
+        if (Plugin::haveImport()) {
+            return static::canView();
+        }
+        return false;
+    }
 
 
-   function getTitle() {
-      return __('Rules for import and link computers');
-   }
-
-
+    public function getTitle()
+    {
+        return __('Rules for import and link computers');
+    }
 }

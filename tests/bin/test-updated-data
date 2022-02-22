@@ -3,7 +3,7 @@
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -50,7 +50,7 @@ include_once(GLPI_ROOT . '/inc/includes.php');
 
 $command = new \Glpi\Tests\Command\TestUpdatedDataCommand();
 
-$app = new \Symfony\Component\Console\Application('Test empty data', GLPI_VERSION);
+$app = new \Symfony\Component\Console\Application('Test updated data against fresh install', GLPI_VERSION);
 $app->add($command);
 $app->setDefaultCommand($command->getName(), true);
 $app->run();

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,337 +33,347 @@
 
 use Glpi\Plugin\Hooks;
 
-class RuleImportEntity extends Rule {
-
+class RuleImportEntity extends Rule
+{
    // From Rule
-   static $rightname = 'rule_import';
-   public $can_sort  = true;
+    public static $rightname = 'rule_import';
+    public $can_sort  = true;
 
-   const PATTERN_CIDR     = 333;
-   const PATTERN_NOT_CIDR = 334;
+    const PATTERN_CIDR     = 333;
+    const PATTERN_NOT_CIDR = 334;
 
-   function getTitle() {
-      return __('Rules for assigning an item to an entity');
-   }
+    public function getTitle()
+    {
+        return __('Rules for assigning an item to an entity');
+    }
 
 
-   /**
-    * @see Rule::maxActionsCount()
-   **/
-   function maxActionsCount() {
-      // Unlimited
-      return 4;
-   }
+    /**
+     * @see Rule::maxActionsCount()
+     **/
+    public function maxActionsCount()
+    {
+       // Unlimited
+        return 4;
+    }
 
-   function executeActions($output, $params, array $input = []) {
+    public function executeActions($output, $params, array $input = [])
+    {
 
-      if (count($this->actions)) {
-         foreach ($this->actions as $action) {
-            switch ($action->fields["action_type"]) {
-               case "assign" :
-                  $output[$action->fields["field"]] = $action->fields["value"];
-                  break;
+        if (count($this->actions)) {
+            foreach ($this->actions as $action) {
+                switch ($action->fields["action_type"]) {
+                    case "assign":
+                        $output[$action->fields["field"]] = $action->fields["value"];
+                        break;
 
-               case "regex_result" :
-                  //Assign entity using the regex's result
-                  if ($action->fields["field"] == "_affect_entity_by_tag") {
-                     //Get the TAG from the regex's results
-                     if (isset($this->regex_results[0])) {
-                        $res = RuleAction::getRegexResultById($action->fields["value"],
-                                                              $this->regex_results[0]);
-                     } else {
-                        $res = $action->fields["value"];
-                     }
-                     if ($res != null) {
-                        //Get the entity associated with the TAG
-                        $target_entity = Entity::getEntityIDByTag(addslashes($res));
-                        if ($target_entity != '') {
-                           $output["entities_id"] = $target_entity;
+                    case "regex_result":
+                      //Assign entity using the regex's result
+                        if ($action->fields["field"] == "_affect_entity_by_tag") {
+                             //Get the TAG from the regex's results
+                            if (isset($this->regex_results[0])) {
+                                $res = RuleAction::getRegexResultById(
+                                    $action->fields["value"],
+                                    $this->regex_results[0]
+                                );
+                            } else {
+                                $res = $action->fields["value"];
+                            }
+                            if ($res != null) {
+                                 //Get the entity associated with the TAG
+                                 $target_entity = Entity::getEntityIDByTag(addslashes($res));
+                                if ($target_entity != '') {
+                                    $output["entities_id"] = $target_entity;
+                                }
+                            }
                         }
-                     }
-                  }
-                  break;
+                        break;
+                }
             }
-         }
-      }
-      return $output;
-   }
+        }
+        return $output;
+    }
 
 
-   function getCriterias() {
+    public function getCriterias()
+    {
 
-      return [
-         'tag' => [
-            'field' => 'name',
-            'name' => __('Inventory tag')
-         ],
-         'domain' => [
-            'field' => 'name',
-            'name' => Domain::getTypeName(1)
-         ],
-         'subnet' => [
-            'field' => 'name',
-            'name' => __('Subnet')
-         ],
-         'ip' => [
-            'field' => 'name',
-            'name' => IPAddress::getTypeName(1)
-         ],
-         'name' => [
-            'field' => 'name',
-            'name' => __("Equipment name")
-         ],
-         'serial' => [
-            'field' => 'name',
-            'name' => __('Serial number')
-         ],
-         '_source' => [
-            'table' => '',
-            'field' => '_source',
-            'name' => __('Source'),
-            'allow_condition' => [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT]
-         ]
-      ];
-   }
+        return [
+            'tag' => [
+                'field' => 'name',
+                'name' => __('Inventory tag')
+            ],
+            'domain' => [
+                'field' => 'name',
+                'name' => Domain::getTypeName(1)
+            ],
+            'subnet' => [
+                'field' => 'name',
+                'name' => __('Subnet')
+            ],
+            'ip' => [
+                'field' => 'name',
+                'name' => IPAddress::getTypeName(1)
+            ],
+            'name' => [
+                'field' => 'name',
+                'name' => __("Equipment name")
+            ],
+            'serial' => [
+                'field' => 'name',
+                'name' => __('Serial number')
+            ],
+            '_source' => [
+                'table' => '',
+                'field' => '_source',
+                'name' => __('Source'),
+                'allow_condition' => [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT]
+            ]
+        ];
+    }
 
 
-   /**
-    * @since 0.84
-    *
-    * @see Rule::displayAdditionalRuleCondition()
-   **/
-   function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false) {
-      global $PLUGIN_HOOKS;
+    /**
+     * @since 0.84
+     *
+     * @see Rule::displayAdditionalRuleCondition()
+     **/
+    public function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false)
+    {
+        global $PLUGIN_HOOKS;
 
-      if ($criteria['field'] == '_source') {
-         $tab = ['GLPI' => __('GLPI')];
-         foreach ($PLUGIN_HOOKS['import_item'] as $plug => $types) {
-            if (!Plugin::isPluginActive($plug)) {
-               continue;
+        if ($criteria['field'] == '_source') {
+            $tab = ['GLPI' => __('GLPI')];
+            foreach ($PLUGIN_HOOKS['import_item'] as $plug => $types) {
+                if (!Plugin::isPluginActive($plug)) {
+                    continue;
+                }
+                $tab[$plug] = Plugin::getInfo($plug, 'name');
             }
-            $tab[$plug] = Plugin::getInfo($plug, 'name');
-         }
-         Dropdown::showFromArray($name, $tab);
-         return true;
-      }
-
-      switch ($condition) {
-
-         case Rule::PATTERN_FIND:
-            return false;
-
-         case Rule::PATTERN_IS_EMPTY :
-            Dropdown::showYesNo($name, 0, 0);
+            Dropdown::showFromArray($name, $tab);
             return true;
+        }
 
-         case Rule::PATTERN_EXISTS:
-            echo Dropdown::showYesNo($name, 1, 0);
-            return true;
+        switch ($condition) {
+            case Rule::PATTERN_FIND:
+                return false;
 
-         case Rule::PATTERN_DOES_NOT_EXISTS:
-            echo Dropdown::showYesNo($name, 1, 0);
-            return true;
+            case Rule::PATTERN_IS_EMPTY:
+                Dropdown::showYesNo($name, 0, 0);
+                return true;
 
-      }
-      return false;
-   }
+            case Rule::PATTERN_EXISTS:
+                echo Dropdown::showYesNo($name, 1, 0);
+                return true;
 
-
-   /**
-    * @since 0.84
-    *
-    * @see Rule::getAdditionalCriteriaDisplayPattern()
-   **/
-   function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern) {
-
-      $crit = $this->getCriteria($ID);
-      if (count($crit) && $crit['field'] == '_source') {
-         if ($pattern != 'GLPI') {
-            $name = Plugin::getInfo($pattern, 'name');
-            if (empty($name)) {
-               return false;
-            }
-         } else {
-            $name = $pattern;
-         }
-         return $name;
-      }
-   }
-
-   /**
-    * Add more criteria
-    *
-    * @param string $criterion
-    * @return array
-    */
-   static function addMoreCriteria($criterion = '') {
-      if ($criterion == 'ip' || $criterion == 'subnet') {
-         return [
-            self::PATTERN_CIDR => __('is CIDR'),
-            self::PATTERN_NOT_CIDR => __('is not CIDR')
-         ];
-      }
-      return [];
-   }
+            case Rule::PATTERN_DOES_NOT_EXISTS:
+                echo Dropdown::showYesNo($name, 1, 0);
+                return true;
+        }
+        return false;
+    }
 
 
-   /**
-    * Check the criteria
-    *
-    * @param object $criteria
-    * @param array $input
-    * @return boolean
-    */
-   function checkCriteria(&$criteria, &$input) {
+    /**
+     * @since 0.84
+     *
+     * @see Rule::getAdditionalCriteriaDisplayPattern()
+     **/
+    public function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern)
+    {
 
-      $res = parent::checkCriteria($criteria, $input);
-
-      if (in_array($criteria->fields["condition"], [self::PATTERN_CIDR, self::PATTERN_NOT_CIDR])) {
-         $pattern   = $criteria->fields['pattern'];
-         $exploded = explode('/', $pattern);
-         $subnet = ip2long($exploded[0]);
-         $bits = $exploded[1] ?? null;
-         $mask = -1 << (32 - $bits);
-         $subnet &= $mask; // nb: in case the supplied subnet wasn't correctly aligned
-
-         if (in_array($criteria->fields["condition"], [self::PATTERN_CIDR])) {
-            $value = $this->getCriteriaValue(
-               $criteria->fields["criteria"],
-               $criteria->fields["condition"],
-               $input[$criteria->fields["criteria"]]
-            );
-
-            if (is_array($value)) {
-               foreach ($value as $ip) {
-                  if (isset($ip) && $ip != '') {
-                     $ip = ip2long($ip);
-                     if (($ip & $mask) == $subnet) {
-                        $res = true;
-                        break 1;
-                     }
-                  }
-               }
+        $crit = $this->getCriteria($ID);
+        if (count($crit) && $crit['field'] == '_source') {
+            if ($pattern != 'GLPI') {
+                $name = Plugin::getInfo($pattern, 'name');
+                if (empty($name)) {
+                    return false;
+                }
             } else {
-               if (isset($value) && $value != '') {
-                  $ip = ip2long($value);
-                  if (($ip & $mask) == $subnet) {
-                     $res = true;
-                  }
-               }
+                $name = $pattern;
             }
-         } else if (in_array($criteria->fields["condition"], [self::PATTERN_NOT_CIDR])) {
-            $value = $this->getCriteriaValue(
-               $criteria->fields["criteria"],
-               $criteria->fields["condition"],
-               $input[$criteria->fields["criteria"]]
-            );
+            return $name;
+        }
+    }
 
-            if (is_array($value)) {
-               $resarray = true;
-               foreach ($value as $ip) {
-                  if (isset($ip) && $ip != '') {
-                     $ip = ip2long($ip);
-                     if (($ip & $mask) == $subnet) {
-                        $resarray = false;
-                     }
-                  }
-               }
-               $res = $resarray;
-            } else {
-               if (isset($value) && $value != '') {
-                  $ip = ip2long($value);
-                  if (($ip & $mask) != $subnet) {
-                     $res = true;
-                  }
-               }
+    /**
+     * Add more criteria
+     *
+     * @param string $criterion
+     * @return array
+     */
+    public static function addMoreCriteria($criterion = '')
+    {
+        if ($criterion == 'ip' || $criterion == 'subnet') {
+            return [
+                self::PATTERN_CIDR => __('is CIDR'),
+                self::PATTERN_NOT_CIDR => __('is not CIDR')
+            ];
+        }
+        return [];
+    }
+
+
+    /**
+     * Check the criteria
+     *
+     * @param object $criteria
+     * @param array $input
+     * @return boolean
+     */
+    public function checkCriteria(&$criteria, &$input)
+    {
+
+        $res = parent::checkCriteria($criteria, $input);
+
+        if (in_array($criteria->fields["condition"], [self::PATTERN_CIDR, self::PATTERN_NOT_CIDR])) {
+            $pattern   = $criteria->fields['pattern'];
+            $exploded = explode('/', $pattern);
+            $subnet = ip2long($exploded[0]);
+            $bits = $exploded[1] ?? null;
+            $mask = -1 << (32 - $bits);
+            $subnet &= $mask; // nb: in case the supplied subnet wasn't correctly aligned
+
+            if (in_array($criteria->fields["condition"], [self::PATTERN_CIDR])) {
+                $value = $this->getCriteriaValue(
+                    $criteria->fields["criteria"],
+                    $criteria->fields["condition"],
+                    $input[$criteria->fields["criteria"]]
+                );
+
+                if (is_array($value)) {
+                    foreach ($value as $ip) {
+                        if (isset($ip) && $ip != '') {
+                             $ip = ip2long($ip);
+                            if (($ip & $mask) == $subnet) {
+                                $res = true;
+                                break 1;
+                            }
+                        }
+                    }
+                } else {
+                    if (isset($value) && $value != '') {
+                        $ip = ip2long($value);
+                        if (($ip & $mask) == $subnet) {
+                            $res = true;
+                        }
+                    }
+                }
+            } else if (in_array($criteria->fields["condition"], [self::PATTERN_NOT_CIDR])) {
+                $value = $this->getCriteriaValue(
+                    $criteria->fields["criteria"],
+                    $criteria->fields["condition"],
+                    $input[$criteria->fields["criteria"]]
+                );
+
+                if (is_array($value)) {
+                    $resarray = true;
+                    foreach ($value as $ip) {
+                        if (isset($ip) && $ip != '') {
+                            $ip = ip2long($ip);
+                            if (($ip & $mask) == $subnet) {
+                                $resarray = false;
+                            }
+                        }
+                    }
+                    $res = $resarray;
+                } else {
+                    if (isset($value) && $value != '') {
+                        $ip = ip2long($value);
+                        if (($ip & $mask) != $subnet) {
+                            $res = true;
+                        }
+                    }
+                }
             }
-         }
-      }
+        }
 
-      return $res;
-   }
+        return $res;
+    }
 
 
-   /**
-    * Process the rule
-    *
-    * @param array &$input the input data used to check criterias
-    * @param array &$output the initial ouput array used to be manipulate by actions
-    * @param array &$params parameters for all internal functions
-    * @param array &options array options:
-    *                     - only_criteria : only react on specific criteria
-    *
-    * @return array the output updated by actions.
-    *         If rule matched add field _rule_process to return value
-    */
-   function process(&$input, &$output, &$params, &$options = []) {
+    /**
+     * Process the rule
+     *
+     * @param array &$input the input data used to check criterias
+     * @param array &$output the initial ouput array used to be manipulate by actions
+     * @param array &$params parameters for all internal functions
+     * @param array &options array options:
+     *                     - only_criteria : only react on specific criteria
+     *
+     * @return array the output updated by actions.
+     *         If rule matched add field _rule_process to return value
+     */
+    public function process(&$input, &$output, &$params, &$options = [])
+    {
 
-      if ($this->validateCriterias($options)) {
-         $this->regex_results     = [];
-         $this->criterias_results = [];
-         $input = $this->prepareInputDataForProcess($input, $params);
+        if ($this->validateCriterias($options)) {
+            $this->regex_results     = [];
+            $this->criterias_results = [];
+            $input = $this->prepareInputDataForProcess($input, $params);
 
-         if ($this->checkCriterias($input)) {
-            unset($output["_no_rule_matches"]);
-            $refoutput = $output;
-            $output = $this->executeActions($output, $params);
-            if (!isset($output['pass_rule'])) {
-               $this->updateOnlyCriteria($options, $refoutput, $output);
-               //Hook
-               $hook_params["sub_type"] = $this->getType();
-               $hook_params["ruleid"]   = $this->fields["id"];
-               $hook_params["input"]    = $input;
-               $hook_params["output"]   = $output;
-               Plugin::doHook(Hooks::RULE_MATCHED, $hook_params);
-               $output["_rule_process"] = true;
+            if ($this->checkCriterias($input)) {
+                unset($output["_no_rule_matches"]);
+                $refoutput = $output;
+                $output = $this->executeActions($output, $params);
+                if (!isset($output['pass_rule'])) {
+                    $this->updateOnlyCriteria($options, $refoutput, $output);
+                   //Hook
+                    $hook_params["sub_type"] = $this->getType();
+                    $hook_params["ruleid"]   = $this->fields["id"];
+                    $hook_params["input"]    = $input;
+                    $hook_params["output"]   = $output;
+                    Plugin::doHook(Hooks::RULE_MATCHED, $hook_params);
+                    $output["_rule_process"] = true;
+                }
             }
-         }
-      }
-   }
+        }
+    }
 
 
-   function getActions() {
-      $actions = [
-         'entities_id' => [
-            'name' => Entity::getTypeName(1),
-            'type' => 'dropdown',
-            'table' => Entity::getTable()
-         ],
-         'locations_id' => [
-            'name' => Location::getTypeName(1),
-            'type' => 'dropdown',
-            'table' => Location::getTable(),
-         ],
-         '_affect_entity_by_tag' => [
-            'name' => __('Entity from TAG'),
-            'type' => 'text',
-            'force_actions' => ['regex_result'],
-         ],
-         '_ignore_import' => [
-            'name' => __('Refuse import'),
-            'type' => 'yesonly'
-         ],
-         'is_recursive' => [
-            'name' => __('Child entities'),
-            'type' => 'yesno'
-         ],
-         'groups_id_tech' => [
-            'name' => __('Group in charge of the hardware'),
-            'type' => 'dropdown',
-            'table' => Group::getTable()
-         ],
-         'users_id_tech' => [
-            'name' => __('Technician in charge of the hardware'),
-            'type' => 'dropdown_users'
-         ]
-      ];
+    public function getActions()
+    {
+        $actions = [
+            'entities_id' => [
+                'name' => Entity::getTypeName(1),
+                'type' => 'dropdown',
+                'table' => Entity::getTable()
+            ],
+            'locations_id' => [
+                'name' => Location::getTypeName(1),
+                'type' => 'dropdown',
+                'table' => Location::getTable(),
+            ],
+            '_affect_entity_by_tag' => [
+                'name' => __('Entity from TAG'),
+                'type' => 'text',
+                'force_actions' => ['regex_result'],
+            ],
+            '_ignore_import' => [
+                'name' => __('Refuse import'),
+                'type' => 'yesonly'
+            ],
+            'is_recursive' => [
+                'name' => __('Child entities'),
+                'type' => 'yesno'
+            ],
+            'groups_id_tech' => [
+                'name' => __('Group in charge of the hardware'),
+                'type' => 'dropdown',
+                'table' => Group::getTable()
+            ],
+            'users_id_tech' => [
+                'name' => __('Technician in charge of the hardware'),
+                'type' => 'dropdown_users'
+            ]
+        ];
 
-      return $actions;
-   }
+        return $actions;
+    }
 
 
-   static function getIcon() {
-      return Entity::getIcon();
-   }
-
+    public static function getIcon()
+    {
+        return Entity::getIcon();
+    }
 }

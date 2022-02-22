@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,44 +31,40 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkRight("profile", READ);
 
 if (!isset($_GET['id'])) {
-   $_GET['id'] = "";
+    $_GET['id'] = "";
 }
 
 $prof = new Profile();
 
 if (isset($_POST["add"])) {
-   $prof->check(-1, CREATE, $_POST);
-   $ID = $prof->add($_POST);
+    $prof->check(-1, CREATE, $_POST);
+    $ID = $prof->add($_POST);
 
    // We need to redirect to form to enter rights
-   Html::redirect($prof->getFormURLWithID($ID));
-
+    Html::redirect($prof->getFormURLWithID($ID));
 } else if (isset($_POST["purge"])) {
-   $prof->check($_POST['id'], PURGE);
-   if ($prof->delete($_POST, 1)) {
-      $prof->redirectToList();
-   } else {
-      Html::back();
-   }
+    $prof->check($_POST['id'], PURGE);
+    if ($prof->delete($_POST, 1)) {
+        $prof->redirectToList();
+    } else {
+        Html::back();
+    }
+} else if (
+    isset($_POST["update"])
+           || isset($_POST["interface"])
+) {
+    $prof->check($_POST['id'], UPDATE);
 
-} else if (isset($_POST["update"])
-           || isset($_POST["interface"])) {
-   $prof->check($_POST['id'], UPDATE);
-
-   $prof->update($_POST);
-   Html::back();
+    $prof->update($_POST);
+    Html::back();
 }
 
-Html::header(Profile::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "profile");
-
-$prof->display([
-   'id'           => $_GET["id"],
-   'formoptions'  => " data-track-changes='true'"
+$menus = ["admin", "profile"];
+Profile::displayFullPageForItem($_GET["id"], $menus, [
+    'formoptions'  => " data-track-changes='true'"
 ]);
-
-Html::footer();

@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,20 +31,22 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 Html::header_nocache();
 
-if (!$CFG_GLPI["use_public_faq"]
-    && !Session::haveRightsOr('knowbase', [KnowbaseItem::READFAQ, READ])) {
-   exit;
+if (
+    !$CFG_GLPI["use_public_faq"]
+    && !Session::haveRightsOr('knowbase', [KnowbaseItem::READFAQ, READ])
+) {
+    exit;
 }
 
 switch ($_REQUEST['action']) {
-   case "getItemslist";
-      header("Content-Type: application/json; charset=UTF-8");
-      KnowbaseItem::showList([
-         'knowbaseitemcategories_id' => (int) $_REQUEST['cat_id'],
-         'start'                     => (int) $_REQUEST['start'],
-      ], 'browse');
-      break;
+    case "getItemslist":
+        header("Content-Type: application/json; charset=UTF-8");
+        KnowbaseItem::showList([
+            'knowbaseitemcategories_id' => (int) $_REQUEST['cat_id'],
+            'start'                     => (int) $_REQUEST['start'],
+        ], 'browse');
+        break;
 }

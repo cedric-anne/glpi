@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -30,14 +31,14 @@
  * ---------------------------------------------------------------------
  */
 
-include ('../inc/includes.php');
+include('../inc/includes.php');
 
 Session::checkLoginUser();
 
 if (Session::getCurrentInterface() == "helpdesk") {
-   Html::helpHeader(Ticket::getTypeName(Session::getPluralNumber()), '', $_SESSION["glpiname"]);
+    Html::helpHeader(Ticket::getTypeName(Session::getPluralNumber()), 'tickets', 'ticket');
 } else {
-   Html::header(Ticket::getTypeName(Session::getPluralNumber()), '', "helpdesk", "ticket");
+    Html::header(Ticket::getTypeName(Session::getPluralNumber()), '', "helpdesk", "ticket");
 }
 
 echo Html::manageRefreshPage(false, "$('div.ajax-container.search-display-data').data('js_class').getView().refreshResults();");
@@ -45,7 +46,7 @@ echo Html::manageRefreshPage(false, "$('div.ajax-container.search-display-data')
 Search::show('Ticket');
 
 if (Session::getCurrentInterface() == "helpdesk") {
-   Html::helpFooter();
+    Html::helpFooter();
 } else {
-   Html::footer();
+    Html::footer();
 }

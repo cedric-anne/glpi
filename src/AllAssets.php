@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -32,11 +33,13 @@
 
 class AllAssets extends CommonGLPI
 {
-   public static function canView() {
-      return Session::getCurrentInterface() == "central";
-   }
+    public static function canView()
+    {
+        return Session::getCurrentInterface() == "central";
+    }
 
-   public static function getTypeName($nb = 0) {
-      return _n('Asset', 'Assets', $nb);
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Asset', 'Assets', $nb);
+    }
 }

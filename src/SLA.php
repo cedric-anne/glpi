@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -37,25 +38,29 @@
 
 /**
  * SLA Class
-**/
-class SLA extends LevelAgreement {
-   static protected $prefix            = 'sla';
-   static protected $prefixticket      = '';
-   static protected $levelclass        = 'SLALevel';
-   static protected $levelticketclass  = 'SlaLevel_Ticket';
-   static protected $forward_entity_to = ['SLALevel'];
+ **/
+class SLA extends LevelAgreement
+{
+    protected static $prefix            = 'sla';
+    protected static $prefixticket      = '';
+    protected static $levelclass        = 'SlaLevel';
+    protected static $levelticketclass  = 'SlaLevel_Ticket';
+    protected static $forward_entity_to = ['SlaLevel'];
 
-   static function getTypeName($nb = 0) {
-      // Acronymous, no plural
-      return __('SLA');
-   }
+    public static function getTypeName($nb = 0)
+    {
+       // Acronymous, no plural
+        return __('SLA');
+    }
 
-   function showFormWarning() {
+    public function showFormWarning()
+    {
+    }
 
-   }
-
-   function getAddConfirmation() {
-      return [__("The assignment of a SLA to a ticket causes the recalculation of the date."),
-              __("Escalations defined in the SLA will be triggered under this new date.")];
-   }
+    public function getAddConfirmation()
+    {
+        return [__("The assignment of a SLA to a ticket causes the recalculation of the date."),
+            __("Escalations defined in the SLA will be triggered under this new date.")
+        ];
+    }
 }

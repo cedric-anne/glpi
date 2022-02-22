@@ -1,8 +1,9 @@
 <?php
+
 /**
  * ---------------------------------------------------------------------
  * GLPI - Gestionnaire Libre de Parc Informatique
- * Copyright (C) 2015-2021 Teclib' and contributors.
+ * Copyright (C) 2015-2022 Teclib' and contributors.
  *
  * http://glpi-project.org
  *
@@ -31,14 +32,15 @@
  */
 
 /// Class NetworkEquipementType
-class NetworkEquipmentType extends CommonDropdown {
+class NetworkEquipmentType extends CommonDropdown
+{
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Networking equipment type', 'Networking equipment types', $nb);
+    }
 
-
-   static function getTypeName($nb = 0) {
-      return _n('Networking equipment type', 'Networking equipment types', $nb);
-   }
-
-   static function getFieldLabel() {
-      return _n('Type', 'Types', 1);
-   }
+    public static function getFieldLabel()
+    {
+        return _n('Type', 'Types', 1);
+    }
 }
