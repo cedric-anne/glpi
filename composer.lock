@@ -133,16 +133,16 @@
         },
         {
             "name": "donatj/phpuseragentparser",
-            "version": "v1.5.0",
+            "version": "v1.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/donatj/PhpUserAgent.git",
-                "reference": "cc9d872cddfc180c52d084d0dff1e4aad653d37f"
+                "reference": "264cf23eda626c223d21535584c33794be0ea338"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/donatj/PhpUserAgent/zipball/cc9d872cddfc180c52d084d0dff1e4aad653d37f",
-                "reference": "cc9d872cddfc180c52d084d0dff1e4aad653d37f",
+                "url": "https://api.github.com/repos/donatj/PhpUserAgent/zipball/264cf23eda626c223d21535584c33794be0ea338",
+                "reference": "264cf23eda626c223d21535584c33794be0ea338",
                 "shasum": ""
             },
             "require": {
@@ -151,6 +151,7 @@
             "require-dev": {
                 "camspiers/json-pretty": "~1.0",
                 "donatj/drop": "*",
+                "ext-json": "*",
                 "phpunit/phpunit": "~4.8|~9"
             },
             "type": "library",
@@ -185,11 +186,11 @@
             ],
             "support": {
                 "issues": "https://github.com/donatj/PhpUserAgent/issues",
-                "source": "https://github.com/donatj/PhpUserAgent/tree/v1.5.0"
+                "source": "https://github.com/donatj/PhpUserAgent/tree/v1.6.1"
             },
             "funding": [
                 {
-                    "url": "https://www.paypal.me/donatj/5",
+                    "url": "https://www.paypal.me/donatj/15",
                     "type": "custom"
                 },
                 {
@@ -197,7 +198,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-09-16T17:05:03+00:00"
+            "time": "2022-06-08T16:36:31+00:00"
         },
         {
             "name": "elvanto/litemoji",
