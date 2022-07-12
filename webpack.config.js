@@ -76,6 +76,8 @@ let config = {
                     path.resolve(__dirname, 'node_modules/cystoscape'),
                     path.resolve(__dirname, 'node_modules/cytoscape-context-menus'),
                     path.resolve(__dirname, 'node_modules/jquery-migrate'),
+                    path.resolve(__dirname, 'node_modules/jspdf'),
+                    path.resolve(__dirname, 'node_modules/html2canvas'),
                     path.resolve(__dirname, 'node_modules/photoswipe'),
                     path.resolve(__dirname, 'node_modules/rrule'),
                     path.resolve(__dirname, 'vendor/blueimp/jquery-file-upload'),
