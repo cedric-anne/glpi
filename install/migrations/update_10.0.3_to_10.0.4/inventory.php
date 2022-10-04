@@ -33,12 +33,17 @@
  * ---------------------------------------------------------------------
  */
 
-class AutoUpdateSystem extends CommonDropdown
-{
-    public const NATIVE_INVENTORY = "GLPI Native Inventory";
+/**
+ * @var DB $DB
+ * @var Migration $migration
+ */
 
-    public static function getTypeName($nb = 0)
-    {
-        return _n('Update Source', 'Update Sources', $nb);
-    }
+//fix database schema inconsistency is_dynamic without is_deleted
+$tables = ["glpi_items_remotemanagements", "glpi_items_devicecameras_imageresolutions", "glpi_items_devicecameras_imageformats"];
+foreach ($tables as $table) {
+    $migration->addField($table, 'is_deleted', 'bool', ['value' => 0, 'after' => 'is_dynamic']);
+    $migration->addKey($table, "is_deleted");
 }
+
+//new right value for locked_field (previously based on config UPDATE)
+$migration->addRight('locked_field', CREATE | PURGE, ['config' => UPDATE]);

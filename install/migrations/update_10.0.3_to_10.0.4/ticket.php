@@ -33,12 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
-class AutoUpdateSystem extends CommonDropdown
-{
-    public const NATIVE_INVENTORY = "GLPI Native Inventory";
+/**
+ * @var DB $DB
+ * @var Migration $migration
+ */
 
-    public static function getTypeName($nb = 0)
-    {
-        return _n('Update Source', 'Update Sources', $nb);
-    }
+if (!$DB->fieldExists("glpi_tickets", "takeintoaccountdate")) {
+    $migration->addField("glpi_tickets", "takeintoaccountdate", "timestamp", ['null' => true,'after' => 'solvedate']);
+    $migration->addKey("glpi_tickets", "takeintoaccountdate");
+    $migration->migrationOneTable("glpi_tickets");
 }
