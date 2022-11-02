@@ -1,0 +1,69 @@
+name: "Audit dependencies"
+
+on:
+  # Runs audit when a dependency is updated
+  pull_request:
+    paths:
+      - "composer.json"
+      - "composer.lock"
+      - "package.json"
+      - "package-lock.json"
+  # Runs audit every monday
+  schedule:
+    - cron:  '0 0 * * 1'
+  # Enable manual run
+  workflow_dispatch:
+
+jobs:
+  audit:
+    # Do not run scheduled coverage on tier repositories
+    if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
+    name: "Audit dependencies"
+    runs-on: "ubuntu-latest"
+    env:
+      COMPOSE_FILE: ".github/actions/docker-compose-app.yml"
+      APPLICATION_ROOT: "${{ github.workspace }}"
+      PHP_IMAGE: "githubactions-php:8.1"
+      UPDATE_FILES_ACL: true
+    steps:
+      - name: "Clean workspace"
+        run: |
+          echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
+          rm -rf "${{ env.APPLICATION_ROOT }}/*"
+          rm -rf "${{ env.APP_CONTAINER_HOME }}/*"
+      - name: "Checkout"
+        uses: "actions/checkout@v3"
+      - name: "Restore dependencies cache"
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ env.APP_CONTAINER_HOME }}/.composer/cache/
+            ${{ env.APP_CONTAINER_HOME }}/.npm/_cacache/
+          key: "app_home_deps-${{ matrix.php-version }}-${{ hashFiles('composer.lock', 'package-lock.json') }}"
+          restore-keys: |
+            app_home_deps-${{ matrix.php-version }}-
+            app_home_deps-
+      - name: "Restore lint cache"
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ env.APP_CONTAINER_HOME }}/phpcs.cache
+          key: "app_home_lint-${{ matrix.php-version }}-${{ github.base_ref || github.ref }}"
+          restore-keys: |
+            app_home_lint-${{ matrix.php-version }}
+            app_home_lint-
+      - name: "Initialize containers"
+        run: |
+          .github/actions/init_containers-start.sh
+      - name: "Show versions"
+        run: |
+          .github/actions/init_show-versions.sh
+      - name: "Build dependencies / translations"
+        run: |
+          docker-compose exec -T app .github/actions/init_build.sh
+      - name: "Audit npm dependencies"
+        run: |
+          npm audit
+      - name: "Audit PHP dependencies"
+        run: |
+          composer audit
