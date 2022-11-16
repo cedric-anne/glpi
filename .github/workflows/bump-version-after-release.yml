@@ -65,7 +65,7 @@ jobs:
           script: |
             const { repo, owner } = context.repo;
             const result = await github.rest.pulls.create({
-              title: 'Bump version',
+              title: 'Bump version to ${{ env.next_version }}-dev',
               owner,
               repo,
               head: 'bump/${{ env.next_version }}',
