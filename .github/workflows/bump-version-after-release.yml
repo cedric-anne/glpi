@@ -56,7 +56,7 @@ jobs:
           "
           echo "$CHANGELOG_ENTRY"
           echo 4
-          sed -i "0,/##/s//$CHANGELOG_ENTRY\n##/"" CHANGELOG.md
+          sed -i "0,/##/s//$CHANGELOG_ENTRY\n##/" CHANGELOG.md
           echo 5
           git add .
           echo 6
