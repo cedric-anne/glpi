@@ -70,7 +70,5 @@ jobs:
               repo,
               head: 'bump/${{ env.next_version }}',
               base: '${{ env.branch }}',
-              body: [
-                'This PR is auto-generated',
-              ].join('\n')
+              body: 'Bump version to ensure next nightly build will use a `-dev` version string.'
             });
