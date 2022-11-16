@@ -32,7 +32,7 @@ jobs:
           echo 2
           cp install/mysql/glpi-${{ env.tag }}-empty.sql install/mysql/glpi-${{ env.next_version }}-empty.sql
           echo 3
-          read -r -d '' CHANGELOG_ENTRY <<- MARKDOWN
+          CHANGELOG_ENTRY="
             ## [${{ env.next_version }}] unreleased
             
             ### Added
@@ -53,7 +53,8 @@ jobs:
             
             #### Removed
             
-          MARKDOWN
+          "
+          echo "$CHANGELOG_ENTRY"
           echo 4
           sed -i "0,/##/s//$CHANGELOG_ENTRY\n##/"" CHANGELOG.md
           echo 5
