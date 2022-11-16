@@ -15,7 +15,7 @@ jobs:
           TAG="${GITHUB_REF#refs/tags/}"
           MAJOR_VERSION=$( echo "$TAG" | cut -d '.' -f 1 )
           MINOR_VERSION=$( echo "$TAG" | cut -d '.' -f 2 )
-          BUGFIX_VERSION=$( echo "$TAG" | cut -d '.' -f 3 ) | cut -d '-' -f 1
+          BUGFIX_VERSION=$( echo "$TAG" | cut -d '.' -f 3 | cut -d '-' -f 1 )
           echo "tag=$TAG" >> $GITHUB_ENV
           echo "next_version=$MAJOR_VERSION.$MINOR_VERSION.$(($BUGFIX_VERSION+1))" >> $GITHUB_ENV
           echo "branch=$MAJOR_VERSION.$MINOR_VERSION/bugfixes" >> $GITHUB_ENV
@@ -27,8 +27,11 @@ jobs:
           git config --local user.name "$(git log --format='%an' HEAD^!)"
           git checkout -b bump/${{ env.next_version }}
           git mv .version/${{ env.tag }} .version/${{ env.next_version }}
+          echo 1
           sed -i 's/${{ env.tag }}/${{ env.next_version }}-dev/g' inc/define.php
+          echo 2
           cp install/mysql/glpi-${{ env.tag }}-empty.sql install/mysql/glpi-${{ env.next_version }}-empty.sql
+          echo 3
           read -r -d '' CHANGELOG_ENTRY <<- MARKDOWN
             ## [${{ env.next_version }}] unreleased
             
@@ -51,10 +54,15 @@ jobs:
             #### Removed
             
           MARKDOWN
+          echo 4
           sed -i "0,/##/s//$CHANGELOG_ENTRY\n##/"" CHANGELOG.md
+          echo 5
           git add .
+          echo 6
           git commit -m "Bump version"
+          echo 7
           git push
+          echo 8
       - name: "Create Pull Request"
         uses: "actions/github-script@v6"
         with:
