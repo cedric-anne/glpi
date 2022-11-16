@@ -26,12 +26,13 @@ jobs:
           git config --local user.email "$(git log --format='%ae' HEAD^!)"
           git config --local user.name "$(git log --format='%an' HEAD^!)"
           git checkout -b bump/${{ env.next_version }}
+          echo "Renaming .version file..."
           git mv .version/${{ env.tag }} .version/${{ env.next_version }}
-          echo 1
+          echo "Replacing version in inc/define.php..."
           sed -i 's/${{ env.tag }}/${{ env.next_version }}-dev/g' inc/define.php
-          echo 2
+          echo "Copying MySQL empty schema file..."
           cp install/mysql/glpi-${{ env.tag }}-empty.sql install/mysql/glpi-${{ env.next_version }}-empty.sql
-          echo 3
+          echo "Updating CHANGELOG.md..."
           CHANGELOG_ENTRY='## [${{ env.next_version }}] unreleased\
           \
           ### Added\
@@ -54,15 +55,10 @@ jobs:
           \
           '
           echo "$CHANGELOG_ENTRY"
-          echo 4
           sed -i "0,/##/s//$CHANGELOG_ENTRY\n##/" CHANGELOG.md
-          echo 5
           git add .
-          echo 6
           git commit -m "Bump version"
-          echo 7
-          git push
-          echo 8
+          git push origin bump/${{ env.next_version }}
       - name: "Create Pull Request"
         uses: "actions/github-script@v6"
         with:
