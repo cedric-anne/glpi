@@ -54,7 +54,6 @@ jobs:
           #### Removed\
           \
           '
-          echo "$CHANGELOG_ENTRY"
           sed -i "0,/##/s//$CHANGELOG_ENTRY\n##/" CHANGELOG.md
           git add .
           git commit -m "Bump version"
