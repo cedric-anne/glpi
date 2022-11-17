@@ -55,7 +55,7 @@ jobs:
           echo "Replacing version in inc/define.php..."
           sed -i "s/define('GLPI_VERSION', '[^)]*');/define('GLPI_VERSION', '${{ env.NEXT_VERSION }}-dev');/g" inc/define.php
           echo "Copying MySQL empty schema file..."
-          cp install/mysql/glpi-${{ env.TAG }}-empty.sql install/mysql/glpi-${{ env.NEXT_VERSION }}-empty.sql
+          cp install/mysql/glpi-empty.sql install/mysql/glpi-${{ env.TAG }}-empty.sql
           echo "Updating CHANGELOG.md..."
           sed -i "0,/##/s//${{ env.CHANGELOG_ENTRY }}\n##/" CHANGELOG.md
           git add .
