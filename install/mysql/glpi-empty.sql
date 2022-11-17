@@ -31,8 +31,6 @@
 -- ---------------------------------------------------------------------
 --
 
-### Dump table glpi_alerts
-
 SET FOREIGN_KEY_CHECKS=0;
 
 DROP TABLE IF EXISTS `glpi_alerts`;
@@ -48,8 +46,6 @@ CREATE TABLE `glpi_alerts` (
   KEY `date` (`date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
-
-### Dump table glpi_authldapreplicates
 
 DROP TABLE IF EXISTS `glpi_authldapreplicates`;
 CREATE TABLE `glpi_authldapreplicates` (
