@@ -23,28 +23,28 @@ jobs:
           echo "NEXT_VERSION=$NEXT_VERSION" >> $GITHUB_ENV
           echo "BASE_BRANCH=$MAJOR_VERSION.$MINOR_VERSION/bugfixes" >> $GITHUB_ENV
           echo "BUMP_BRANCH=bump-version/$NEXT_VERSION" >> $GITHUB_ENV
-          CHANGELOG_ENTRY="## [$NEXT_VERSION] unreleased\\
-          \\
-          ### Added\\
-          \\
-          ### Changed\\
-          \\
-          ### Deprecated\\
-          \\
-          ### Removed\\
-          \\
-          ### API changes\\
-          \\
-          #### Added\\
-          \\
-          #### Changes\\
-          \\
-          #### Deprecated\\
-          \\
-          #### Removed\\
-          \\
+          CHANGELOG_ENTRY="## [$NEXT_VERSION] unreleased
+          
+          ### Added
+          
+          ### Changed
+          
+          ### Deprecated
+          
+          ### Removed
+          
+          ### API changes
+          
+          #### Added
+          
+          #### Changes
+          
+          #### Deprecated
+          
+          #### Removed
+          
           "
-          echo "CHANGELOG_ENTRY=${CHANGELOG_ENTRY//$'\n'/'\\n'}" >> $GITHUB_ENV
+          echo "CHANGELOG_ENTRY=\"${CHANGELOG_ENTRY//$'\n'/$'\\\n'}\" >> $GITHUB_ENV
       - name: "Update codebase"
         run: |
           git config --local user.email "$(git log --format='%ae' HEAD^!)"
