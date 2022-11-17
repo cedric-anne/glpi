@@ -13,27 +13,16 @@ jobs:
       - name: "Compute variables"
         run: |
           TAG="${GITHUB_REF#refs/tags/}"
-          echo 10
           MAJOR_VERSION="$( echo "$TAG" | cut -d '.' -f 1 )"
-          echo 11
           MINOR_VERSION="$( echo "$TAG" | cut -d '.' -f 2 )"
-          echo 12
           BUGFIX_VERSION="$( echo "$TAG" | cut -d '.' -f 3 | cut -d '-' -f 1 )"
-          echo 13
-          STABILITY_FLAG="$( echo "$TAG" | grep -Po '\-\w+$' )"
-          echo 14
+          STABILITY_FLAG="$( echo "$TAG" | grep -Po '(\-\w+)?$' )"
           NEXT_VERSION="$MAJOR_VERSION.$MINOR_VERSION.$(($BUGFIX_VERSION+1))"
-          echo 15
           echo "TAG=$TAG" >> $GITHUB_ENV
-          echo 16
           echo "IS_STABLE_RELEASE=$( [[ -z "$STABILITY_FLAG" ]] && echo "true" || echo "false" )" >> $GITHUB_ENV
-          echo 17
           echo "NEXT_VERSION=$NEXT_VERSION" >> $GITHUB_ENV
-          echo 18
           echo "BASE_BRANCH=$MAJOR_VERSION.$MINOR_VERSION/bugfixes" >> $GITHUB_ENV
-          echo 19
           echo "BUMP_BRANCH=bump-version/$NEXT_VERSION" >> $GITHUB_ENV
-          echo 20
           CHANGELOG_ENTRY="## [$NEXT_VERSION] unreleased
           
           ### Added
@@ -55,9 +44,7 @@ jobs:
           #### Removed
           
           "
-          echo 21
           echo "CHANGELOG_ENTRY=${CHANGELOG_ENTRY//$'\n'/'\n'}" >> $GITHUB_ENV
-          echo 22
       - name: "Checkout"
         if: ${{ env.IS_STABLE_RELEASE == 'yes' }}
         uses: "actions/checkout@v3"
