@@ -44,7 +44,7 @@ jobs:
           #### Removed
           
           "
-          echo "CHANGELOG_ENTRY=\"${CHANGELOG_ENTRY//$'\n'/$'\\\n'}\"" >> $GITHUB_ENV
+          echo "CHANGELOG_ENTRY=\"${CHANGELOG_ENTRY//$'\n'/$'\\\\\n'}\"" >> $GITHUB_ENV
       - name: "Update codebase"
         run: |
           git config --local user.email "$(git log --format='%ae' HEAD^!)"
