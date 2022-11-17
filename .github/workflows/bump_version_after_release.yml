@@ -19,7 +19,7 @@ jobs:
           STABILITY_FLAG="$( echo "$TAG" | grep -Po '(\-\w+)?$' )"
           NEXT_VERSION="$MAJOR_VERSION.$MINOR_VERSION.$(($BUGFIX_VERSION+1))"
           echo "TAG=$TAG" >> $GITHUB_ENV
-          echo "IS_STABLE_RELEASE=$( [[ -z "$STABILITY_FLAG" ]] && echo "true" || echo "false" )" >> $GITHUB_ENV
+          echo "IS_STABLE_RELEASE=$( [[ -z "$STABILITY_FLAG" ]] && echo "yes" || echo "no" )" >> $GITHUB_ENV
           echo "NEXT_VERSION=$NEXT_VERSION" >> $GITHUB_ENV
           echo "BASE_BRANCH=$MAJOR_VERSION.$MINOR_VERSION/bugfixes" >> $GITHUB_ENV
           echo "BUMP_BRANCH=bump-version/$NEXT_VERSION" >> $GITHUB_ENV
