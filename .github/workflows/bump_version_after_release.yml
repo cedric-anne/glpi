@@ -17,13 +17,9 @@ jobs:
           MINOR_VERSION=$( echo "$TAG" | cut -d '.' -f 2 )
           BUGFIX_VERSION=$( echo "$TAG" | cut -d '.' -f 3 | cut -d '-' -f 1 )
           STABILITY_FLAG=$( echo "$TAG" | grep -Po '\-\w+$' )
-          if [[ "$STABILITY_FLAG" = "" ]]; then
-            echo "IS_STABLE_RELEASE=yes" >> $GITHUB_ENV
-          else
-            echo "IS_STABLE_RELEASE=no" >> $GITHUB_ENV
-          fi
           NEXT_VERSION=$MAJOR_VERSION.$MINOR_VERSION.$(($BUGFIX_VERSION+1))
           echo "TAG=$TAG" >> $GITHUB_ENV
+          echo "IS_STABLE_RELEASE=$( [[ -z "$STABILITY_FLAG" ]] && echo "yes" || echo "no" )" >> $GITHUB_ENV
           echo "NEXT_VERSION=$NEXT_VERSION" >> $GITHUB_ENV
           echo "BASE_BRANCH=$MAJOR_VERSION.$MINOR_VERSION/bugfixes" >> $GITHUB_ENV
           echo "BUMP_BRANCH=bump-version/$NEXT_VERSION" >> $GITHUB_ENV
@@ -49,7 +45,6 @@ jobs:
           
           "
           echo "CHANGELOG_ENTRY=${CHANGELOG_ENTRY//$'\n'/'\n'}" >> $GITHUB_ENV
-          cat $GITHUB_ENV
       - name: "Checkout"
         if: ${{ env.IS_STABLE_RELEASE == 'yes' }}
         uses: "actions/checkout@v3"
