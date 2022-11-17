@@ -19,8 +19,11 @@ jobs:
           STABILITY_FLAG=$( echo "$TAG" | grep -Po '\-\w+$' )
           NEXT_VERSION=$MAJOR_VERSION.$MINOR_VERSION.$(($BUGFIX_VERSION+1))
           echo "TAG=$TAG" >> $GITHUB_ENV
+          echo 1
           echo "IS_STABLE_RELEASE=$( [[ -z "$STABILITY_FLAG" ]] && echo "true" || echo "false" )" >> $GITHUB_ENV
+          echo 2
           echo "NEXT_VERSION=$NEXT_VERSION" >> $GITHUB_ENV
+          echo 3
           echo "BASE_BRANCH=$MAJOR_VERSION.$MINOR_VERSION/bugfixes" >> $GITHUB_ENV
           echo "BUMP_BRANCH=bump-version/$NEXT_VERSION" >> $GITHUB_ENV
           CHANGELOG_ENTRY="## [$NEXT_VERSION] unreleased
@@ -44,6 +47,7 @@ jobs:
           #### Removed
           
           "
+          echo 5
           echo "CHANGELOG_ENTRY=${CHANGELOG_ENTRY//$'\n'/'\n'}" >> $GITHUB_ENV
       - name: "Checkout"
         if: ${{ env.IS_STABLE_RELEASE == 'yes' }}
