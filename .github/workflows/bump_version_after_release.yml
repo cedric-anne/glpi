@@ -13,11 +13,11 @@ jobs:
       - name: "Compute variables"
         run: |
           TAG="${GITHUB_REF#refs/tags/}"
-          MAJOR_VERSION=$( echo "$TAG" | cut -d '.' -f 1 )
-          MINOR_VERSION=$( echo "$TAG" | cut -d '.' -f 2 )
-          BUGFIX_VERSION=$( echo "$TAG" | cut -d '.' -f 3 | cut -d '-' -f 1 )
-          STABILITY_FLAG=$( echo "$TAG" | grep -Po '\-\w+$' )
-          NEXT_VERSION=$MAJOR_VERSION.$MINOR_VERSION.$(($BUGFIX_VERSION+1))
+          MAJOR_VERSION="$( echo "$TAG" | cut -d '.' -f 1 )"
+          MINOR_VERSION="$( echo "$TAG" | cut -d '.' -f 2 )"
+          BUGFIX_VERSION="$( echo "$TAG" | cut -d '.' -f 3 | cut -d '-' -f 1 )"
+          STABILITY_FLAG="$( echo "$TAG" | grep -Po '\-\w+$' )"
+          NEXT_VERSION="$MAJOR_VERSION.$MINOR_VERSION.$(($BUGFIX_VERSION+1))"
           echo "TAG=$TAG" >> $GITHUB_ENV
           echo 1
           echo "IS_STABLE_RELEASE=$( [[ -z "$STABILITY_FLAG" ]] && echo "true" || echo "false" )" >> $GITHUB_ENV
