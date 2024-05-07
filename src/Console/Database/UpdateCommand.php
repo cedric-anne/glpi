@@ -95,6 +95,29 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
         $this->setDescription(__('Update database schema to new version'));
 
         $this->addOption(
+            'target-version',
+            't',
+            InputOption::VALUE_REQUIRED,
+            __('Target version. Use this option to process to a step-by-step update.')
+                . PHP_EOL
+                . __('Possible options values are:')
+                . PHP_EOL
+                . sprintf(
+                     __(' - "%s" to process the complete update'),
+                    'latest' // TODO constant
+                )
+                . PHP_EOL
+                . sprintf(
+                     __('"%s" to process only the next update step'),
+                    'next' // TODO constant
+                )
+                . PHP_EOL
+                . __('a valid version number to process the update steps up to this version'),
+            'latest' // TODO constant
+        );
+
+
+        $this->addOption(
             'allow-unstable',
             'u',
             InputOption::VALUE_NONE,
@@ -102,7 +125,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
         );
 
         $this->addOption(
-            '--skip-db-checks',
+            'skip-db-checks',
             's',
             InputOption::VALUE_NONE,
             __('Do not check database schema integrity before and after performing the update')
@@ -114,7 +137,6 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
             InputOption::VALUE_NONE,
             __('Force execution of update from v-1 version of GLPI even if schema did not changed')
         );
-
         $this->registerTelemetryActivationOptions($this->getDefinition());
     }
 
