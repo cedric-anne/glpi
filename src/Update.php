@@ -48,8 +48,25 @@ class Update
      * @var Migration
      */
     private $migration;
-    private $version;
-    private $dbversion;
+
+    /**
+     * Current version found in DB.
+     *
+     * @var string
+     */
+    private $current_version;
+    /**
+     * Current schema version found in DB.
+     *
+     * @var string
+     */
+    private $current_dbversion;
+
+    /**
+     * Target version of the update.
+     */
+    private $target_version = GLPI_VERSION;
+
     private $language;
 
     /**
@@ -71,6 +88,16 @@ class Update
         $this->DB = $DB;
         $this->args = $args;
         $this->migrations_directory = $migrations_directory;
+
+        $this->initCurrentValues();
+    }
+
+    /**
+     * Defines the target version.
+     */
+    final public function setTargetVersion(string $target_version): void
+    {
+        $this->target_version = $target_version;
     }
 
     /**
@@ -97,11 +124,9 @@ class Update
     }
 
     /**
-     * Get current values (versions, lang, ...)
-     *
-     * @return array
+     * Initialize properties related to current versions/dbversion/language.
      */
-    public function getCurrents()
+    private function initCurrentValues(): void
     {
         $currents = [];
         $DB = $this->DB;
@@ -157,11 +182,23 @@ class Update
             $currents['language']  = $values['language'] ?? 'en_GB';
         }
 
-        $this->version    = $currents['version'];
-        $this->dbversion  = $currents['dbversion'];
+        $this->current_version    = $currents['version'];
+        $this->current_dbversion  = $currents['dbversion'];
         $this->language   = $currents['language'];
+    }
 
-        return $currents;
+    /**
+     * Get current values (versions, lang, ...)
+     *
+     * @return array
+     */
+    public function getCurrents()
+    {
+        return [
+            'version'   => $this->current_version,
+            'dbversion' => $this->current_dbversion,
+            'language'  => $this->language,
+        ];
     }
 
     /**
@@ -194,10 +231,10 @@ class Update
     public function doUpdates($current_version = null, bool $force_latest = false)
     {
         if ($current_version === null) {
-            if ($this->version === null) {
+            if ($this->current_version === null) {
                 throw new \RuntimeException('Cannot process updates without any version specified!');
             }
-            $current_version = $this->version;
+            $current_version = $this->current_version;
         }
 
         if (version_compare($current_version, '0.80', 'lt')) {
@@ -255,7 +292,7 @@ class Update
             }
         }
 
-        $migrations = $this->getMigrationsToDo($current_version, $force_latest);
+        $migrations = $this->getMigrationsToDo($current_version, $this->target_version, $force_latest);
         foreach ($migrations as $file => $function) {
             include_once($file);
             $function();
@@ -391,36 +428,37 @@ class Update
      * Get migrations that have to be ran.
      *
      * @param string $current_version
+     * @param ?string $target_version
      * @param bool $force_latest
      *
      * @return array
      */
-    private function getMigrationsToDo(string $current_version, bool $force_latest = false): array
+    private function getMigrationsToDo(string $current_version, ?string $target_version = null, bool $force_latest = false): array
     {
         $migrations = [];
 
         $current_version = VersionParser::getNormalizedVersion($current_version, true, true);
 
-        $pattern = '/^update_(?<source_version>\d+\.\d+\.(?:\d+|x))_to_(?<target_version>\d+\.\d+\.(?:\d+|x))\.php$/';
-        $migration_iterator = new DirectoryIterator($this->migrations_directory);
-        foreach ($migration_iterator as $file) {
-            $versions_matches = [];
-            if ($file->isDir() || $file->isDot() || preg_match($pattern, $file->getFilename(), $versions_matches) !== 1) {
-                continue;
-            }
-
+        foreach ($this->getVersionsMigrations() as $migration_specs) {
             $force_migration = false;
-            if ($current_version === '9.2.2' && $versions_matches['target_version'] === '9.2.2') {
-               //9.2.2 upgrade script was not run from the release, see https://github.com/glpi-project/glpi/issues/3659
+            if ($current_version === '9.2.2' && $migration_specs['target'] === '9.2.2') {
+                // 9.2.2 upgrade script was not run from the release, see https://github.com/glpi-project/glpi/issues/3659
                 $force_migration = true;
-            } else if ($force_latest && version_compare($versions_matches['target_version'], $current_version, '=')) {
+            } else if ($force_latest && version_compare($migration_specs['target'], $current_version, '=')) {
                 $force_migration = true;
             }
-            if (version_compare($versions_matches['target_version'], $current_version, '>') || $force_migration) {
-                $migrations[$file->getPathname()] = preg_replace(
-                    '/^update_(\d+)\.(\d+)\.(\d+|x)_to_(\d+)\.(\d+)\.(\d+|x)\.php$/',
+            if (
+                $force_migration
+                || (
+                    version_compare($migration_specs['target'], $current_version, '>')
+                    && ($target_version === null || version_compare($migration_specs['target'], $target_version, '<='))
+                )
+            ) {
+                $file_path = $this->migrations_directory . '/' . $migration_specs['filename'];
+                $migrations[$file_path] = preg_replace(
+                    '/update_(\d+)\.(\d+)\.(\d+|x)_to_(\d+)\.(\d+)\.(\d+|x)\.php/',
                     'update$1$2$3to$4$5$6',
-                    $file->getBasename()
+                    $migration_specs['filename']
                 );
             }
         }
@@ -455,5 +493,93 @@ class Update
         }
 
         return $installed_version === $defined_version;
+    }
+
+    /**
+     * Check if there is any migration to do.
+     *
+     * @return bool
+     */
+    final public function hasMigrationsToDo(): bool
+    {
+        return VersionParser::isDevVersion($this->current_version)
+            || version_compare($this->target_version, $this->current_version, '>');
+    }
+
+    /**
+     * Get the next version compared to the given current version.
+     */
+    final public function getNextVersion(): ?string
+    {
+        $current_version = VersionParser::getNormalizedVersion($this->current_version, false, true);
+
+        foreach ($this->getVersionsMigrations() as $version) {
+            if (version_compare($version['target'], $current_version, '>')) {
+                return $version['target'];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the latest version available.
+     */
+    final public function getLatestVersion(): string
+    {
+        return GLPI_VERSION;
+    }
+
+    /**
+     * Checks whether the target version is valid.
+     */
+    final public function isTargetVersionValid(): bool
+    {
+        $target_version = VersionParser::getNormalizedVersion($this->target_version, false, true);
+
+        foreach ($this->getVersionsMigrations() as $migration_specs) {
+            if ($migration_specs['target'] === $target_version) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the list of existing versions migrations.
+     */
+    private function getVersionsMigrations(): array
+    {
+        $versions = [];
+
+        $migration_iterator = new DirectoryIterator($this->migrations_directory);
+        foreach ($migration_iterator as $file) {
+            $versions_matches = [];
+            if (
+                $file->isDir()
+                || $file->isDot()
+                || preg_match(
+                    '/^update_(?<source_version>\d+\.\d+\.(?:\d+|x))_to_(?<target_version>\d+\.\d+\.(?:\d+|x))\.php$/',
+                    $file->getFilename(),
+                    $versions_matches
+                ) !== 1
+            ) {
+                continue;
+            }
+
+            $versions[] = [
+                'filename' => $file->getBasename(),
+                'source'   => $versions_matches['source_version'],
+                'target'   => $versions_matches['target_version'],
+            ];
+        }
+
+        usort(
+            $versions,
+            static fn (array $a, array $b) => strnatcmp($a['source'], $b['source'])
+        );
+
+        return $versions;
     }
 }

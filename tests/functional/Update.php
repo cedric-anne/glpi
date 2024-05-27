@@ -41,6 +41,51 @@ use org\bovigo\vfs\vfsStream;
 
 class Update extends \GLPITestCase
 {
+    public function beforeTestMethod($method)
+    {
+        parent::beforeTestMethod($method);
+
+        vfsStream::setup(
+            'install',
+            null,
+            [
+                'migrations' => [
+                    'update_0.90.x_to_9.1.0.php'  => '',
+                    'update_10.0.0_to_10.0.1.php' => '',
+                    'update_10.0.1_to_10.0.2.php' => '',
+                    'update_10.0.2_to_10.0.3.php' => '',
+                    'update_10.0.3_to_10.0.4.php' => '',
+                    'update_10.0.4_to_10.0.5.php' => '',
+                    'update_10.0.5_to_10.0.6.php' => '',
+                    'update_9.1.0_to_9.1.1.php'   => '',
+                    'update_9.1.1_to_9.1.3.php'   => '',
+                    'update_9.1.x_to_9.2.0.php'   => '',
+                    'update_9.2.0_to_9.2.1.php'   => '',
+                    'update_9.2.1_to_9.2.2.php'   => '',
+                    'update_9.2.2_to_9.2.3.php'   => '',
+                    'update_9.2.x_to_9.3.0.php'   => '',
+                    'update_9.3.0_to_9.3.1.php'   => '',
+                    'update_9.3.1_to_9.3.2.php'   => '',
+                    'update_9.3.x_to_9.4.0.php'   => '',
+                    'update_9.4.0_to_9.4.1.php'   => '',
+                    'update_9.4.1_to_9.4.2.php'   => '',
+                    'update_9.4.2_to_9.4.3.php'   => '',
+                    'update_9.4.3_to_9.4.5.php'   => '',
+                    'update_9.4.5_to_9.4.6.php'   => '',
+                    'update_9.4.6_to_9.4.7.php'   => '',
+                    'update_9.4.x_to_9.5.0.php'   => '',
+                    'update_9.5.1_to_9.5.2.php'   => '',
+                    'update_9.5.2_to_9.5.3.php'   => '',
+                    'update_9.5.3_to_9.5.4.php'   => '',
+                    'update_9.5.4_to_9.5.5.php'   => '',
+                    'update_9.5.5_to_9.5.6.php'   => '',
+                    'update_9.5.6_to_9.5.7.php'   => '',
+                    'update_9.5.x_to_10.0.0.php'  => '',
+                ],
+            ]
+        );
+    }
+
     public function testCurrents()
     {
         global $DB;
@@ -90,49 +135,8 @@ class Update extends \GLPITestCase
         $this->object($update->setMigration($migration))->isInstanceOf('Update');
     }
 
-
-    protected function migrationsProvider(): iterable
+    protected function migrationsToDoProvider(): iterable
     {
-        vfsStream::setup(
-            'install',
-            null,
-            [
-                'migrations' => [
-                    'update_0.90.x_to_9.1.0.php'  => '',
-                    'update_10.0.0_to_10.0.1.php' => '',
-                    'update_10.0.1_to_10.0.2.php' => '',
-                    'update_10.0.2_to_10.0.3.php' => '',
-                    'update_10.0.3_to_10.0.4.php' => '',
-                    'update_10.0.4_to_10.0.5.php' => '',
-                    'update_10.0.5_to_10.0.6.php' => '',
-                    'update_9.1.0_to_9.1.1.php'   => '',
-                    'update_9.1.1_to_9.1.3.php'   => '',
-                    'update_9.1.x_to_9.2.0.php'   => '',
-                    'update_9.2.0_to_9.2.1.php'   => '',
-                    'update_9.2.1_to_9.2.2.php'   => '',
-                    'update_9.2.2_to_9.2.3.php'   => '',
-                    'update_9.2.x_to_9.3.0.php'   => '',
-                    'update_9.3.0_to_9.3.1.php'   => '',
-                    'update_9.3.1_to_9.3.2.php'   => '',
-                    'update_9.3.x_to_9.4.0.php'   => '',
-                    'update_9.4.0_to_9.4.1.php'   => '',
-                    'update_9.4.1_to_9.4.2.php'   => '',
-                    'update_9.4.2_to_9.4.3.php'   => '',
-                    'update_9.4.3_to_9.4.5.php'   => '',
-                    'update_9.4.5_to_9.4.6.php'   => '',
-                    'update_9.4.6_to_9.4.7.php'   => '',
-                    'update_9.4.x_to_9.5.0.php'   => '',
-                    'update_9.5.1_to_9.5.2.php'   => '',
-                    'update_9.5.2_to_9.5.3.php'   => '',
-                    'update_9.5.3_to_9.5.4.php'   => '',
-                    'update_9.5.4_to_9.5.5.php'   => '',
-                    'update_9.5.5_to_9.5.6.php'   => '',
-                    'update_9.5.6_to_9.5.7.php'   => '',
-                    'update_9.5.x_to_10.0.0.php'  => '',
-                ],
-            ]
-        );
-
         $path = vfsStream::url('install/migrations');
 
         // Validates version normalization (9.1 -> 9.1.0).
@@ -284,7 +288,7 @@ class Update extends \GLPITestCase
     }
 
     /**
-     * @dataProvider migrationsProvider
+     * @dataProvider migrationsToDoProvider
      */
     public function testGetMigrationsToDo(string $current_version, bool $force_latest, array $expected_migrations)
     {
@@ -294,6 +298,115 @@ class Update extends \GLPITestCase
 
         global $DB;
         $update = new \Update($DB, [], vfsStream::url('install/migrations'));
-        $this->array($method->invokeArgs($update, [$current_version, $force_latest]))->isIdenticalTo($expected_migrations);
+        $this->array($method->invokeArgs($update, [$current_version, null, $force_latest]))->isIdenticalTo($expected_migrations);
+    }
+
+    protected function hasMigrationsToDoProvider(): iterable
+    {
+        yield '9.1 specific case' => [
+            'current_version' => '9.1',
+            'target_version'  => '9.1.0',
+            'expected'        => false,
+        ];
+
+        yield '9.2.3 to 9.5.2' => [
+            'current_version' => '9.2.3',
+            'target_version'  => '9.5.2',
+            'expected'        => true,
+        ];
+
+        yield '10.0.5 to 10.0.6' => [
+            'current_version' => '10.0.5',
+            'target_version'  => '10.0.6',
+            'expected'        => true,
+        ];
+
+        yield '10.0.6' => [
+            'current_version' => '10.0.6',
+            'target_version'  => '10.0.6',
+            'expected'        => false,
+        ];
+
+        foreach (['alpha', 'alpha3', 'beta', 'beta1', 'rc', 'rc2'] as $version_suffix) {
+            yield "when upgrading from a $version_suffix, always execute migrations to its stable version" => [
+                'current_version' => sprintf('10.0.5-%s', $version_suffix),
+                'target_version'  => '10.0.5',
+                'expected'        => true,
+            ];
+        }
+    }
+
+    /**
+     * @dataProvider hasMigrationsToDoProvider
+     */
+    public function testHasMigrationsToDo(string $current_version, string $target_version, bool $expected): void
+    {
+        global $DB;
+
+        $update = new \Update($DB, [], vfsStream::url('install/migrations'));
+
+        $class = new \ReflectionClass(\Update::class);
+        $property = $class->getProperty('current_version');
+        $property->setAccessible(true);
+        $property->setValue($update, $current_version);
+
+        $update->setTargetVersion($target_version);
+
+        $this->boolean($update->hasMigrationsToDo())->isIdenticalTo($expected);
+    }
+
+    protected function nextVersionProvider(): iterable
+    {
+
+        $mapping = [
+            '9.1'   => '9.1.1', // 9.1 specific case
+            '9.1.1' => '9.1.3', // there is no 9.1.2 migration file
+            '9.1.3' => '9.2.0',
+            // ...
+            '9.2.4' => '9.3.0',
+            // ...
+            '9.4.1.1' => '9.4.2', // 9.4.1.1 specific case
+            // ...
+            '10.0.3' => '10.0.4',
+            '10.0.4' => '10.0.5',
+            '10.0.5' => '10.0.6',
+        ];
+        foreach ($mapping as $source => $target) {
+            yield $source => [
+                'current_version' => $source,
+                'next_version'    => $target,
+            ];
+        }
+
+        // Dev versions always triggger latest migration
+        foreach (['dev', 'alpha', 'alpha3', 'beta', 'beta1', 'rc', 'rc2'] as $version_suffix) {
+            yield 'next version of a pre-release should always be the corresponding stable version' => [
+                'current_version' => sprintf('10.0.6-%s', $version_suffix),
+                'next_version'    => '10.0.6',
+            ];
+        }
+
+        // Validate that list is empty when version matches latest version
+        yield 'next version is null if the current version is the latest' => [
+            'current_version' => '10.0.6',
+            'next_version'    => null,
+        ];
+    }
+
+    /**
+     * @dataProvider nextVersionProvider
+     */
+    public function testGetNextVersion(string $current_version, ?string $next_version)
+    {
+        global $DB;
+
+        $update = new \Update($DB, [], vfsStream::url('install/migrations'));
+
+        $class = new \ReflectionClass(\Update::class);
+        $property = $class->getProperty('current_version');
+        $property->setAccessible(true);
+        $property->setValue($update, $current_version);
+
+        $this->variable($update->getNextVersion())->isIdenticalTo($next_version);
     }
 }

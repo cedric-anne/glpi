@@ -84,6 +84,21 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
      */
     const ERROR_DATABASE_INTEGRITY_CHECK_FAILED = 4;
 
+    /**
+     * Error code returned when the target version is invalid.
+     */
+    const ERROR_INVALID_TARGET_VERSION = 5;
+
+    /**
+     * Target next version.
+     */
+    private const VERSION_NEXT = 'next';
+
+    /**
+     * Target latest version.
+     */
+    private const VERSION_LATEST = 'latest';
+
     protected $requires_db_up_to_date = false;
 
     protected function configure()
@@ -104,18 +119,17 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
                 . PHP_EOL
                 . sprintf(
                      __(' - "%s" to process the complete update'),
-                    'latest' // TODO constant
+                    self::VERSION_LATEST
                 )
                 . PHP_EOL
                 . sprintf(
                      __('"%s" to process only the next update step'),
-                    'next' // TODO constant
+                    self::VERSION_NEXT
                 )
                 . PHP_EOL
                 . __('a valid version number to process the update steps up to this version'),
-            'latest' // TODO constant
+            self::VERSION_LATEST
         );
-
 
         $this->addOption(
             'allow-unstable',
@@ -163,16 +177,9 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
 
         $update = new Update($this->db);
 
-       // Initialize entities
-        $_SESSION['glpidefault_entity'] = 0;
-        Session::initEntityProfiles(2);
-        Session::changeProfile(4);
-
-       // Display current/future state information
         $currents            = $update->getCurrents();
         $current_version     = $currents['version'];
         $current_db_version  = $currents['dbversion'];
-
         if ($current_version === null) {
             $msg = sprintf(
                 __('Current GLPI version not found for database named "%s". Update cannot be done.'),
@@ -182,20 +189,51 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
             return self::ERROR_INVALID_DATABASE;
         }
 
+        $target_version= $input->getOption('target-version');
+        if ($target_version === self::VERSION_LATEST) {
+            $target_version = $update->getLatestVersion();
+        } elseif ($target_version === self::VERSION_NEXT) {
+            $target_version = $update->getNextVersion();
+        }
+        $update->setTargetVersion($target_version);
+
+        if (!$update->isTargetVersionValid()) {
+            $output->writeln(
+                sprintf('<error>' . __('%s is not a valid version.') . '</error>', $target_version),
+                OutputInterface::VERBOSITY_QUIET
+            );
+            return self::ERROR_INVALID_TARGET_VERSION;
+        }
+        if (version_compare($target_version, $current_version, '<')) {
+            $output->writeln(
+                sprintf('<error>' . __('The database cannot be updated to a version lower than %s.') . '</error>', $current_version),
+                OutputInterface::VERBOSITY_QUIET
+            );
+            return self::ERROR_INVALID_TARGET_VERSION;
+        }
+        // TODO Check target version validity
+
+
+        // Initialize entities
+        $_SESSION['glpidefault_entity'] = 0;
+        Session::initEntityProfiles(2);
+        Session::changeProfile(4);
+
+        // Display current/future state information
         $informations = new Table($output);
         $informations->setHeaders(['', __('Current'), _n('Target', 'Targets', 1)]);
         $informations->addRow([__('Database host'), $this->db->dbhost, '']);
         $informations->addRow([__('Database name'), $this->db->dbdefault, '']);
         $informations->addRow([__('Database user'), $this->db->dbuser, '']);
-        $informations->addRow([__('GLPI version'), $current_version, GLPI_VERSION]);
+        $informations->addRow([__('GLPI version'), $current_version, $target_version]);
         $informations->addRow([
             __('GLPI database version'),
             $this->getPrettyDbVersion($current_db_version),
-            $this->getPrettyDbVersion(GLPI_SCHEMA_VERSION),
+            $this->getPrettyDbVersion($target_version),
         ]);
         $informations->render();
 
-        if (Update::isDbUpToDate() && !$force) {
+        if (!$force && !$update->hasMigrationsToDo()) {
             $output->writeln('<info>' . __('No migration needed.') . '</info>');
             return 0;
         }
@@ -350,26 +388,25 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
     private function getPrettyDbVersion(string $raw_version): string
     {
         $version_matches = [];
-        if (preg_match('/^(?<version>.+)@(?<hash>.+)$/', $raw_version, $version_matches) !== 1) {
-            // Version does not match expected pattern. It either contains no hash, either has an unexpected format.
+        if (preg_match('/^(?<version>.+)(@(?<hash>.+))?$/', $raw_version, $version_matches) !== 1) {
+            // Version does not match expected pattern.
             // Preserve raw version string for debug purpose.
             return $raw_version;
         }
 
         $version_cleaned = $version_matches['version'];
-        $version_hash    = $version_matches['hash'];
 
-        if (!VersionParser::isStableRelease($version_cleaned)) {
-            // Not a stable version. Keep hash for debug purpose.
+        $schema_path = DatabaseSchema::getEmptySchemaPath($version_cleaned);
+        if ($schema_path === null) {
+            // Schema field does not exists.
+            // Preserve raw version string for debug purpose.
             return $raw_version;
         }
 
-        $schema_path = DatabaseSchema::getEmptySchemaPath($version_cleaned);
-        if ($schema_path === null || $version_hash !== sha1_file($schema_path)) {
-            // Version hash does not match schema file sha1. Installation was probably made from a specific commit
-            // or a nightly build.
-            // Keep hash for debug purpose.
-            return $raw_version;
+        if (!VersionParser::isStableRelease($version_cleaned)) {
+            // Not a stable version. Keep hash for debug purpose.
+            $schema_hash = sha1_file($schema_path);
+            return $version_cleaned . '@' . $schema_hash;
         }
 
         return $version_cleaned;

@@ -55,21 +55,4 @@ class DatabaseSchema
 
         return file_exists($schema_path) ? $schema_path : null;
     }
-
-    /**
-     * Return the schema version for the given GLPI version.
-     *
-     * @param string $version
-     *
-     * @return null|string
-     */
-    public static function getSchemaVersion(string $version): ?string
-    {
-        $schema_path = self::getEmptySchemaPath($version);
-
-        return $schema_path !== null && is_readable($schema_path)
-            ? $version . '@' . sha1_file($schema_path)
-            : null;
-    }
-}
 }
