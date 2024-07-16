@@ -426,5 +426,8 @@ class GLPITestCase extends TestCase
 
         // Statics values
         Log::$use_queue = false;
+
+        // Reset rules singleton instances
+        SingletonRuleList::$instances = [];
     }
 }

@@ -8316,8 +8316,6 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         <QUERY>INVENTORY</QUERY>
         </REQUEST>";
 
-        \SingletonRuleList::getInstance("RuleAsset", 0)->load = 0;
-        \SingletonRuleList::getInstance("RuleAsset", 0)->list = [];
         $this->doInventory($xml_source, true);
 
         //check created agent

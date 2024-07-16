@@ -35,6 +35,11 @@
 
 class SingletonRuleList
 {
+    /**
+     * @var SingletonRuleList[]
+     */
+    public static $instances = [];
+
     /** @var Rule[] */
     public $list = [];
    /// Items loaded ?
@@ -49,19 +54,11 @@ class SingletonRuleList
      *
      * @return SingletonRuleList unique instance of an object
      **/
-    public static function &getInstance($type, $entity)
+    public static function getInstance($type, $entity)
     {
-        //FIXME: can be removed when using phpunit 10 and process-isolation
-        if (defined('TU_USER')) {
-            $o = new self();
-            return $o;
+        if (!isset(self::$instances[$type][$entity])) {
+            self::$instances[$type][$entity] = new self();
         }
-
-        static $instances = [];
-
-        if (!isset($instances[$type][$entity])) {
-            $instances[$type][$entity] = new self();
-        }
-        return $instances[$type][$entity];
+        return self::$instances[$type][$entity];
     }
 }
