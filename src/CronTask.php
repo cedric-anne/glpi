@@ -544,15 +544,21 @@ class CronTask extends CommonDBTM
         }
 
         if ($error_count >= $threshold) {
-           // No alert has been sent within last day, so we can send one without bothering administrator
-            NotificationEvent::raiseEvent('alert', $this, ['items' => [$this->fields['id'] => $this->fields]]);
-            QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
+            // No alert has been sent within last day, so we can send one without bothering administrator
+            NotificationEvent::raiseEvent(
+                'alert',
+                $this,
+                [
+                    '_send_immediately' => true,
+                    'items'             => [$this->fields['id'] => $this->fields],
+                ]
+            );
 
-           // Delete existing outdated alerts
+            // Delete existing outdated alerts
             $alert = new Alert();
             $alert->deleteByCriteria(['itemtype' => 'CronTask', 'items_id' => $this->fields['id']], 1);
 
-           // Create a new alert
+            // Create a new alert
             $alert->add(
                 [
                     'type'     => Alert::THRESHOLD,
@@ -2053,10 +2059,18 @@ class CronTask extends CommonDBTM
         if (count($crontasks)) {
             $task = new self();
             $task->getFromDBByCrit(['itemtype' => 'CronTask', 'name' => 'watcher']);
-            if (NotificationEvent::raiseEvent("alert", $task, ['items' => $crontasks])) {
+
+            $sent = NotificationEvent::raiseEvent(
+                'alert',
+                $task,
+                [
+                    '_send_immediately' => true,
+                    'items'             => $crontasks,
+                ]
+            );
+            if ($sent) {
                 $task->addVolume(1);
             }
-            QueuedNotification::forceSendFor($task->getType(), $task->fields['id']);
         }
 
         return 1;

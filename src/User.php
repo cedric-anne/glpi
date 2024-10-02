@@ -5760,9 +5760,14 @@ HTML;
 
         $this->getFromDB($this->fields['id']); // reload user to get up-to-date fields
 
-        // Notication on root entity (glpi_users.entities_id is only a pref)
-        NotificationEvent::raiseEvent('passwordforget', $this, ['entities_id' => 0]);
-        QueuedNotification::forceSendFor($this->getType(), $this->fields['id']);
+        NotificationEvent::raiseEvent(
+            'passwordforget',
+            $this,
+            [
+                '_send_immediately' => true,
+                'entities_id'       => 0, // Notification on root entity (glpi_users.entities_id is only a pref)
+            ]
+        );
 
         return true;
     }

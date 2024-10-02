@@ -412,10 +412,14 @@ class NotificationEventMailing extends NotificationEventAbstract
                 );
                 $mmail->ClearAddresses();
                 $processed[] = $current->getID();
-                $current->update(['id'        => $current->fields['id'],
-                    'sent_time' => $_SESSION['glpi_currenttime']
-                ]);
-                $current->delete(['id'        => $current->fields['id']]);
+
+                if (!$current->isNewItem()) {
+                    $current->update([
+                        'id'        => $current->fields['id'],
+                        'sent_time' => $_SESSION['glpi_currenttime']
+                    ]);
+                    $current->delete(['id' => $current->fields['id']]);
+                }
             }
         }
 
@@ -433,10 +437,15 @@ class NotificationEventMailing extends NotificationEventAbstract
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
+        $is_in_queue = !$notification->isNewItem();
+
         $messageerror = __('Error in sending the email');
         Session::addMessageAfterRedirect($messageerror . "<br/>" . $error, true, ERROR);
 
-        $retries = $CFG_GLPI['smtp_max_retries'] - $notification->fields['sent_try'];
+        $retries = $is_in_queue
+            ? $CFG_GLPI['smtp_max_retries'] - $notification->fields['sent_try']
+            : 0 // not in queue, cannot be retried
+        ;
         Toolbox::logInFile(
             "mail-error",
             sprintf(
@@ -463,18 +472,22 @@ class NotificationEventMailing extends NotificationEventAbstract
                     $notification->fields['name'] . "\n"
                 )
             );
-            $notification->delete(['id' => $notification->fields['id']]);
+            if ($is_in_queue) {
+                $notification->delete(['id' => $notification->fields['id']]);
+            }
         }
 
-        $input = [
-            'id'        => $notification->fields['id'],
-            'sent_try'  => $notification->fields['sent_try'] + 1
-        ];
+        if ($is_in_queue) {
+            $input = [
+                'id'        => $notification->fields['id'],
+                'sent_try'  => $notification->fields['sent_try'] + 1
+            ];
 
-        if ($CFG_GLPI["smtp_retry_time"] > 0) {
-            $input['send_time'] = date("Y-m-d H:i:s", strtotime('+' . $CFG_GLPI["smtp_retry_time"] . ' minutes')); //Delay X minutes to try again
+            if ($CFG_GLPI["smtp_retry_time"] > 0) {
+                $input['send_time'] = date("Y-m-d H:i:s", strtotime('+' . $CFG_GLPI["smtp_retry_time"] . ' minutes')); //Delay X minutes to try again
+            }
+            $notification->update($input);
         }
-        $notification->update($input);
     }
 
     /**

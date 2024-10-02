@@ -177,6 +177,43 @@ class NotificationMailing implements NotificationInterface
 
         $data['mode'] = Notification_NotificationTemplate::MODE_MAIL;
 
+        if ($options['_send_immediately'] ?? false) {
+            // Send the notification without actually insert it in the queue
+
+            $notification = new QueuedNotification();
+            $notification->getEmpty(); // Ensure that all fields are defined
+            $fields = array_merge(
+                $notification->fields,
+                $data
+            );
+            // `NotificationEventMailing::send()` expects serialized data retrieved from DB.
+            $fields['headers'] = exportArrayToDB($fields['headers']);
+            if (is_array($fields['documents'])) {
+                $fields['documents'] = exportArrayToDB($fields['documents']);
+            }
+
+            $processed_count = NotificationEventMailing::send([$fields]);
+            $success = $processed_count === 1;
+
+            if ($success === false) {
+                Session::addMessageAfterRedirect(__('Error sending the email'), true, ERROR);
+            } else {
+                Toolbox::logInFile(
+                    'mail',
+                    sprintf(
+                        __('%1$s: %2$s'),
+                        sprintf(
+                            __('An email to %s has been sent'),
+                            $options['to']
+                        ),
+                        $options['subject'] . "\n"
+                    )
+                );
+            }
+
+            return $success;
+        }
+
         $queue = new QueuedNotification();
 
         if (!$queue->add(Sanitizer::sanitize($data))) {

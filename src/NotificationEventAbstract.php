@@ -139,6 +139,7 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                                         $users_infos,
                                         $options
                                     );
+                                    $send_data['_send_immediately']         = $options['_send_immediately'] ?? false;
                                     $send_data['_notificationtemplates_id'] = $data['notificationtemplates_id'];
                                     $send_data['_itemtype']                 = $item->getType();
                                     $send_data['_items_id']                 = method_exists($item, "getID")
