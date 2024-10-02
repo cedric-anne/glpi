@@ -133,6 +133,19 @@ class QueuedNotification extends CommonDBTM
         /** @var \DBmysql $DB */
         global $DB;
 
+        if (
+            isset($input['itemtype'])
+            && isset($input['event'])
+            && !NotificationTarget::canNotificationBeQueued((string) $input['itemtype'], (string) $input['event'])
+        ) {
+            Session::addMessageAfterRedirect(
+                __s('The notification is not allowed to be added in the queue.'),
+                true,
+                ERROR
+            );
+            return false;
+        }
+
         if (!isset($input['create_time']) || empty($input['create_time'])) {
             $input['create_time'] = $_SESSION["glpi_currenttime"];
         }

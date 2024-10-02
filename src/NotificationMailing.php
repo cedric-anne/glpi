@@ -177,7 +177,10 @@ class NotificationMailing implements NotificationInterface
 
         $data['mode'] = Notification_NotificationTemplate::MODE_MAIL;
 
-        if ($options['_send_immediately'] ?? false) {
+        if (
+            NotificationTarget::canNotificationBeQueued((string) $data['itemtype'], (string) $data['event']) === false
+            || $options['_send_immediately'] ?? false
+        ) {
             // Send the notification without actually insert it in the queue
 
             $notification = new QueuedNotification();

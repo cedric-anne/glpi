@@ -930,6 +930,35 @@ class NotificationTarget extends CommonDBChild
         return [];
     }
 
+    /**
+     * Return list of notification events that contains sensitive information.
+     * Notifications related to these events cannot be added to the queue and must be sent immediately.
+     *
+     * @return array
+     */
+    public function getEventsWithSensitiveInformation(): array
+    {
+        return [];
+    }
+
+    /**
+     * Indicates whether the notification can be queued.
+     * A notification that contains sensitive information should never be added to the queue and should rather
+     * be sent immediately.
+     *
+     * @param string $itemtype
+     * @param string $event
+     *
+     * @return bool
+     */
+    public static function canNotificationBeQueued(string $itemtype, string $event): bool
+    {
+        $target = NotificationTarget::getInstanceClass($itemtype);
+
+        return $target instanceof NotificationTarget
+            && in_array($event, $target->getEventsWithSensitiveInformation(), true) === false;
+    }
+
 
     /**
      * Return all (GLPI + plugins) notification events for the object type

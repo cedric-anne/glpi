@@ -44,6 +44,12 @@ class NotificationTargetUser extends NotificationTarget
         ];
     }
 
+    public function getEventsWithSensitiveInformation(): array
+    {
+        return [
+            'passwordforget',
+        ];
+    }
 
     /**
      * @see NotificationTarget::addNotificationTargets()
