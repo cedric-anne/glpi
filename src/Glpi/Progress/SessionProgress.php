@@ -43,7 +43,7 @@ final class SessionProgress implements \JsonSerializable
     private bool $failed = false;
     private int $current = 0;
     private int $max;
-    private string $data = '';
+    private string $message = '';
 
     public function __construct(string $key, int $max)
     {
@@ -89,13 +89,13 @@ final class SessionProgress implements \JsonSerializable
         $this->max = $max;
     }
 
-    public function setData(string $data): void
+    public function setMessage(string $message): void
     {
-        if ($this->data !== $data) {
+        if ($this->message !== $message) {
             $this->update();
         }
 
-        $this->data = $data;
+        $this->message = $message;
     }
 
     public function jsonSerialize(): array
@@ -107,7 +107,7 @@ final class SessionProgress implements \JsonSerializable
             'started_at' => $this->started_at->format('c'),
             'finished_at' => $this->finished_at?->format('c'),
             'updated_at' => $this->updated_at->format('c'),
-            'data' => $this->data,
+            'message' => $this->message,
             'failed' => $this->failed,
         ];
     }

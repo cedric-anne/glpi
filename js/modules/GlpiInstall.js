@@ -32,19 +32,19 @@
 
 import { ProgressBar } from './ProgressBar.js';
 
+function message(message_list_element, text) {
+    const alert = document.createElement('div');
+    alert.setAttribute('class', 'alert alert-important alert-danger my-2 mx-4');
+    alert.setAttribute('role', 'alert');
+    alert.innerHTML = `
+        <i class="fas fa-2x fa-exclamation-triangle align-middle"></i>
+        ${text}
+    `;
+    message_list_element.appendChild(alert);
+}
+
 export async function init_database(progress_key)
 {
-    function message(message_list_element, text) {
-        const alert = document.createElement('div');
-        alert.setAttribute('class', 'alert alert-important alert-danger my-2 mx-4');
-        alert.setAttribute('role', 'alert');
-        alert.innerHTML = `
-            <i class="fas fa-2x fa-exclamation-triangle align-middle"></i>
-            ${text}
-        `;
-        message_list_element.appendChild(alert);
-    }
-
     const messages_container = document.getElementById('glpi_install_messages_container');
     const success_container = document.getElementById('glpi_install_success');
     const back_button_container = document.getElementById('glpi_install_back');
@@ -74,9 +74,46 @@ export async function init_database(progress_key)
     }, 1500);
 
     try {
-        await fetch(`${CFG_GLPI.root_doc}/install/init_database`, {method: 'POST'});
+        await fetch(`${CFG_GLPI.root_doc}/Install/InitDatabase`, {method: 'POST'});
     } catch {
         // DB installation is really long and can result in a `Proxy timeout` error.
+        // It does not mean that the process is killed, it just mean that the proxy did not wait for the response
+        // and send an error to the client.
+        // Here we catch any error to make it silent, but we will handle it with the ProgressBar error_callback.
+    }
+}
+
+export async function update_database(progress_key)
+{
+    const messages_container = document.getElementById('glpi_update_messages_container');
+    const success_container = document.getElementById('glpi_update_success');
+
+    const message_list_element = document.createElement('div');
+
+    const progress = new ProgressBar({
+        key: progress_key,
+        container: messages_container,
+        success_callback: () => {
+            success_container.querySelector('button[type="submit"]').removeAttribute('disabled');
+            success_container.setAttribute('class', 'd-inline');
+        },
+        error_callback: (msg) => {
+            message(message_list_element, msg);
+        },
+    });
+
+    progress.init();
+
+    messages_container.appendChild(message_list_element);
+
+    setTimeout(() => {
+        progress.start();
+    }, 1500);
+
+    try {
+        await fetch(`${CFG_GLPI.root_doc}/Install/UpdateDatabase`, {method: 'POST'});
+    } catch {
+        // DB update is really long and can result in a `Proxy timeout` error.
         // It does not mean that the process is killed, it just mean that the proxy did not wait for the response
         // and send an error to the client.
         // Here we catch any error to make it silent, but we will handle it with the ProgressBar error_callback.

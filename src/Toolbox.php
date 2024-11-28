@@ -2063,7 +2063,7 @@ class Toolbox
      *
      * @param string   $lang     Language to install
      * @param ?DBmysql $database Database instance to use, will fallback to a new instance of DB if null
-     * @param ?Closure $progressCallback
+     * @param ?Closure $progress_callback
      *
      * @return void
      *
@@ -2072,13 +2072,13 @@ class Toolbox
      * @since 9.1
      * @since 9.4.7 Added $database parameter
      **/
-    public static function createSchema($lang = 'en_GB', ?DBmysql $database = null, ?Closure $progressCallback = null)
+    public static function createSchema($lang = 'en_GB', ?DBmysql $database = null, ?Closure $progress_callback = null)
     {
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (!$progressCallback) {
-            $progressCallback = function (?int $current = null, ?int $max = null, ?string $data = null) {
+        if (!$progress_callback) {
+            $progress_callback = function (?int $current = null, ?int $max = null, ?string $data = null) {
             };
         }
 
@@ -2119,16 +2119,16 @@ class Toolbox
             $number_of_steps += $cron_config_weight;
         }
 
-        $progressCallback($done_steps, $number_of_steps, __('Creating database structure…'));
+        $progress_callback($done_steps, $number_of_steps, __('Creating database structure…'));
 
         foreach ($structure_queries as $query) {
             $DB->doQuery($query);
 
             $done_steps++;
-            $progressCallback($done_steps);
+            $progress_callback($done_steps);
         }
 
-        $progressCallback($done_steps, null, __('Adding empty data…'));
+        $progress_callback($done_steps, null, __('Adding empty data…'));
 
         foreach ($tables as $table => $data) {
             $reference = array_replace(
@@ -2158,25 +2158,25 @@ class Toolbox
                 }
 
                 $done_steps++;
-                $progressCallback($done_steps);
+                $progress_callback($done_steps);
             }
         }
 
-        $progressCallback($done_steps, null, __('Creating default forms…'));
+        $progress_callback($done_steps, null, __('Initializing forms…'));
         $default_forms_manager = new DefaultDataManager();
         $default_forms_manager->initializeData();
         $done_steps += $init_form_weight;
 
-        $progressCallback($done_steps, null, __('Initalizing rules…'));
+        $progress_callback($done_steps, null, __('Initalizing rules…'));
         RulesManager::initializeRules();
         $done_steps += $init_rules_weight;
 
-        $progressCallback($done_steps, null, __('Generating keys…'));
+        $progress_callback($done_steps, null, __('Generating keys…'));
         // Make sure keys are generated automatically so OAuth will work when/if they choose to use it
         \Glpi\OAuth\Server::generateKeys();
         $done_steps += $generate_keys_weight;
 
-        $progressCallback($done_steps, null, __('Updating default language…'));
+        $progress_callback($done_steps, null, __('Updating default language…'));
         Config::setConfigurationValues(
             'core',
             [
@@ -2188,7 +2188,7 @@ class Toolbox
         $done_steps += $default_lang_weight;
 
         if (defined('GLPI_SYSTEM_CRON')) {
-            $progressCallback($done_steps, null, __('Configuring cron tasks…'));
+            $progress_callback($done_steps, null, __('Configuring cron tasks…'));
            // Downstream packages may provide a good system cron
             $DB->update(
                 'glpi_crontasks',
@@ -2203,7 +2203,7 @@ class Toolbox
             $done_steps += $cron_config_weight;
         }
 
-        $progressCallback($number_of_steps, $number_of_steps, __('Done!'));
+        $progress_callback($number_of_steps, $number_of_steps, __('Done!'));
     }
 
 

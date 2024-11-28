@@ -58,6 +58,14 @@ final class SessionStart implements LegacyConfigProviderInterface, ConfigProvide
 
     public function execute(): void
     {
+        if (isset($_SESSION['is_installing'])) {
+            if (Session::canWriteSessionFiles()) {
+                Session::setPath();
+            }
+            Session::start();
+            return;
+        }
+
         $path = $this->getRequest()->getRequestUri();
         $path = '/' . ltrim($path, '/');
 
@@ -79,11 +87,6 @@ final class SessionStart implements LegacyConfigProviderInterface, ConfigProvide
         ) {
             // Disable session cookie for these paths
             Session::start();
-        }
-
-        // Default Use mode
-        if (!isset($_SESSION['glpi_use_mode'])) {
-            $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
         }
     }
 }

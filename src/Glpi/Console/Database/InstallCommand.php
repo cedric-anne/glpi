@@ -316,12 +316,12 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
         try {
             $this->db->connect(); // Reconnect DB to ensure it uses update configuration (see `self::configureDatabase()`)
 
-            $progress_callback = static function (int $current, ?int $max = null, ?string $data = null) use ($progress_bar) {
+            $progress_callback = static function (int $current, ?int $max = null, ?string $message = null) use ($progress_bar) {
                 if ($max !== null) {
                     $progress_bar->setMaxSteps($max);
                 }
-                if ($data !== null) {
-                    $progress_bar->setMessage($data);
+                if ($message !== null) {
+                    $progress_bar->setMessage($message);
                 }
                 $progress_bar->advance($current - $progress_bar->getProgress());
             };

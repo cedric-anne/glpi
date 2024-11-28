@@ -217,7 +217,7 @@ final class Profile
 
     public function save(): void
     {
-        if ($_SESSION['glpi_use_mode'] !== \Session::DEBUG_MODE) {
+        if (!isset($_SESSION['glpi_use_mode']) || $_SESSION['glpi_use_mode'] !== \Session::DEBUG_MODE) {
             // Don't save debug info for non-debug requests
             return;
         }

@@ -53,6 +53,11 @@ $CFG_GLPI['root_doc'] = $request->getBasePath();
 
 $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance();
 
+if (Session::canWriteSessionFiles()) {
+    Session::setPath();
+}
+Session::start();
+
 if (isset($_POST["language"]) && isset($CFG_GLPI["languages"][$_POST["language"]])) {
     $_SESSION["glpilanguage"] = $_POST["language"];
     Session::loadLanguage(with_plugins: false);
@@ -489,20 +494,6 @@ function update1($dbname)
         include_once(GLPI_ROOT . "/install/update.php");
     }
 }
-
-
-
-//------------Start of install script---------------------------
-
-
-// Use default session dir if not writable
-if (is_writable(GLPI_SESSION_DIR)) {
-    Session::setPath();
-}
-
-Session::start();
-error_reporting(0); // we want to check system before affraid the user.
-
 
 /**
  * @since 0.84.2

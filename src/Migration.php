@@ -53,7 +53,6 @@ class Migration
     private $deb;
     private $lastMessage;
     private $log_errors = 0;
-    private $current_message_area_id;
     private $queries = [
         'pre'    => [],
         'post'   => []
@@ -83,6 +82,11 @@ class Migration
     protected $output_handler;
 
     /**
+     * @var Closure|null
+     */
+    private $output_callback;
+
+    /**
      * @param string $ver Version number
      **/
     public function __construct($ver)
@@ -99,6 +103,16 @@ class Migration
     }
 
     /**
+     * Defines a output callback that will be used when a migration message has to be displayed.
+     * The callback must have 2 parameters: the first corresponds to the message, and the second to the style.
+     * The style can be `title`, `error`, `warning`, `strong` or `text`.
+     */
+    public function setOutputCallback(Closure $output_callback): void
+    {
+        $this->output_callback = $output_callback;
+    }
+
+    /**
      * Set version
      *
      * @since 0.84
@@ -110,7 +124,6 @@ class Migration
     public function setVersion($ver)
     {
         $this->version = $ver;
-        $this->addNewMessageArea("migration_message_$ver");
     }
 
     /**
@@ -121,15 +134,12 @@ class Migration
      * @param string $id Area ID
      *
      * @return void
-     **/
+     *
+     * @deprecated 11.0.0
+     */
     public function addNewMessageArea($id)
     {
-        if (!isCommandLine() && $id != $this->current_message_area_id) {
-            $this->current_message_area_id = $id;
-            echo "<div id='" . htmlescape($this->current_message_area_id) . "'></div>";
-        }
-
-        $this->displayMessage(__('Work in progress...'));
+        Toolbox::deprecated();
     }
 
     /**
@@ -162,7 +172,7 @@ class Migration
         $now = time();
         $tps = Html::timestampToString($now - $this->deb);
 
-        $this->outputMessage("{$msg} ({$tps})", null, $this->current_message_area_id);
+        $this->outputMessage("{$msg} ({$tps})");
 
         $this->lastMessage = ['time' => time(),
             'msg'  => $msg
@@ -1516,68 +1526,46 @@ class Migration
      * Output a message.
      *
      * @param string $msg       Message to output.
-     * @param ?string $style    Style to use, value can be 'title', 'warning', 'strong' or null.
-     * @param ?string $area_id  Display area to use.
+     * @param ?string $style    Style to use, value can be 'title', 'error', 'warning', 'strong' or null.
      *
      * @return void
      */
-    protected function outputMessage(string $msg, ?string $style = null, ?string $area_id = null): void
+    protected function outputMessage(string $msg, ?string $style = null): void
     {
+        if ($this->output_callback !== null) {
+            $this->output_callback($msg, $style);
+            return;
+        }
+
         if (isCommandLine()) {
-            $this->outputMessageToCli($msg, $style);
-        } else {
-            $this->outputMessageToHtml($msg, $style, $area_id);
-        }
-    }
+            $msg = match ($style) {
+                'title' => str_pad(" $msg ", 100, '=', STR_PAD_BOTH),
+                'warning' => str_pad("** {$msg}", 100),
+                'error' => str_pad("!! {$msg}", 100),
+                default => str_pad($msg, 100),
+            };
+            $format = match ($style) {
+                'title' => 'info',
+                'error' => 'error',
+                default => 'comment',
+            };
+            $verbosity = match ($style) {
+                'error' => OutputInterface::VERBOSITY_QUIET,
+                'title', 'warning', 'strong' => OutputInterface::VERBOSITY_NORMAL,
+                default => OutputInterface::VERBOSITY_VERBOSE,
+            };
 
-    /**
-     * Output a message in console output.
-     *
-     * @param string $msg    Message to output.
-     * @param ?string $style  Style to use, see {@link self::outputMessage()} for possible values.
-     *
-     * @return void
-     */
-    private function outputMessageToCli(string $msg, ?string $style = null): void
-    {
-        $msg = match ($style) {
-            'title' => str_pad(" $msg ", 100, '=', STR_PAD_BOTH),
-            'warning' => str_pad("** {$msg}", 100),
-            'error' => str_pad("!! {$msg}", 100),
-            default => str_pad($msg, 100),
-        };
-        $format = match ($style) {
-            'title' => 'info',
-            'error' => 'error',
-            default => 'comment',
-        };
-        $verbosity = match ($style) {
-            'error' => OutputInterface::VERBOSITY_QUIET,
-            'title', 'warning', 'strong' => OutputInterface::VERBOSITY_NORMAL,
-            default => OutputInterface::VERBOSITY_VERBOSE,
-        };
-
-        if ($this->output_handler instanceof OutputInterface) {
-            if (null !== $format) {
-                $msg = sprintf('<%1$s>%2$s</%1$s>', $format, $msg);
+            if ($this->output_handler instanceof OutputInterface) {
+                if (null !== $format) {
+                    $msg = sprintf('<%1$s>%2$s</%1$s>', $format, $msg);
+                }
+                $this->output_handler->writeln($msg, $verbosity);
+            } else {
+                echo $msg . PHP_EOL;
             }
-            $this->output_handler->writeln($msg, $verbosity);
-        } else {
-            echo $msg . PHP_EOL;
+            return;
         }
-    }
 
-    /**
-     * Output a message in html page.
-     *
-     * @param string $msg       Message to output.
-     * @param ?string $style    Style to use, see self::outputMessage() for possible values.
-     * @param ?string $area_id  Display area to use.
-     *
-     * @return void
-     */
-    private function outputMessageToHtml(string $msg, ?string $style = null, ?string $area_id = null): void
-    {
         $msg = htmlescape($msg);
 
         $msg = match ($style) {
@@ -1587,14 +1575,7 @@ class Migration
             default => '<p class="center">' . $msg . '</p>',
         };
 
-        if (null !== $area_id) {
-            echo "<script type='text/javascript'>
-                  document.getElementById('{$area_id}').innerHTML = '{$msg}';
-               </script>";
-            Html::glpi_flush();
-        } else {
-            echo $msg;
-        }
+        echo $msg;
     }
 
     /**

@@ -44,7 +44,6 @@ use Glpi\Toolbox\VersionParser;
  **/
 class Update
 {
-    private $args = [];
     private $DB;
     /**
      * @var Migration
@@ -65,33 +64,14 @@ class Update
      * Constructor
      *
      * @param object $DB   Database instance
-     * @param array  $args Command line arguments; default to empty array
      * @param string $migrations_directory
+     *
+     * @since 11.0.0 The `$args` parameter has been removed.
      */
-    public function __construct($DB, $args = [], string $migrations_directory = GLPI_ROOT . '/install/migrations/')
+    public function __construct($DB, string $migrations_directory = GLPI_ROOT . '/install/migrations/')
     {
         $this->DB = $DB;
-        $this->args = $args;
         $this->migrations_directory = $migrations_directory;
-    }
-
-    /**
-     * Initialize session for update
-     *
-     * @return void
-     */
-    public function initSession()
-    {
-        if (Session::canWriteSessionFiles()) {
-            Session::setPath();
-        }
-        Session::start();
-
-        if (isCommandLine()) {
-           // Init debug variable
-            $_SESSION = ['glpilanguage' => (isset($this->args['lang']) ? $this->args['lang'] : 'en_GB')];
-            $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
-        }
     }
 
     /**
@@ -186,11 +166,26 @@ class Update
      *
      * @param string $current_version  Current version
      * @param bool   $force_latest     Force replay of latest migration
+     * @param ?Closure $progress_callback
+     * @param ?Closure $output_callback
      *
      * @return void
      */
-    public function doUpdates($current_version = null, bool $force_latest = false)
-    {
+    public function doUpdates(
+        $current_version = null,
+        bool $force_latest = false,
+        ?Closure $progress_callback = null,
+        ?Closure $output_callback = null
+    ) {
+        if (!$progress_callback) {
+            $progress_callback = function (?int $current, ?int $max = null, ?string $message = null) {
+            };
+        }
+        if (!$output_callback) {
+            $output_callback = function (string $message, ?string $style) {
+            };
+        }
+
         if ($current_version === null) {
             if ($this->version === null) {
                 throw new \RuntimeException('Cannot process updates without any version specified!');
@@ -199,8 +194,9 @@ class Update
         }
 
         if (version_compare($current_version, '0.85.5', 'lt')) {
-            echo('Upgrade from version < 0.85.5 is not supported!');
-            exit(1);
+            $output_callback(sprintf(__('Upgrade from version lower than %s is not supported.'), '0.85.5'), 'error');
+            // TODO prevent dual message
+            throw new \RuntimeException();
         }
 
         $DB = $this->DB;
@@ -232,39 +228,53 @@ class Update
             $DB->doQuery(sprintf('SET SESSION sql_mode = %s', $DB->quote(implode(',', $sql_mode_flags))));
         }
 
-       // To prevent problem of execution time
-        ini_set("max_execution_time", "0");
-
-       // Update process desactivate all plugins
+        // Update process desactivate all plugins
         $plugin = new Plugin();
         $plugin->unactivateAll();
 
         if (version_compare($current_version, GLPI_VERSION, '>')) {
+            // TODO Transmit the error to the callback.
             $message = sprintf(
                 __('Unsupported version (%1$s)'),
                 $current_version
             );
-            if (isCommandLine()) {
-                echo "$message\n";
-                exit(1);
-            } else {
-                $this->migration->displayWarning($message, true);
-                exit(1);
-            }
+            throw new \RuntimeException($message);
         }
 
         $migrations = $this->getMigrationsToDo($current_version, $force_latest);
+
+        $done_steps = 0;
+
+        $number_of_steps = count($migrations);
+        $init_form_weight = round($number_of_steps * 0.1); // 10 % of the update process
+        $init_rules_weight = round($number_of_steps * 0.1); // 10 % of the update process
+        $structure_check_weight = round($number_of_steps * 0.02); // 2 % of the update process
+        $post_update_weight = 1;
+        $cron_config_weight = 1;
+        $generate_keys_weight = round($number_of_steps * 0.02); // 2 % of the update process
+        $number_of_steps = count($migrations)
+            + $init_form_weight
+            + $init_rules_weight
+            + $structure_check_weight
+            + $post_update_weight
+            + $generate_keys_weight;
+        if (defined('GLPI_SYSTEM_CRON')) {
+            $number_of_steps += $cron_config_weight;
+        }
+
         foreach ($migrations as $key => $migration_specs) {
+            $progress_callback($done_steps, $number_of_steps, sprintf(__('Upgrading to %s…'), $migration_specs['target_version']));
+
             include_once($migration_specs['file']);
 
             try {
                 $migration_specs['function']();
             } catch (\Throwable $e) {
-                $this->migration->displayError(sprintf(
+                // TODO Transmit the error to the callback.
+                throw new \RuntimeException(sprintf(
                     __('An error occurred during the update. The error was: %s'),
                     $e->getMessage()
                 ));
-                exit(1);
             }
 
             if ($key !== array_key_last($migrations)) {
@@ -281,50 +291,55 @@ class Update
                     ]
                 );
             }
+
+            $done_steps++;
         }
 
         // Create default forms
+        $progress_callback($done_steps, null, __('Initializing forms…'));
         $helpdesk_data_manager = new DefaultDataManager();
         $helpdesk_data_manager->initializeDataIfNeeded();
+        $done_steps += $init_form_weight;
 
         // Initalize rules
-        $this->migration->displayTitle(__('Initializing rules...'));
+        $progress_callback($done_steps, null, __('Initalizing rules…'));
         RulesManager::initializeRules();
+        $done_steps += $init_rules_weight;
 
+        $progress_callback($done_steps, null, __('Checking the database structure…'));
         if (($myisam_count = $DB->getMyIsamTables()->count()) > 0) {
+            // TODO Transmit the warning to the callback.
             $message = sprintf(__('%d tables are using the deprecated MyISAM storage engine.'), $myisam_count)
                 . ' '
                 . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:myisam_to_innodb');
             $this->migration->displayError($message);
         }
         if (($datetime_count = $DB->getTzIncompatibleTables()->count()) > 0) {
+            // TODO Transmit the warning to the callback.
             $message = sprintf(__('%1$s columns are using the deprecated datetime storage field type.'), $datetime_count)
                 . ' '
                 . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:timestamps');
             $this->migration->displayError($message);
         }
         if (($non_utf8mb4_count = $DB->getNonUtf8mb4Tables()->count()) > 0) {
+            // TODO Transmit the warning to the callback.
             $message = sprintf(__('%1$s tables are using the deprecated utf8mb3 storage charset.'), $non_utf8mb4_count)
                 . ' '
                 . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:utf8mb4');
             $this->migration->displayError($message);
         }
         if (($signed_keys_col_count = $DB->getSignedKeysColumns()->count()) > 0) {
+            // TODO Transmit the warning to the callback.
             $message = sprintf(__('%d primary or foreign keys columns are using signed integers.'), $signed_keys_col_count)
                 . ' '
                 . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:unsigned_keys');
             $this->migration->displayError($message);
         }
-
-        // Update version number and default langage and new version_founded ---- LEAVE AT THE END
-        Config::setConfigurationValues('core', ['version'             => GLPI_VERSION,
-            'dbversion'           => GLPI_SCHEMA_VERSION,
-            'language'            => $this->language,
-            'founded_new_version' => ''
-        ]);
+        $done_steps += $structure_check_weight;
 
         if (defined('GLPI_SYSTEM_CRON')) {
-           // Downstream packages may provide a good system cron
+            // Downstream packages may provide a good system cron
+            $progress_callback($done_steps, null, __('Configuring cron tasks…'));
             $DB->update(
                 'glpi_crontasks',
                 [
@@ -335,7 +350,18 @@ class Update
                     'allowmode' => ['&', 2]
                 ]
             );
+            $done_steps += $cron_config_weight;
         }
+
+        $progress_callback($done_steps, null, __('Finalizing the upgrade…'));
+
+        // Update version number and default langage and new version_founded ---- LEAVE AT THE END
+        Config::setConfigurationValues('core', [
+            'version'             => GLPI_VERSION,
+            'dbversion'           => GLPI_SCHEMA_VERSION,
+            'language'            => $this->language,
+            'founded_new_version' => ''
+        ]);
 
        // Reset telemetry if its state is running, assuming it remained stuck due to telemetry service issue (see #7492).
         $crontask_telemetry = new CronTask();
@@ -345,9 +371,14 @@ class Update
             $crontask_telemetry->resetState();
         }
 
-       //generate security key if missing, and update db
+        $done_steps += $post_update_weight;
+
+        $progress_callback($done_steps, null, __('Generating keys…'));
+
+        //generate security key if missing, and update db
         $glpikey = new GLPIKey();
         if (!$glpikey->keyExists() && !$glpikey->generate()) {
+            // TODO Transmit the warning to the callback.
             $this->migration->displayWarning(
                 sprintf(
                     __('Unable to create security key file! You have to run the "%s" command to manually create this file.'),
@@ -360,9 +391,13 @@ class Update
         $private_key_path = GLPI_CONFIG_DIR . '/oauth.pem';
         $public_key_path = GLPI_CONFIG_DIR . '/oauth.pub';
         if (!file_exists($private_key_path) && !file_exists($public_key_path)) {
+            // TODO Transmit the message to the callback.
             $this->migration->displayMessage("Generating OAuth keys");
             \Glpi\OAuth\Server::generateKeys();
         }
+        $done_steps += $generate_keys_weight;
+
+        $progress_callback($number_of_steps, $number_of_steps, __('Done!'));
     }
 
     /**
