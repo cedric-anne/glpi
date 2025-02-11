@@ -35,6 +35,7 @@
 namespace Glpi\Migration;
 
 use CommonDBTM;
+use Glpi\Progress\AbstractProgressIndicator;
 
 abstract class AbstractPluginMigration
 {
@@ -42,6 +43,11 @@ abstract class AbstractPluginMigration
      * Current execution results.
      */
     protected MigrationResult $result;
+
+    /**
+     * Progress indicator.
+     */
+    protected ?AbstractProgressIndicator $progress_indicator = null;
 
     /**
      * Mapping between plugin items and GLPI core items.
@@ -60,16 +66,26 @@ abstract class AbstractPluginMigration
     {
         $this->result = new MigrationResult();
 
-        if (!$this->validatePrerequisites()) {
-            $this->result->setSuccess(false);
-            return $this->result;
+        $finished = false;
+        try {
+            if ($this->validatePrerequisites()) {
+                $finished = $this->processMigration(simulate: false);
+            }
+        } catch (\Throwable) {
+            $this->result->addError(__('An unexpected error occured.'));
         }
 
-        $success = $this->processMigration(simulate: false);
-
-        $this->result->setSuccess($success);
+        $this->result->setFinished($finished);
 
         return $this->result;
+    }
+
+    /**
+     * Defines the progress indicator.
+     */
+    final public function setProgressIndicator(AbstractProgressIndicator $progress_indicator): void
+    {
+        $this->progress_indicator = $progress_indicator;
     }
 
     /**
@@ -82,7 +98,7 @@ abstract class AbstractPluginMigration
      * @return CommonDBTM|null
      *      The created/update item, or null if the creation/update failed.
      */
-    protected function migrateItem(
+    final protected function migrateItem(
         string $itemtype,
         array $input,
         ?array $reconciliation_criteria = null
@@ -103,7 +119,7 @@ abstract class AbstractPluginMigration
             $input[$itemtype::getIndexName()] = $item->getID();
 
             if ($item->update($input) === false) {
-                $this->result->addError(
+                $this->addError(
                     sprintf(
                         __('Unable to update %s "%s" (%d).'),
                         $itemtype::getTypeName(),
@@ -113,7 +129,8 @@ abstract class AbstractPluginMigration
                 );
                 return null;
             } else {
-                $this->result->addComment(
+                $this->result->markItemAsUpdated($itemtype, $item->getID());
+                $this->addComment(
                     sprintf(
                         __('%s "%s" (%d) has been updated.'),
                         $itemtype::getTypeName(),
@@ -125,7 +142,7 @@ abstract class AbstractPluginMigration
         } else {
             // Create a new item.
             if ($item->add($input) === false) {
-                $this->result->addError(
+                $this->addError(
                     sprintf(
                         __('Unable to create %s "%s".'),
                         $itemtype::getTypeName(),
@@ -134,7 +151,8 @@ abstract class AbstractPluginMigration
                 );
                 return null;
             } else {
-                $this->result->addError(
+                $this->result->markItemAsCreated($itemtype, $item->getID());
+                $this->addError(
                     sprintf(
                         __('%s "%s" (%d) has been created.'),
                         $itemtype::getTypeName(),
@@ -158,7 +176,7 @@ abstract class AbstractPluginMigration
      *
      * @return void
      */
-    protected function mapItem(
+    final protected function mapItem(
         string $source_itemtype,
         int $source_items_id,
         string $target_itemtype,
@@ -235,6 +253,42 @@ abstract class AbstractPluginMigration
     }
 
     /**
+     * Add an error message.
+     */
+    final protected function addError(string $message): void
+    {
+        $this->result->addError($message);
+
+        if ($this->progress_indicator !== null) {
+            $this->progress_indicator->addError($message);
+        }
+    }
+
+    /**
+     * Add a warning message.
+     */
+    final protected function addWarning(string $message): void
+    {
+        $this->result->addWarning($message);
+
+        if ($this->progress_indicator !== null) {
+            $this->progress_indicator->addWarning($message);
+        }
+    }
+
+    /**
+     * Add an informative message.
+     */
+    final protected function addComment(string $message): void
+    {
+        $this->result->addComment($message);
+
+        if ($this->progress_indicator !== null) {
+            $this->progress_indicator->addComment($message);
+        }
+    }
+
+    /**
      * Validates the plugin migration prerequisites.
      * If the prerequisites are not validated, the migration will not be processed.
      *
@@ -247,7 +301,7 @@ abstract class AbstractPluginMigration
      *
      * @param bool $simulate Whether the process should be simulated or actually executed.
      *
-     * @return bool `true` if the migration was a success, `false` otherwise.
+     * @return bool `true` if the migration has been fully processed, `false` otherwise.
      */
     abstract protected function processMigration(bool $simulate): bool;
 }

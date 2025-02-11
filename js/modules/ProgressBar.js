@@ -102,28 +102,22 @@ export class ProgressBar
     }
 
     /**
-     * @param {number} value
-     * @param {number} max
-     * @param {null|string} text
+     * @param {number} current_step
+     * @param {number} max_steps
+     * @param {string} progress_message
      */
-    #update_progress(value, max, text) {
-        value = value || 0;
-        max = max || 1;
-        const percentage = (value / max * 100);
-
-        this.#set_bar_percentage(percentage);
-
-        if (text?.length) {
-            this.#messages_container.innerHTML = _.escape(text.trim()).replace(/\n/gi, '<br>');
-        }
+    #update_progress(current_step, max_steps, progress_message) {
+        this.#set_bar_percentage(current_step / max_steps * 100);
+        this.#messages_container.innerHTML = _.escape(progress_message.trim()).replace(/\n/gi, '<br>');
     }
+
     /**
      * @param {null|number} percentage
      */
     #set_bar_percentage(percentage) {
-        this.#progress_bar.style.width = `${typeof percentage === 'number' ? percentage : 0}%`;
-        this.#progress_bar.innerHTML = typeof percentage === 'number' ? `${Math.floor(percentage)} %` : '-';
-        this.#progress_bar.setAttribute('aria-valuenow', percentage || '0');
+        this.#progress_bar.style.width = `${percentage}%`;
+        this.#progress_bar.innerHTML = `${Math.floor(percentage)} %`;
+        this.#progress_bar.setAttribute('aria-valuenow', percentage);
     }
 
     #stop_progress_with_warning_state() {
@@ -155,7 +149,7 @@ export class ProgressBar
                     throw new Error('JSON returned by progress check endpoint is invalid.');
                 }
 
-                this.#update_progress(json.current, json.max, json.data);
+                this.#update_progress(json['current_step'], json['max_steps'], json['progress_message']);
 
                 if (json['failed']) {
                     throw new Error('Progress has failed for an unknown reason.');
@@ -171,7 +165,7 @@ export class ProgressBar
                     return;
                 }
 
-                if (json['finished_at']) {
+                if (json['ended_at']) {
                     this.#parameters.success_callback();
                     return;
                 }

@@ -37,9 +37,9 @@ namespace Glpi\Migration;
 final class MigrationResult
 {
     /**
-     * Whether the migration was successful.
+     * Whether the migration has been fully processed.
      */
-    private bool $is_success;
+    private bool $is_finished;
 
     /**
      * Migration error messages.
@@ -63,19 +63,37 @@ final class MigrationResult
     private array $comments = [];
 
     /**
-     * Indicates whether the migration was successful.
+     * IDs of created items.
+     * @var array<class-string<\CommonDBTM>, array<int, int>>
      */
-    public function isSuccess(): bool
+    private array $created_items_ids = [];
+
+    /**
+     * IDs of updated items.
+     * @var array<class-string<\CommonDBTM>, array<int, int>>
+     */
+    private array $updated_items_ids = [];
+
+    /**
+     * IDs of ignored items.
+     * @var array<class-string<\CommonDBTM>, array<int, int>>
+     */
+    private array $ignored_items_ids = [];
+
+    /**
+     * Indicates whether the migration has been fully processed.
+     */
+    public function isFinished(): bool
     {
-        return $this->is_success;
+        return $this->is_finished;
     }
 
     /**
-     * Defines whether the migration was successful.
+     * Defines whether the migration has been fully processed.
      */
-    public function setSuccess(bool $is_success): void
+    public function setFinished(bool $is_finished): void
     {
-        $this->is_success = $is_success;
+        $this->is_finished = $is_finished;
     }
 
     /**
@@ -124,5 +142,80 @@ final class MigrationResult
     public function getComments(): array
     {
         return $this->comments;
+    }
+
+    /**
+     * Mark an item as created.
+     *
+     * @param class-string<\CommonDBTM> $itemtype
+     * @param int $id
+     */
+    public function markItemAsCreated(string $itemtype, int $id): void
+    {
+        if (!\array_key_exists($itemtype, $this->created_items_ids)) {
+            $this->created_items_ids[$itemtype] = [];
+        }
+
+        $this->created_items_ids[$itemtype][] = $id;
+    }
+
+    /**
+     * Return the IDs of the created items.
+     *
+     * @return array<class-string<\CommonDBTM>, array<int, int>>
+     */
+    public function getCreatedItemsIds(): array
+    {
+        return $this->created_items_ids;
+    }
+
+    /**
+     * Mark an item as updated.
+     *
+     * @param class-string<\CommonDBTM> $itemtype
+     * @param int $id
+     */
+    public function markItemAsUpdated(string $itemtype, int $id): void
+    {
+        if (!\array_key_exists($itemtype, $this->updated_items_ids)) {
+            $this->updated_items_ids[$itemtype] = [];
+        }
+
+        $this->updated_items_ids[$itemtype][] = $id;
+    }
+
+    /**
+     * Return the IDs of the updated items.
+     *
+     * @return array<class-string<\CommonDBTM>, array<int, int>>
+     */
+    public function getUpdatedItemsIds(): array
+    {
+        return $this->updated_items_ids;
+    }
+
+    /**
+     * Mark an item as ignored.
+     *
+     * @param class-string<\CommonDBTM> $itemtype
+     * @param int $id
+     */
+    public function markItemAsIgnored(string $itemtype, int $id): void
+    {
+        if (!\array_key_exists($itemtype, $this->ignored_items_ids)) {
+            $this->ignored_items_ids[$itemtype] = [];
+        }
+
+        $this->ignored_items_ids[$itemtype][] = $id;
+    }
+
+    /**
+     * Return the IDs of the ignored items.
+     *
+     * @return array<class-string<\CommonDBTM>, array<int, int>>
+     */
+    public function getIgnoredItemsIds(): array
+    {
+        return $this->ignored_items_ids;
     }
 }
