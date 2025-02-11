@@ -85,11 +85,9 @@ abstract class AbstractProgressIndicator
      */
     final public function finish(): void
     {
-        $this->computeUpdatedAt();
-
         $this->ended_at = new DateTimeImmutable();
 
-        $this->update();
+        $this->triggerUpdate();
     }
 
     /**
@@ -146,9 +144,9 @@ abstract class AbstractProgressIndicator
      */
     final public function setCurrentStep(int $current_step): void
     {
-        $this->computeUpdatedAt();
-
         $this->current_step = $current_step;
+
+        $this->triggerUpdate();
     }
 
     /**
@@ -156,9 +154,9 @@ abstract class AbstractProgressIndicator
      */
     final public function setMaxSteps(int $max_steps): void
     {
-        $this->computeUpdatedAt();
-
         $this->max_steps = $max_steps;
+
+        $this->triggerUpdate();
     }
 
     /**
@@ -174,9 +172,9 @@ abstract class AbstractProgressIndicator
      */
     final public function setProgressMessage(string $progress_message): void
     {
-        $this->computeUpdatedAt();
-
         $this->progress_message = $progress_message;
+
+        $this->triggerUpdate();
     }
 
     /**
@@ -203,11 +201,13 @@ abstract class AbstractProgressIndicator
     abstract public function addComment(string $message);
 
     /**
-     * Compute the last update datetime.
+     * Trigger the progress indicator update.
      */
-    private function computeUpdatedAt(): void
+    private function triggerUpdate(): void
     {
         $this->updated_at = new \DateTimeImmutable();
+
+        $this->update();
     }
 
     /**

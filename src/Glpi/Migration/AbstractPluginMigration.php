@@ -35,19 +35,32 @@
 namespace Glpi\Migration;
 
 use CommonDBTM;
+use DBmysql;
 use Glpi\Progress\AbstractProgressIndicator;
+use Psr\Log\LoggerInterface;
 
 abstract class AbstractPluginMigration
 {
-    /**
-     * Current execution results.
-     */
-    protected MigrationResult $result;
 
     /**
      * Progress indicator.
      */
-    protected ?AbstractProgressIndicator $progress_indicator = null;
+    protected DBmysql $db;
+
+    /**
+     * Logger.
+     */
+    protected LoggerInterface $logger;
+
+    /**
+     * Progress indicator.
+     */
+    protected ?AbstractProgressIndicator $progress_indicator;
+
+    /**
+     * Current execution results.
+     */
+    protected MigrationResult $result;
 
     /**
      * Mapping between plugin items and GLPI core items.
@@ -55,6 +68,20 @@ abstract class AbstractPluginMigration
      * @var array<class-string<\CommonDBTM>, array<int, array{itemtype: class-string<\CommonDBTM>, items_id: int}>>
      */
     private array $target_items_mapping = [];
+
+    public function __construct(DBmysql $db, LoggerInterface $logger)
+    {
+        $this->db = $db;
+        $this->logger = $logger;
+    }
+
+    /**
+     * Defines the progress indicator.
+     */
+    final public function setProgressIndicator(AbstractProgressIndicator $progress_indicator): void
+    {
+        $this->progress_indicator = $progress_indicator;
+    }
 
     /**
      * Execute (or simulate) the plugin migration.
@@ -66,26 +93,32 @@ abstract class AbstractPluginMigration
     {
         $this->result = new MigrationResult();
 
-        $finished = false;
+        $fully_processed = false;
         try {
             if ($this->validatePrerequisites()) {
-                $finished = $this->processMigration(simulate: false);
+                $this->db->beginTransaction();
+
+                $fully_processed = $this->processMigration();
+
+                if ($simulate === false && $fully_processed === true) {
+                    $this->db->commit();
+                } else {
+                    $this->db->rollBack();
+                }
             }
-        } catch (\Throwable) {
+        } catch (\Throwable $e) {
             $this->result->addError(__('An unexpected error occured.'));
+
+            $this->logger->error($e->getMessage(), context: ['exception' => $e]);
+
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
         }
 
-        $this->result->setFinished($finished);
+        $this->result->setFullyProcessed($fully_processed);
 
         return $this->result;
-    }
-
-    /**
-     * Defines the progress indicator.
-     */
-    final public function setProgressIndicator(AbstractProgressIndicator $progress_indicator): void
-    {
-        $this->progress_indicator = $progress_indicator;
     }
 
     /**
@@ -108,12 +141,6 @@ abstract class AbstractPluginMigration
             throw new \RuntimeException(sprintf('Invalid itemtype `%s`.', $itemtype));
         }
 
-        // Automatically replace values based on the existing items mapping
-        $input = $this->replacedMappedValues($input);
-        if ($reconciliation_criteria !== null) {
-            $reconciliation_criteria = $this->replacedMappedValues($reconciliation_criteria);
-        }
-
         if ($reconciliation_criteria !== null && $item->getFromDBByCrit($reconciliation_criteria)) {
             // Update the corresponding item.
             $input[$itemtype::getIndexName()] = $item->getID();
@@ -122,8 +149,8 @@ abstract class AbstractPluginMigration
                 $this->addError(
                     sprintf(
                         __('Unable to update %s "%s" (%d).'),
-                        $itemtype::getTypeName(),
-                        $input[$itemtype::getNameField] ?? NOT_AVAILABLE,
+                        $itemtype::getTypeName(1),
+                        $input[$itemtype::getNameField()] ?? NOT_AVAILABLE,
                         $item->getID(),
                     )
                 );
@@ -133,8 +160,8 @@ abstract class AbstractPluginMigration
                 $this->addComment(
                     sprintf(
                         __('%s "%s" (%d) has been updated.'),
-                        $itemtype::getTypeName(),
-                        $input[$itemtype::getNameField] ?? NOT_AVAILABLE,
+                        $itemtype::getTypeName(1),
+                        $input[$itemtype::getNameField()] ?? NOT_AVAILABLE,
                         $item->getID(),
                     )
                 );
@@ -145,18 +172,18 @@ abstract class AbstractPluginMigration
                 $this->addError(
                     sprintf(
                         __('Unable to create %s "%s".'),
-                        $itemtype::getTypeName(),
-                        $input[$itemtype::getNameField] ?? NOT_AVAILABLE,
+                        $itemtype::getTypeName(1),
+                        $input[$itemtype::getNameField()] ?? NOT_AVAILABLE,
                     )
                 );
                 return null;
             } else {
                 $this->result->markItemAsCreated($itemtype, $item->getID());
-                $this->addError(
+                $this->addComment(
                     sprintf(
                         __('%s "%s" (%d) has been created.'),
-                        $itemtype::getTypeName(),
-                        $input[$itemtype::getNameField] ?? NOT_AVAILABLE,
+                        $itemtype::getTypeName(1),
+                        $input[$itemtype::getNameField()] ?? NOT_AVAILABLE,
                         $item->getID(),
                     )
                 );
@@ -195,7 +222,7 @@ abstract class AbstractPluginMigration
     /**
      * Replace any source item key/value by the corresponding target key/value based on the items mapping.
      */
-    private function replacedMappedValues(array $values): array
+    final protected function replacedMappedValues(array $values): array
     {
         $out_values = $values;
 
@@ -232,7 +259,7 @@ abstract class AbstractPluginMigration
             }
         }
 
-        return $values;
+        return $out_values;
     }
 
     /**
@@ -299,9 +326,11 @@ abstract class AbstractPluginMigration
     /**
      * Process the migation.
      *
-     * @param bool $simulate Whether the process should be simulated or actually executed.
+     * A database transation is started before calling this method.
+     * This transaction will be commited if the migration is not a simulation and is fully processed,
+     * otherwise a rollback will be done.
      *
      * @return bool `true` if the migration has been fully processed, `false` otherwise.
      */
-    abstract protected function processMigration(bool $simulate): bool;
+    abstract protected function processMigration(): bool;
 }

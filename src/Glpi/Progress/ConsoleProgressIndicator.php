@@ -78,7 +78,7 @@ final class ConsoleProgressIndicator extends AbstractProgressIndicator
     {
         $this->outputMessage(
             '<comment>' . $message . '</comment>',
-            OutputInterface::VERBOSITY_VERBOSE
+            OutputInterface::VERBOSITY_VERY_VERBOSE
         );
     }
 
@@ -87,6 +87,10 @@ final class ConsoleProgressIndicator extends AbstractProgressIndicator
         $this->progress_bar->setMaxSteps($this->getMaxSteps());
         $this->progress_bar->setProgress($this->getCurrentStep());
         $this->progress_bar->setMessage($this->getProgressMessage());
+
+        if ($this->getEndedAt() !== null) {
+            $this->progress_bar->finish();
+        }
     }
 
     /**

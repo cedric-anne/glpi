@@ -39,7 +39,7 @@ final class MigrationResult
     /**
      * Whether the migration has been fully processed.
      */
-    private bool $is_finished;
+    private bool $is_fully_processed;
 
     /**
      * Migration error messages.
@@ -83,17 +83,17 @@ final class MigrationResult
     /**
      * Indicates whether the migration has been fully processed.
      */
-    public function isFinished(): bool
+    public function isFullyProcessed(): bool
     {
-        return $this->is_finished;
+        return $this->is_fully_processed;
     }
 
     /**
      * Defines whether the migration has been fully processed.
      */
-    public function setFinished(bool $is_finished): void
+    public function setFullyProcessed(bool $is_fully_processed): void
     {
-        $this->is_finished = $is_finished;
+        $this->is_fully_processed = $is_fully_processed;
     }
 
     /**
