@@ -66,9 +66,9 @@ class ProgressController extends AbstractController
             'current_step'      => $progress->getCurrentStep(),
             'max_steps'         => $progress->getMaxSteps(),
             'progress_message'  => $progress->getProgressMessage(),
-            'errors'            => $progress->getErrors(),
-            'warnings'          => $progress->getWarnings(),
-            'comments'          => $progress->getComments(),
+            'errors'            => $progress->pullErrors(),
+            'warnings'          => $progress->pullWarnings(),
+            'comments'          => $progress->pullComments(),
         ]);
     }
 }

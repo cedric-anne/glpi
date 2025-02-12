@@ -77,6 +77,14 @@ final class ConsoleProgressIndicator extends AbstractProgressIndicator
     public function addComment(string $message): void
     {
         $this->outputMessage(
+            '<info>' . $message . '</info>',
+            OutputInterface::VERBOSITY_NORMAL
+        );
+    }
+
+    public function addDebugMessage(string $message): void
+    {
+        $this->outputMessage(
             '<comment>' . $message . '</comment>',
             OutputInterface::VERBOSITY_VERY_VERBOSE
         );

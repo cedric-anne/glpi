@@ -201,6 +201,11 @@ abstract class AbstractProgressIndicator
     abstract public function addComment(string $message);
 
     /**
+     * Add a debug message.
+     */
+    abstract public function addDebugMessage(string $message);
+
+    /**
      * Trigger the progress indicator update.
      */
     private function triggerUpdate(): void

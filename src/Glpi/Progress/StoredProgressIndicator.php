@@ -67,6 +67,13 @@ final class StoredProgressIndicator extends AbstractProgressIndicator
      */
     private array $comments = [];
 
+    /**
+     * Debug messages.
+     *
+     * @var string[]
+     */
+    private array $debug_messages = [];
+
     public function __construct(ProgressStorage $progress_storage, string $storage_key)
     {
         parent::__construct();
@@ -92,33 +99,44 @@ final class StoredProgressIndicator extends AbstractProgressIndicator
         $this->comments[] = $message;
     }
 
+    public function addDebugMessage(string $message): void
+    {
+        $this->debug_messages[] = $message;
+    }
+
     public function update(): void
     {
         $this->store();
     }
 
     /**
-     * Return the error messages.
+     * Pull the error messages.
      */
-    public function getErrors(): array
+    public function pullErrors(): array
     {
-        return $this->errors;
+        $messages = $this->errors;
+        $this->errors = [];
+        return $messages;
     }
 
     /**
      * Return the warning messages.
      */
-    public function getWarnings(): array
+    public function pullWarnings(): array
     {
-        return $this->warnings;
+        $messages = $this->warnings;
+        $this->warnings = [];
+        return $messages;
     }
 
     /**
      * Return the informative messages.
      */
-    public function getComments(): array
+    public function pullComments(): array
     {
-        return $this->comments;
+        $messages = $this->comments;
+        $this->comments = [];
+        return $messages;
     }
 
     /**

@@ -41,7 +41,6 @@ use Psr\Log\LoggerInterface;
 
 abstract class AbstractPluginMigration
 {
-
     /**
      * Progress indicator.
      */
@@ -157,7 +156,7 @@ abstract class AbstractPluginMigration
                 return null;
             } else {
                 $this->result->markItemAsUpdated($itemtype, $item->getID());
-                $this->addComment(
+                $this->addDebugMessage(
                     sprintf(
                         __('%s "%s" (%d) has been updated.'),
                         $itemtype::getTypeName(1),
@@ -179,7 +178,7 @@ abstract class AbstractPluginMigration
                 return null;
             } else {
                 $this->result->markItemAsCreated($itemtype, $item->getID());
-                $this->addComment(
+                $this->addDebugMessage(
                     sprintf(
                         __('%s "%s" (%d) has been created.'),
                         $itemtype::getTypeName(1),

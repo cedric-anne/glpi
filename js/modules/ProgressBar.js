@@ -151,6 +151,8 @@ export class ProgressBar
 
                 this.#update_progress(json['current_step'], json['max_steps'], json['progress_message']);
 
+                // FIXME json['errors'], json['warnings'] and json['comments'] are not displayed yet.
+
                 if (json['failed']) {
                     throw new Error('Progress has failed for an unknown reason.');
                 }
