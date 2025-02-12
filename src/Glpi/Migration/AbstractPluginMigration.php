@@ -220,54 +220,11 @@ abstract class AbstractPluginMigration
     }
 
     /**
-     * Replace any source item key/value by the corresponding target key/value based on the items mapping.
-     */
-    final protected function replacedMappedValues(array $values): array
-    {
-        $out_values = $values;
-
-        foreach ($values as $key => $value) {
-            $key_matches = [];
-            if (
-                \preg_match('/^itemtype(?<suffix>(_.+)?)$/', $key, $key_matches) === 1
-                && \array_key_exists($items_id_key = 'items_id' . $key_matches['suffix'], $values)
-            ) {
-                $source_itemtype = $value;
-                $source_items_id = $values[$items_id_key];
-
-                $target = $this->getMappedItemTarget($source_itemtype, $source_items_id);
-                if ($target !== null) {
-                    $out_values[$key] = $target['itemtype'];
-                    $out_values[$items_id_key] = $target['items_id'];
-                }
-            } elseif (\isForeignKeyField($key)) {
-                $source_itemtype = \getItemtypeForForeignKeyField($key);
-                $source_items_id = $value;
-
-                $target = $this->getMappedItemTarget($source_itemtype, $source_items_id);
-                if ($target !== null) {
-                    $key_suffix = \preg_replace(
-                        '/^' . \getForeignKeyFieldForItemType($source_itemtype) . '/',
-                        '',
-                        $key
-                    );
-                    $target_key = \getForeignKeyFieldForItemType($target['itemtype']) . $key_suffix;
-
-                    $out_values[$target_key] = $target['items_id'];
-                    unset($out_values[$key]);
-                }
-            }
-        }
-
-        return $out_values;
-    }
-
-    /**
      * Return the GLPI core item corresponding to the given plugin item.
      *
      * @return array{itemtype: class-string<\CommonDBTM>, items_id: int}
      */
-    private function getMappedItemTarget(string $source_itemtype, int $source_items_id): ?array
+    final protected function getMappedItemTarget(string $source_itemtype, int $source_items_id): ?array
     {
         if (
             !array_key_exists($source_itemtype, $this->target_items_mapping)
