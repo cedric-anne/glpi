@@ -51,12 +51,31 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
 
     public static function getTypeName($nb = 0)
     {
-        return _n('Validation template', 'Validation templates', $nb);
+        return _n('Approval template', 'Approval templates', $nb);
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        if (isset($input['validationsteps_id']) && !(new ValidationStep())->getFromDB($input['validationsteps_id'])) {
+            Session::addMessageAfterRedirect(
+                htmlescape(__('Invalid Validation step')),
+                false,
+                ERROR
+            );
+            return [];
+        }
+
+        return parent::prepareInputForUpdate($input);
     }
 
     public function getAdditionalFields()
     {
         return [
+            [
+                'name' => 'validationsteps_id',
+                'label' => ValidationStep::getTypeName(1),
+                'type' => 'dropdownValue',
+            ],
             [
                 'name'  => 'approver',
                 'label' => __('Approver'),
@@ -73,7 +92,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
                 // As fixing it is really complex (requires lot of refactoring in images handling, both on JS and PHP side),
                 // it is preferable to disable usage of images in templates.
                 'disable_images' => true,
-            ]
+            ],
         ];
     }
 

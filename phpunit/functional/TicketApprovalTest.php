@@ -34,10 +34,9 @@
 
 namespace tests\units;
 
-/* Test for src/ChangeValidation.php */
+use Glpi\PHPUnit\Tests\CommonITILApprovalTest;
 
-use Glpi\PHPUnit\Tests\CommonITILValidation;
-
-class ChangeValidationTest extends CommonITILValidation
+/* Test for src/TicketValidation.php */
+class TicketApprovalTest extends CommonITILApprovalTest
 {
 }

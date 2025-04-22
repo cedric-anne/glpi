@@ -32,30 +32,13 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units;
-
-// Force import because of autoloader not working
-require_once __DIR__ . '/../abstracts/RuleCommonITILObjectTest.php';
-
-class RuleProblemTest extends RuleCommonITILObjectTest
+final class TicketValidationStep extends ITIL_ValidationStep
 {
-    public function testGetCriteria()
-    {
-        $rule = $this->getRuleInstance();
-        $criteria = $rule->getCriterias();
-        $this->assertGreaterThan(
-            19,
-            count($criteria)
-        );
-    }
+    public static $rightname = 'ticketvalidation';
+    public static string $validation_classname = TicketValidation::class;
 
-    public function testGetActions()
+    public static function getTypeName($nb = 0)
     {
-        $rule = $this->getRuleInstance();
-        $actions  = $rule->getActions();
-        $this->assertGreaterThan(
-            19,
-            count($actions)
-        );
+        return _n('Ticket approval step', 'Ticket approval steps', $nb);
     }
 }

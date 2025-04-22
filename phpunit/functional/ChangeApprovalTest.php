@@ -34,28 +34,10 @@
 
 namespace tests\units;
 
-// Force import because of autoloader not working
-require_once __DIR__ . '/../abstracts/RuleCommonITILObjectTest.php';
+/* Tests for src/ChangeValidation.php */
 
-class RuleProblemTest extends RuleCommonITILObjectTest
+use Glpi\PHPUnit\Tests\CommonITILApprovalTest;
+
+class ChangeApprovalTest extends CommonITILApprovalTest
 {
-    public function testGetCriteria()
-    {
-        $rule = $this->getRuleInstance();
-        $criteria = $rule->getCriterias();
-        $this->assertGreaterThan(
-            19,
-            count($criteria)
-        );
-    }
-
-    public function testGetActions()
-    {
-        $rule = $this->getRuleInstance();
-        $actions  = $rule->getActions();
-        $this->assertGreaterThan(
-            19,
-            count($actions)
-        );
-    }
 }
