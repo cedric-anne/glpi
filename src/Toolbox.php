@@ -81,7 +81,6 @@ use function Safe\curl_init;
 use function Safe\error_log;
 use function Safe\fclose;
 use function Safe\filemtime;
-use function Safe\finfo_open;
 use function Safe\fopen;
 use function Safe\fread;
 use function Safe\fwrite;
@@ -603,22 +602,22 @@ class Toolbox
 
         // if $mime is defined, ignore mime type by extension
         if ($mime === null && preg_match('/\.(...)$/', $path)) {
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $mime = finfo_file($finfo, $path);
-            unset($finfo);
+            $mime = self::getMime($path);
         }
 
         $can_be_inlined = false;
-        if (
-            str_starts_with(strtolower($mime), 'image/')
-            && strtolower($mime) !== 'image/svg+xml'
-        ) {
-            // images files can be inlined
-            // except for svg (vector of attack, see https://github.com/glpi-project/glpi/issues/3873)
-            $can_be_inlined = true;
-        } elseif (strtolower($mime) === 'application/pdf') {
-            // PDF files can be inlined
-            $can_be_inlined = true;
+        if ($mime !== null) {
+            if (
+                str_starts_with(strtolower($mime), 'image/')
+                && strtolower($mime) !== 'image/svg+xml'
+            ) {
+                // images files can be inlined
+                // except for svg (vector of attack, see https://github.com/glpi-project/glpi/issues/3873)
+                $can_be_inlined = true;
+            } elseif (strtolower($mime) === 'application/pdf') {
+                // PDF files can be inlined
+                $can_be_inlined = true;
+            }
         }
         $attachment = $can_be_inlined === false ? ' attachment;' : '';
 
@@ -2423,10 +2422,10 @@ class Toolbox
      * @since 0.85.5
      *
      * @param string         $file  path of the file
-     * @param bool|string $type  check if $file is the correct type
+     * @param false|string $type  check if $file is the correct type (only matches with the first part of the mime like "image" for "image/png)
      *
      * @return bool|string (if $type not given) else boolean
-     *
+     * @phpstan-return ($type is false ? string : bool)
      **/
     public static function getMime($file, $type = false)
     {
