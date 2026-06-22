@@ -2371,4 +2371,57 @@ TWIG, $twig_params);
     {
         return $this->getLinkURL();
     }
+
+    public static function normalizeKbRevisionDiffHtml(string $html): string
+    {
+        if ($html === '') {
+            return $html;
+        }
+
+        $dom = new DOMDocument('1.0', 'UTF-8');
+        $previous_libxml_errors = libxml_use_internal_errors(true);
+        $dom->loadHTML('<html><head><meta charset="UTF-8"></head><body>' . $html . '</body></html>');
+        libxml_clear_errors();
+        libxml_use_internal_errors($previous_libxml_errors);
+
+        $xpath = new DOMXPath($dom);
+
+        $doms = $xpath->query('//table | //td | //th');
+        if ($doms !== false) {
+            foreach ($doms as $node) {
+                /** @var DOMElement $node */
+                $node->removeAttribute('width');
+                $style = $node->getAttribute('style');
+                $style = preg_replace('/(?<![a-zA-Z-])(?:(?:min|max)-)?width\s*:[^;]+;?\s*/i', '', $style);
+                if ($node->tagName === 'table') {
+                    $style = rtrim($style, '; ') . '; max-width: 100%; box-sizing: border-box;';
+                }
+                $node->setAttribute('style', ltrim($style, '; '));
+            }
+        }
+
+        $imgs = $xpath->query('//img');
+        if ($imgs !== false) {
+            foreach ($imgs as $img) {
+                /** @var DOMElement $img */
+                $img->removeAttribute('width');
+                $img->removeAttribute('height');
+                $style = $img->getAttribute('style');
+                $style = preg_replace('/(?<![a-zA-Z-])(?:(?:min|max)-)?width\s*:[^;]+;?\s*/i', '', $style);
+                $style = rtrim($style, '; ') . '; max-width: 100%; height: auto;';
+                $img->setAttribute('style', ltrim($style, '; '));
+            }
+        }
+
+        $body = $dom->getElementsByTagName('body')->item(0);
+        if (!($body instanceof DOMElement)) {
+            return $html;
+        }
+
+        $result = '';
+        foreach ($body->childNodes as $node) {
+            $result .= $dom->saveHTML($node);
+        }
+        return $result;
+    }
 }
