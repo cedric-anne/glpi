@@ -185,7 +185,6 @@
             "patch -f -p1 -d vendor/atoum/stubs/ < tools/patches/atoum-stubs-php8.4-compat.patch || true",
             "patch -f -p1 -d vendor/firebase/php-jwt/ < tools/patches/firebase-php-jwt-v6.10.0-to-v7.0.2.patch || true",
             "patch -f -p1 -d vendor/friendsoftwig/twigcs/ < tools/patches/friendsoftwig-twigcs-php8.4-compat.patch || true",
-            "patch -f -p1 -d vendor/guzzlehttp/promises/ < tools/patches/guzzlehttp-promises-php8.4-compat.patch || true",
             "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-laminas-mail-php8.4-compat.patch || true",
             "patch -f -p1 -d vendor/laminas/laminas-servicemanager/ < tools/patches/laminas-laminas-servicemanager-php8.4-compat.patch || true",
             "patch -f -p1 -d vendor/league/csv/ < tools/patches/league-csv-php8.4-compat.patch || true",
