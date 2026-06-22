@@ -93,7 +93,7 @@ class MailCollector extends CommonDBTM
     /**
      * Tag used to recognize embedded images of a mail
      */
-    public array $tags;
+    public array $tags = [];
     /**
      * Message to add to body to build ticket
      */

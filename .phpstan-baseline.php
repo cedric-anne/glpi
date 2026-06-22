@@ -5474,12 +5474,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Middleware/SecurityResponseMiddleware.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Binary operation "\\." between \'\\#/components…\' and array\\<string\\>\\|string results in an error\\.$#',
-	'identifier' => 'binaryOp.invalid',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/OpenAPIGenerator.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to an undefined method Glpi\\\\Api\\\\HL\\\\Doc\\\\Schema\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\SchemaReference\\:\\:toArray\\(\\)\\.$#',
 	'identifier' => 'method.notFound',
 	'count' => 3,
@@ -5498,21 +5492,9 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/OpenAPIGenerator.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\OpenAPIGenerator\\:\\:getSchema\\(\\) should return array\\{openapi\\: string, info\\: array\\{title\\: string, version\\: string, license\\: array\\{name\\: string, url\\: string\\}\\}, servers\\: array\\<array\\{url\\: string, description\\: string\\}\\>, components\\: array\\{securitySchemes\\: array\\<string, array\\{type\\: string, schema\\?\\: string, name\\?\\: string, in\\?\\: string\\}\\>\\}, paths\\: array\\<string, array\\<string, array\\{tags\\: array\\<string\\>, responses\\: array\\<int\\|string, array\\{description\\: string\\}\\>, description\\?\\: string, parameters\\: array\\<array\\{name\\: string, in\\: string, description\\: string, required\\: bool, schema\\?\\: mixed\\}\\>, requestBody\\?\\: array\\{content\\: array\\{\'application/json\'\\: array\\{schema\\: array\\{type\\: string, format\\?\\: string, pattern\\?\\: string, properties\\?\\: array\\<string, array\\{type\\: string, format\\?\\: string\\}\\>\\}\\}\\}\\}\\}\\>\\>\\} but returns array\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/OpenAPIGenerator.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'ref\' might not exist on Glpi\\\\Api\\\\HL\\\\Doc\\\\Schema\\|Glpi\\\\Api\\\\HL\\\\Doc\\\\SchemaReference\\|null\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/OpenAPIGenerator.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'schema\' might not exist on array\\{name\\: string, in\\: string, description\\: string, required\\: bool, schema\\?\\: mixed\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/OpenAPIGenerator.php',
 ];
 $ignoreErrors[] = [
@@ -5525,18 +5507,6 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$name of method Glpi\\\\Api\\\\HL\\\\OpenAPIGenerator\\:\\:getComponentReference\\(\\) expects string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/OpenAPIGenerator.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$array of function array_key_exists expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/OpenAPIGenerator.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$subject of function Safe\\\\preg_replace expects array\\<string\\>\\|string, int\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/OpenAPIGenerator.php',
 ];
 $ignoreErrors[] = [
@@ -14180,12 +14150,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/MailCollector.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$subject of function Safe\\\\preg_match expects string, bool\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/MailCollector.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#4 \\$subject of method MailCollector\\:\\:getRecursiveAttached\\(\\) expects string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -18509,12 +18473,6 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$string of function rawurlencode expects string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$string of function strtolower expects string, string\\|false\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [

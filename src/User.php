@@ -2777,7 +2777,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
         if (count($a_field) == 0) {
             return true;
         }
-        $this->willProcessRuleRight();
         foreach ($a_field as $field => $key) {
             $value = $_SERVER[$key] ?? null;
             if (empty($value)) {
@@ -2850,6 +2849,8 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 'email'  => $this->fields["_emails"] ?? [],
                 'login'  => $this->fields["name"],
             ]);
+
+            $this->willProcessRuleRight();
 
             //If rule  action is ignore import
             if (isset($this->fields["_stop_import"])) {
@@ -5348,12 +5349,12 @@ HTML;
         $myuser = new self();
         if (
             !$myuser->getFromDB($users_id) // invalid user
-            || $myuser->fields['is_deleted_ldap'] == 0 // user already considered as restored from LDAP
+            || ($myuser->fields['is_deleted_ldap'] == 0 && $myuser->fields['is_active'] == 1) // already active, nothing to restore
         ) {
             return;
         }
 
-        //User is present in DB and in the directory but 'is_ldap_deleted' was true : it's been restored in LDAP
+        //User is present in DB and in the directory but was inactive or flagged as LDAP-deleted: restore it
         $tmp = [
             'id'              => $users_id,
             'is_deleted_ldap' => 0,
@@ -6717,11 +6718,12 @@ HTML;
     /**
      * Get user link.
      *
-     * @param bool $enable_anonymization
+     * @param bool  $enable_anonymization
+     * @param array<string, mixed> $options
      *
      * @return string
      */
-    public function getUserLink(bool $enable_anonymization = false): string
+    public function getUserLink(bool $enable_anonymization = false, $options = []): string
     {
         if (
             $enable_anonymization
@@ -6733,7 +6735,7 @@ HTML;
             return $anon;
         }
 
-        return $this->getLink();
+        return $this->getLink($options);
     }
 
     /**

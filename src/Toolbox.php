@@ -81,7 +81,6 @@ use function Safe\curl_init;
 use function Safe\error_log;
 use function Safe\fclose;
 use function Safe\filemtime;
-use function Safe\finfo_open;
 use function Safe\fopen;
 use function Safe\fread;
 use function Safe\fwrite;
@@ -587,22 +586,22 @@ class Toolbox
 
         // if $mime is defined, ignore mime type by extension
         if ($mime === null && preg_match('/\.(...)$/', $path)) {
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $mime = finfo_file($finfo, $path);
-            unset($finfo);
+            $mime = self::getMime($path);
         }
 
         $can_be_inlined = false;
-        if (
-            str_starts_with(strtolower($mime), 'image/')
-            && strtolower($mime) !== 'image/svg+xml'
-        ) {
-            // images files can be inlined
-            // except for svg (vector of attack, see https://github.com/glpi-project/glpi/issues/3873)
-            $can_be_inlined = true;
-        } elseif (strtolower($mime) === 'application/pdf') {
-            // PDF files can be inlined
-            $can_be_inlined = true;
+        if ($mime !== null) {
+            if (
+                str_starts_with(strtolower($mime), 'image/')
+                && strtolower($mime) !== 'image/svg+xml'
+            ) {
+                // images files can be inlined
+                // except for svg (vector of attack, see https://github.com/glpi-project/glpi/issues/3873)
+                $can_be_inlined = true;
+            } elseif (strtolower($mime) === 'application/pdf') {
+                // PDF files can be inlined
+                $can_be_inlined = true;
+            }
         }
         $attachment = $can_be_inlined === false ? ' attachment;' : '';
 
@@ -834,7 +833,7 @@ class Toolbox
 
     /**
      * Resize a picture to the new size
-     * Always produce a JPG file!
+     * The output format matches the source image format when supported.
      *
      * @since 0.85
      *
@@ -1028,7 +1027,9 @@ class Toolbox
      * @return int
      *   0: OK,
      *   1: delete error,
-     *   2: creation error
+     *   2: creation error,
+     *   3: directory deletion error,
+     *   4: directory creation error
      **/
     public static function testWriteAccessToDirectory($dir)
     {
@@ -1879,9 +1880,9 @@ class Toolbox
             return $protocols;
         }
 
-        $additionnal_protocols = Plugin::doHookFunction(Hooks::MAIL_SERVER_PROTOCOLS, []);
-        if (is_array($additionnal_protocols)) {
-            foreach ($additionnal_protocols as $key => $additionnal_protocol) {
+        $additional_protocols = Plugin::doHookFunction(Hooks::MAIL_SERVER_PROTOCOLS, []);
+        if (is_array($additional_protocols)) {
+            foreach ($additional_protocols as $key => $additional_protocol) {
                 if (array_key_exists($key, $protocols)) {
                     trigger_error(
                         sprintf('Protocol "%s" is already defined and cannot be overwritten.', $key),
@@ -1891,9 +1892,9 @@ class Toolbox
                 }
 
                 if (
-                    !array_key_exists('label', $additionnal_protocol)
-                    || !array_key_exists('protocol', $additionnal_protocol)
-                    || !array_key_exists('storage', $additionnal_protocol)
+                    !array_key_exists('label', $additional_protocol)
+                    || !array_key_exists('protocol', $additional_protocol)
+                    || !array_key_exists('storage', $additional_protocol)
                 ) {
                     trigger_error(
                         sprintf('Invalid specs for protocol "%s".', $key),
@@ -1901,7 +1902,7 @@ class Toolbox
                     );
                     continue;
                 }
-                $protocols[$key] = $additionnal_protocol;
+                $protocols[$key] = $additional_protocol;
             }
         } else {
             trigger_error(
@@ -2338,10 +2339,10 @@ class Toolbox
      * @since 0.85.5
      *
      * @param string         $file  path of the file
-     * @param bool|string $type  check if $file is the correct type
+     * @param false|string $type  check if $file is the correct type (only matches with the first part of the mime like "image" for "image/png)
      *
      * @return bool|string (if $type not given) else boolean
-     *
+     * @phpstan-return ($type is false ? string : bool)
      **/
     public static function getMime($file, $type = false)
     {
