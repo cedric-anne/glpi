@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-29 06:12+0000\n"
+"POT-Creation-Date: 2026-06-23 13:46+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
 "Last-Translator: Odgerel Otgonbat <odgerel0531@gmail.com>, 2026\n"
 "Language-Team: Mongolian (Mongolia) (https://app.transifex.com/glpi/teams/1637/mn_MN/)\n"
@@ -167,15 +167,15 @@ msgstr ""
 msgid "Database connection setup"
 msgstr "Өгөгдлийн сангийн холболтын тохиргоо"
 
-#: templates/install/step2.html.twig src/Config.php:730
+#: templates/install/step2.html.twig src/Config.php:737
 msgid "SQL server (MariaDB or MySQL)"
 msgstr "SQL сервер (MariaDB эсвэл MySQL)"
 
-#: templates/install/step2.html.twig src/Config.php:737
+#: templates/install/step2.html.twig src/Config.php:744
 msgid "SQL user"
 msgstr "SQL хэрэглэгч"
 
-#: templates/install/step2.html.twig src/Config.php:739
+#: templates/install/step2.html.twig src/Config.php:746
 msgid "SQL password"
 msgstr "SQL нууц үг"
 
@@ -201,7 +201,7 @@ msgid "Required"
 msgstr "Шаардлагатай"
 
 #: templates/install/blocks/requirements_table.html.twig src/Event.php:179
-#: src/Config.php:2647 src/Console/System/CheckRequirementsCommand.php:91
+#: src/Config.php:2658 src/Console/System/CheckRequirementsCommand.php:91
 msgid "Security"
 msgstr "Аюулгүй байдал"
 
@@ -299,9 +299,9 @@ msgstr "Товч агуулга"
 #: src/ITILFollowupTemplate.php:85 src/Project.php:2420 src/Project.php:2462
 #: src/TaskTemplate.php:60 src/TaskTemplate.php:102 src/RSSFeed.php:550
 #: src/BlacklistedMailContent.php:73 src/BlacklistedMailContent.php:91
-#: src/AbstractITILChildTemplate.php:106 src/KnowbaseItem.php:1084
-#: src/KnowbaseItem.php:1239 src/KnowbaseItem.php:1954
-#: src/KnowbaseItem.php:2302 src/KnowbaseItemTranslation.php:171
+#: src/AbstractITILChildTemplate.php:106 src/KnowbaseItem.php:1222
+#: src/KnowbaseItem.php:1377 src/KnowbaseItem.php:2092
+#: src/KnowbaseItem.php:2440 src/KnowbaseItemTranslation.php:171
 #: src/KnowbaseItemTranslation.php:323 src/CommonITILObject.php:9608
 #: src/ContentTemplates/Parameters/KnowbaseItemParameters.php:70
 msgid "Content"
@@ -366,7 +366,7 @@ msgstr ""
 #: src/ReminderTranslation.php:247 src/AuthMail.php:103 src/AuthMail.php:185
 #: src/AuthLDAP.php:465 src/AuthLDAP.php:761 src/AuthLDAP.php:1088
 #: src/Item_Disk.php:250 src/Item_Disk.php:344 src/Item_Disk.php:406
-#: src/Document.php:470 src/Document.php:1019 src/ReservationItem.php:183
+#: src/Document.php:468 src/Document.php:1017 src/ReservationItem.php:183
 #: src/CableStrand.php:153 src/DatabaseInstance.php:182
 #: src/DatabaseInstance.php:614 src/RSSFeed.php:431 src/RSSFeed.php:722
 #: src/Item_SoftwareVersion.php:475 src/Item_SoftwareVersion.php:1134
@@ -501,7 +501,7 @@ msgstr "Гарах"
 msgid "Close"
 msgstr "Хаах"
 
-#: templates/layout/parts/user_header.html.twig src/Config.php:1972
+#: templates/layout/parts/user_header.html.twig src/Config.php:1979
 msgid "This version is UNSTABLE and some SECURITY FIXES may not be included."
 msgstr ""
 
@@ -744,7 +744,7 @@ msgstr "Шинэ нууц үгээ оруулна уу."
 #: templates/password_form.html.twig
 #: templates/components/form/snmpcredential.html.twig
 #: templates/pages/login.html.twig src/AuthMail.php:235
-#: src/MailCollector.php:310 src/Config.php:2172 src/User.php:2796
+#: src/MailCollector.php:310 src/Config.php:2179 src/User.php:2796
 #: src/User.php:3282
 msgid "Password"
 msgstr "Нууц үг"
@@ -753,7 +753,7 @@ msgstr "Нууц үг"
 msgid "Password confirmation"
 msgstr "Нууц үгийн тохиргоо"
 
-#: templates/password_form.html.twig src/Config.php:3490 src/User.php:2808
+#: templates/password_form.html.twig src/Config.php:3501 src/User.php:2808
 #: src/User.php:3295 src/User.php:5624
 msgid "Password security policy"
 msgstr "Нууц үгийн аюулгүй байдлын бодлого"
@@ -777,8 +777,8 @@ msgstr ""
 #: src/NotificationTargetCommonITILObject.php:1791
 #: src/NotificationTargetCommonITILObject.php:1809
 #: src/NotificationTargetCommonITILObject.php:1845
-#: src/NotificationTargetCommonITILObject.php:1950 src/Auth.php:1764
-#: src/Auth.php:1770 src/Auth.php:1776 src/Auth.php:1782
+#: src/NotificationTargetCommonITILObject.php:1950 src/Auth.php:1773
+#: src/Auth.php:1779 src/Auth.php:1785 src/Auth.php:1791
 #: src/Contact_Supplier.php:315 src/AuthLDAP.php:968 src/AuthLDAP.php:971
 #: src/AuthLDAP.php:976 src/AuthLDAP.php:979 src/AuthLDAP.php:1227
 #: src/AuthLDAP.php:1236 src/AuthLDAP.php:1245 src/AuthLDAP.php:1254
@@ -876,7 +876,7 @@ msgstr "Баталгаажуулах"
 #: templates/components/form/fields_macros.html.twig src/Html.php:2764
 #: src/Html.php:2959 src/Html.php:3094 src/AuthLDAP.php:540
 #: src/MailCollector.php:313 src/NotificationMailingSetting.php:457
-#: src/Config.php:616 src/Config.php:2174 src/User.php:2728 src/User.php:3211
+#: src/Config.php:623 src/Config.php:2181 src/User.php:2728 src/User.php:3211
 #: src/User.php:3212 src/User.php:6780 src/DCRoom.php:177 src/DCRoom.php:180
 msgid "Clear"
 msgstr "Цэвэрлэх"
@@ -970,16 +970,16 @@ msgstr ""
 
 #. TRANS: %s is the datetime of insertion
 #. TRANS: %s is the datetime of update
-#: templates/components/form/dates.html.twig src/KnowbaseItem.php:997
-#: src/KnowbaseItem.php:1315
+#: templates/components/form/dates.html.twig src/KnowbaseItem.php:1135
+#: src/KnowbaseItem.php:1453
 #, php-format
 msgid "Created on %s"
 msgstr "%s-д үүсгэсэн"
 
 #. TRANS: %s is the datetime of update
 #: templates/components/form/dates.html.twig src/Rule.php:959
-#: src/AuthMail.php:208 src/Document.php:464 src/MailCollector.php:372
-#: src/KnowbaseItem.php:1002 src/KnowbaseItem.php:1320
+#: src/AuthMail.php:208 src/Document.php:462 src/MailCollector.php:372
+#: src/KnowbaseItem.php:1140 src/KnowbaseItem.php:1458
 #, php-format
 msgid "Last update on %s"
 msgstr "%s-д хамгийн сүүлд шинэчлэгдсэн"
@@ -1007,7 +1007,7 @@ msgstr "%s загвараас үүсгэсэн"
 #: src/State.php:391 src/State.php:403 src/State.php:415 src/State.php:427
 #: src/State.php:439 src/State.php:451 src/State.php:463 src/State.php:475
 #: src/State.php:487 src/State.php:499 src/State.php:511 src/Vlan.php:175
-#: src/Document.php:265 src/ReservationItem.php:408
+#: src/Document.php:266 src/ReservationItem.php:408
 #: src/ReservationItem.php:710 src/ReservationItem.php:834
 #: src/Item_SoftwareVersion.php:694 src/Inventory/Asset/Software.php:936
 #: src/Inventory/Asset/Software.php:963 src/Inventory/Asset/Software.php:994
@@ -1028,13 +1028,13 @@ msgstr "%s загвараас үүсгэсэн"
 #: src/NetworkPortInstantiation.php:873 src/CommonDBTM.php:3682
 #: src/CommonDBTM.php:3686 src/CommonDBTM.php:3692 src/CommonDBTM.php:3783
 #: src/CommonDBTM.php:4482 src/CommonDBTM.php:4488 src/CommonDBTM.php:5633
-#: src/CommonDBTM.php:6471 src/CommonDBTM.php:6487 src/RuleCollection.php:2284
+#: src/CommonDBTM.php:6471 src/CommonDBTM.php:6487 src/RuleCollection.php:2283
 #, php-format
 msgid "%1$s - %2$s"
 msgstr "%1$s - %2$s"
 
-#: templates/components/form/header_content.html.twig src/KnowbaseItem.php:853
-#: src/KnowbaseItem.php:876 src/CommonDBTM.php:6473
+#: templates/components/form/header_content.html.twig src/KnowbaseItem.php:991
+#: src/KnowbaseItem.php:1014 src/CommonDBTM.php:6473
 msgid "New item"
 msgstr "Шинэ зүйл"
 
@@ -1098,7 +1098,7 @@ msgstr "Флагийг өөрчлөх боломжгүй. Холбоотой з�
 #: ajax/visibility.php:106 src/Contract.php:740 src/Profile_User.php:1003
 #: src/Budget.php:303 src/FieldUnicity.php:386 src/LevelAgreementLevel.php:165
 #: src/Project.php:765 src/SoftwareLicense.php:567 src/Rule.php:797
-#: src/ProjectTask.php:960 src/AuthLDAP.php:2365 src/Document.php:1088
+#: src/ProjectTask.php:960 src/AuthLDAP.php:2365 src/Document.php:1086
 #: src/CommonTreeDropdown.php:801 src/Supplier.php:330 src/Database.php:219
 #: src/CommonDropdown.php:478 src/Features/PlanningEvent.php:1035
 #: src/Infocom.php:1727 src/Appliance.php:272 src/RuleImportEntity.php:255
@@ -1273,7 +1273,7 @@ msgstr "Төрөл"
 #: src/Transfer.php:3999 src/Item_Devices.php:277 src/Item_Devices.php:575
 #: src/Item_Devices.php:635 src/Dropdown.php:1091 src/Event.php:164
 #: src/CommonDevice.php:58 src/CommonDevice.php:334 src/Profile.php:1102
-#: src/Profile.php:2579 src/Config.php:3383
+#: src/Profile.php:2579 src/Config.php:3394
 msgid "Component"
 msgid_plural "Components"
 msgstr[0] "Бүрэлдэхүүн хэсэг"
@@ -1361,7 +1361,7 @@ msgstr "Хөрөнгийн код"
 #: src/CommonITILTask.php:1018 src/CommonITILTask.php:1539
 #: src/Software.php:572 src/Appliance.php:296 src/Item_SoftwareLicense.php:842
 #: src/Contract_Item.php:628 src/Search.php:8277 src/Search.php:8298
-#: src/Reminder.php:422 src/Reminder.php:692 src/Config.php:586
+#: src/Reminder.php:422 src/Reminder.php:692 src/Config.php:593
 #: src/User.php:5149 src/User.php:5231
 #: src/PlanningExternalEventTemplate.php:64 src/CommonITILObject.php:4076
 #: src/CommonITILObject.php:6756 src/Computer.php:414
@@ -1429,7 +1429,7 @@ msgstr "Машин"
 #: src/Item_DeviceHardDrive.php:51 src/DeviceMemory.php:62
 #: src/DeviceMemory.php:98 src/DeviceMemory.php:170
 #: src/RuleMailCollector.php:198 src/RuleMailCollector.php:206
-#: src/Document.php:491 src/Document.php:527 src/Document.php:1114
+#: src/Document.php:489 src/Document.php:525 src/Document.php:1112
 #: src/KnowbaseItem_Item.php:225 src/Item_SoftwareVersion.php:784
 #: src/Item_SoftwareVersion.php:823 src/Item_SoftwareVersion.php:1417
 #: src/Item_SoftwareVersion.php:1470 src/Item_SoftwareVersion.php:1545
@@ -1469,7 +1469,7 @@ msgstr "%1$s(%2$s)"
 #: src/Item_DeviceGraphicCard.php:52 src/Item_DeviceGraphicCard.php:53
 #: src/ComputerVirtualMachine.php:295 src/ComputerVirtualMachine.php:482
 #: src/ComputerVirtualMachine.php:595 src/Printer.php:519
-#: src/DeviceMemory.php:43 src/DeviceMemory.php:254 src/Config.php:1815
+#: src/DeviceMemory.php:43 src/DeviceMemory.php:254 src/Config.php:1822
 msgid "Memory"
 msgid_plural "Memories"
 msgstr[0] "Санах ой"
@@ -1619,10 +1619,10 @@ msgstr "Нэмэх"
 #: src/Profile.php:1331 src/Profile.php:1379 src/Profile.php:1447
 #: src/Profile.php:1498 src/Profile.php:1632 src/Profile.php:1744
 #: src/Profile.php:1861 src/Profile.php:1915 src/Profile.php:1959
-#: src/Profile.php:2009 src/Config.php:637 src/Config.php:688
-#: src/Config.php:767 src/Config.php:838 src/Config.php:1045
-#: src/Config.php:1578 src/Config.php:2179 src/Config.php:3417
-#: src/Config.php:3660 src/Config.php:3714 src/User.php:3521
+#: src/Profile.php:2009 src/Config.php:644 src/Config.php:695
+#: src/Config.php:774 src/Config.php:845 src/Config.php:1052
+#: src/Config.php:1585 src/Config.php:2186 src/Config.php:3428
+#: src/Config.php:3671 src/Config.php:3725 src/User.php:3521
 #: src/Reservation.php:1052 src/CommonITILValidation.php:917
 msgctxt "button"
 msgid "Save"
@@ -1752,7 +1752,7 @@ msgstr "Ашиглах хугацаа"
 #. TRANS: Always plural
 #: templates/components/infocom.html.twig src/Entity.php:2295
 #: src/Transfer.php:4020 src/Infocom.php:116 src/Infocom.php:1222
-#: src/Consumable.php:648 src/Config.php:3354 src/Cartridge.php:839
+#: src/Consumable.php:648 src/Config.php:3365 src/Cartridge.php:839
 msgid "Financial and administrative information"
 msgstr "Санхүүгийн болон administrative мэдээлэл"
 
@@ -2025,9 +2025,9 @@ msgstr "Дараагийн шат: %s"
 #: src/NotificationTargetProblem.php:260 src/NotificationTargetProblem.php:261
 #: src/DeviceFirmware.php:141 src/DeviceFirmware.php:158
 #: src/DeviceFirmware.php:178 src/DeviceFirmware.php:198
-#: src/DeviceFirmware.php:219 src/DeviceFirmware.php:231 src/Auth.php:1218
-#: src/Auth.php:1220 src/Auth.php:1226 src/Auth.php:1228 src/Auth.php:1235
-#: src/Auth.php:1252 src/Auth.php:1269 src/CartridgeItem.php:468
+#: src/DeviceFirmware.php:219 src/DeviceFirmware.php:231 src/Auth.php:1227
+#: src/Auth.php:1229 src/Auth.php:1235 src/Auth.php:1237 src/Auth.php:1244
+#: src/Auth.php:1261 src/Auth.php:1278 src/CartridgeItem.php:468
 #: src/CartridgeItem.php:472 src/IPAddress.php:137 src/SoftwareLicense.php:838
 #: src/SoftwareLicense.php:842 src/SoftwareLicense.php:860
 #: src/Item_Project.php:190 src/Rule.php:3608 src/ProjectTask.php:1621
@@ -2037,10 +2037,10 @@ msgstr "Дараагийн шат: %s"
 #: src/Vlan.php:178 src/Vlan.php:183 src/RuleMailCollector.php:126
 #: src/AuthLDAP.php:773 src/CommonGLPI.php:1498 src/CommonGLPI.php:1501
 #: src/CommonGLPI.php:1504 src/CommonGLPI.php:1507 src/CommonGLPI.php:1510
-#: src/Document.php:263 src/ReservationItem.php:859
+#: src/Document.php:264 src/ReservationItem.php:859
 #: src/ReservationItem.php:866 src/ReservationItem.php:886
 #: src/NotificationAjax.php:104 src/Supplier.php:541 src/Supplier.php:582
-#: src/NotificationMailing.php:190 src/Item_Devices.php:1538
+#: src/NotificationMailing.php:191 src/Item_Devices.php:1538
 #: src/NotificationTargetContract.php:199 src/Features/PlanningEvent.php:670
 #: src/NotificationTargetProjectTask.php:590
 #: src/NotificationTargetProjectTask.php:598
@@ -2077,10 +2077,10 @@ msgstr "Дараагийн шат: %s"
 #: src/Ticket.php:5097 src/Ticket.php:5617 src/Ticket.php:5932
 #: src/Ticket.php:6051 src/Item_Ticket.php:495 src/Item_Ticket.php:963
 #: src/Item_Ticket.php:1002 src/Contract_Item.php:551
-#: src/Contract_Item.php:675 src/KnowbaseItem.php:1029
-#: src/KnowbaseItem.php:1228 src/KnowbaseItem.php:1306
-#: src/KnowbaseItem.php:1893 src/NetworkPort.php:1612 src/Reminder.php:843
-#: src/Config.php:1615 src/Config.php:1682 src/User.php:2912 src/User.php:3178
+#: src/Contract_Item.php:675 src/KnowbaseItem.php:1167
+#: src/KnowbaseItem.php:1366 src/KnowbaseItem.php:1444
+#: src/KnowbaseItem.php:2031 src/NetworkPort.php:1612 src/Reminder.php:843
+#: src/Config.php:1622 src/Config.php:1689 src/User.php:2912 src/User.php:3178
 #: src/User.php:5013 src/Item_Problem.php:189 src/RegisteredID.php:118
 #: src/Change_Item.php:194 src/CommonITILObject.php:6482
 #: src/NotificationTargetChange.php:306 src/NotificationTargetChange.php:311
@@ -2236,7 +2236,7 @@ msgstr "Хаагдах огноо"
 #: src/DeviceBattery.php:99 src/DeviceBattery.php:121
 #: src/ContentTemplates/Parameters/TicketParameters.php:79
 #: src/ContentTemplates/Parameters/LevelAgreementParameters.php:55
-#: src/RuleCollection.php:1364 src/RuleCollection.php:2401 src/Domain.php:118
+#: src/RuleCollection.php:1364 src/RuleCollection.php:2400 src/Domain.php:118
 #: src/ConsumableItem.php:184
 msgid "Type"
 msgid_plural "Types"
@@ -2254,13 +2254,13 @@ msgstr[1] "Төрөл"
 #: src/NotificationTargetCommonITILObject.php:1808
 #: src/NotificationTargetCommonITILObject.php:1844
 #: src/NotificationTargetCommonITILObject.php:1923
-#: src/PlanningExternalEvent.php:295 src/Auth.php:1812 src/AuthLDAP.php:997
+#: src/PlanningExternalEvent.php:295 src/Auth.php:1821 src/AuthLDAP.php:997
 #: src/AuthLDAP.php:1210 src/AuthLDAP.php:4053 src/DatabaseInstance.php:418
 #: src/Item_SoftwareVersion.php:1088 src/RuleSoftwareCategory.php:88
 #: src/CommonITILTask.php:876 src/CommonITILTask.php:1511 src/Software.php:378
-#: src/KnowbaseItem_KnowbaseItemCategory.php:140 src/KnowbaseItem.php:1228
-#: src/KnowbaseItem.php:1433 src/KnowbaseItem.php:1893
-#: src/KnowbaseItem.php:1960 src/DatabaseInstanceCategory.php:45
+#: src/KnowbaseItem_KnowbaseItemCategory.php:140 src/KnowbaseItem.php:1366
+#: src/KnowbaseItem.php:1571 src/KnowbaseItem.php:2031
+#: src/KnowbaseItem.php:2098 src/DatabaseInstanceCategory.php:45
 #: src/User.php:2940 src/User.php:4059
 #: src/PlanningExternalEventTemplate.php:68 src/CommonITILObject.php:4179
 #: src/CommonITILObject.php:6772 src/RuleDictionnarySoftware.php:124
@@ -2373,7 +2373,7 @@ msgstr "Дахин нээх"
 #: templates/components/itilobject/selfservice.html.twig
 #: front/stat.graph.php:248 front/stat.tracking.php:112 src/RuleTicket.php:751
 #: src/RuleTicket.php:931 src/NotificationTargetCommonITILObject.php:1767
-#: src/Config.php:997 src/CommonITILObject.php:4085
+#: src/Config.php:1004 src/CommonITILObject.php:4085
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:71
 msgid "Urgency"
 msgstr "Яаралтай байдал"
@@ -2381,7 +2381,7 @@ msgstr "Яаралтай байдал"
 #: templates/components/itilobject/fields/priority_matrix.html.twig
 #: front/stat.graph.php:255 front/stat.tracking.php:113 src/RuleTicket.php:754
 #: src/RuleTicket.php:934 src/NotificationTargetCommonITILObject.php:1768
-#: src/Csv/ImpactCsvExport.php:99 src/Config.php:979
+#: src/Csv/ImpactCsvExport.php:99 src/Config.php:986
 #: src/CommonITILObject.php:4094 src/NotificationTargetChange.php:274
 #: src/Impact.php:270 src/Impact.php:1102
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:72
@@ -2480,7 +2480,7 @@ msgstr[1] "Документ"
 #: src/RuleTicket.php:1102 src/Rule.php:2227 src/Rule.php:2248
 #: src/Profile.php:1576 src/NotificationTargetChange.php:317
 #: src/NotificationTargetChange.php:323 src/NotificationTargetChange.php:362
-#: src/RuleCollection.php:2022 src/RuleRightCollection.php:78
+#: src/RuleCollection.php:2021 src/RuleRightCollection.php:78
 msgid "Validation"
 msgid_plural "Validations"
 msgstr[0] "Баталгаажуулалтууд"
@@ -2537,17 +2537,17 @@ msgstr "Өөрчлөх"
 #: templates/components/itilobject/timeline/form_document_item.html.twig
 #: src/Document_Item.php:682 src/Document_Item.php:767
 #: src/NotificationTargetProject.php:754
-#: src/NotificationTargetCommonITILObject.php:2087 src/Document.php:486
-#: src/Document.php:1071 src/NotificationTargetProjectTask.php:656
-#: src/KnowbaseItem.php:1257
+#: src/NotificationTargetCommonITILObject.php:2087 src/Document.php:484
+#: src/Document.php:1069 src/NotificationTargetProjectTask.php:656
+#: src/KnowbaseItem.php:1395
 msgid "Heading"
 msgstr "Толгой хэсэг"
 
 #: templates/components/itilobject/timeline/form_document_item.html.twig
 #: src/Document_Item.php:765 src/NotificationTargetProject.php:756
-#: src/NotificationTargetCommonITILObject.php:2097 src/Document.php:527
-#: src/Document.php:1037 src/NotificationTargetProjectTask.php:662
-#: src/KnowbaseItem.php:1256
+#: src/NotificationTargetCommonITILObject.php:2097 src/Document.php:525
+#: src/Document.php:1035 src/NotificationTargetProjectTask.php:662
+#: src/KnowbaseItem.php:1394
 msgid "File"
 msgstr "Файл"
 
@@ -2676,7 +2676,7 @@ msgstr[1] "Task-н загвар"
 #: src/NotificationTargetProjectTask.php:630 src/ITILFollowup.php:632
 #: src/ITILFollowup.php:707 src/Event.php:311 src/Event.php:389
 #: src/CommonITILTask.php:769 src/CommonITILTask.php:988 src/Ticket.php:6383
-#: src/KnowbaseItem.php:1258 src/CommonITILObject.php:5440
+#: src/KnowbaseItem.php:1396 src/CommonITILObject.php:5440
 #: src/CommonITILObject.php:6757 src/NotificationTargetChange.php:308
 #: src/NotificationTargetChange.php:318 src/NotificationTargetChange.php:390
 #: src/NotificationTargetChange.php:395 src/CronTask.php:1382
@@ -2776,7 +2776,7 @@ msgstr "Шийдлийг батлах"
 #: src/Rack.php:222 src/LevelAgreement.php:177 src/LevelAgreement.php:701
 #: src/SoftwareVersion.php:127 src/SoftwareVersion.php:191
 #: src/SoftwareVersion.php:359 src/Socket.php:1038 src/FieldUnicity.php:394
-#: src/Auth.php:1750 src/ComputerVirtualMachine.php:212
+#: src/Auth.php:1759 src/ComputerVirtualMachine.php:212
 #: src/ComputerVirtualMachine.php:340 src/CartridgeItem.php:336
 #: src/Cable.php:257 src/CommonITILCost.php:125 src/CommonITILCost.php:466
 #: src/Project.php:720 src/Project.php:1119 src/Project.php:1747
@@ -2787,7 +2787,7 @@ msgstr "Шийдлийг батлах"
 #: src/Vlan.php:184 src/NotificationTargetReservation.php:180
 #: src/AuthMail.php:155 src/AuthMail.php:202 src/Cluster.php:103
 #: src/AuthLDAP.php:543 src/AuthLDAP.php:958 src/AuthLDAP.php:1219
-#: src/Unmanaged.php:152 src/Document.php:504 src/Document.php:1123
+#: src/Unmanaged.php:152 src/Document.php:502 src/Document.php:1121
 #: src/ReservationItem.php:162 src/ReservationItem.php:231
 #: src/ReservationItem.php:410 src/DatabaseInstance.php:254
 #: src/DatabaseInstance.php:434 src/RSSFeed.php:491 src/RSSFeed.php:738
@@ -2807,7 +2807,7 @@ msgstr "Шийдлийг батлах"
 #: src/ManualLink.php:117 src/Ticket.php:3440 src/Appliance.php:133
 #: src/Group.php:300 src/NetworkPort.php:1453 src/NetworkPort.php:1710
 #: src/DomainRecord.php:138 src/DomainRecord.php:495 src/Search.php:8312
-#: src/Profile.php:783 src/Profile.php:2098 src/Config.php:3313
+#: src/Profile.php:783 src/Profile.php:2098 src/Config.php:3324
 #: src/User.php:2955 src/User.php:3935 src/RuleImportEntity.php:122
 #: src/SLM.php:191 src/SLM.php:251 src/Computer.php:471
 #: src/NotificationTargetChange.php:313 src/NotificationTargetChange.php:324
@@ -2939,7 +2939,7 @@ msgstr "Имэйлээр followup хийх"
 #: templates/components/itilobject/actors/main.html.twig
 #: templates/impact/edit_compound_modal.html.twig
 #: templates/pages/setup/setup_notifications.html.twig
-#: src/Dashboard/Grid.php:873 src/Auth.php:1823 src/AuthLDAP.php:705
+#: src/Dashboard/Grid.php:873 src/Auth.php:1832 src/AuthLDAP.php:705
 #: src/AuthLDAP.php:892 src/AuthLDAP.php:1020 src/AuthLDAP.php:1056
 #: src/User.php:5633 src/Impact.php:411 src/Impact.php:1121
 #: src/Impact.php:1835
@@ -3014,7 +3014,7 @@ msgstr ""
 #: src/Item_Devices.php:174 src/Problem.php:454 src/Change.php:474
 #: src/Ticket.php:3222 src/Ticket.php:5079 src/Item_Ticket.php:907
 #: src/Lockedfield.php:169 src/Item_SoftwareLicense.php:98
-#: src/KnowbaseItem.php:1963 src/CommonITILObject.php:6770
+#: src/KnowbaseItem.php:2101 src/CommonITILObject.php:6770
 msgid "Associated element"
 msgid_plural "Associated elements"
 msgstr[0] "Холбоотой элемент"
@@ -3150,7 +3150,7 @@ msgstr "Төрөл"
 #: src/Item_SoftwareLicense.php:506 src/Item_SoftwareLicense.php:635
 #: src/Item_SoftwareLicense.php:922 src/SavedSearch_Alert.php:294
 #: src/Group.php:1012 src/Item_DeviceCamera_ImageFormat.php:117
-#: src/Contract_Item.php:417 src/KnowbaseItem.php:2137
+#: src/Contract_Item.php:417 src/KnowbaseItem.php:2275
 #: src/Notification_NotificationTemplate.php:199
 #: src/Notification_NotificationTemplate.php:277 src/Search.php:8956
 #: src/ProjectTask_Ticket.php:546 src/Group_User.php:685
@@ -3190,7 +3190,7 @@ msgstr "Түүх байхгүй байна"
 #: src/CommonITILCost.php:116 src/Project.php:549 src/Project.php:1166
 #: src/SoftwareLicense.php:378 src/SoftwareLicense.php:1243 src/Rule.php:729
 #: src/Ticket_Ticket.php:71 src/Printer.php:351 src/AuthMail.php:112
-#: src/AuthLDAP.php:1097 src/Unmanaged.php:98 src/Document.php:1028
+#: src/AuthLDAP.php:1097 src/Unmanaged.php:98 src/Document.php:1026
 #: src/ReservationItem.php:195 src/DatabaseInstance.php:337
 #: src/Item_SoftwareVersion.php:70 src/CommonTreeDropdown.php:753
 #: src/Supplier.php:178 src/Enclosure.php:112 src/Item_Devices.php:144
@@ -3208,7 +3208,7 @@ msgstr "Түүх байхгүй байна"
 #: src/Datacenter.php:100 src/Ticket.php:5071 src/Ticket.php:5097
 #: src/Ticket.php:5617 src/Consumable.php:641 src/Appliance.php:255
 #: src/Appliance.php:281 src/Item_SoftwareLicense.php:80
-#: src/Contract_Item.php:151 src/KnowbaseItem.php:2285
+#: src/Contract_Item.php:151 src/KnowbaseItem.php:2423
 #: src/CommonDBRelation.php:324 src/NetworkPort.php:1656
 #: src/NetworkPort.php:1728 src/Notification_NotificationTemplate.php:153
 #: src/Notification_NotificationTemplate.php:241 src/Search.php:8272
@@ -3274,7 +3274,7 @@ msgstr "%s оруулгуудыг харуулж байна"
 #: templates/components/user/info_card.html.twig front/stat.graph.php:264
 #: front/stat.tracking.php:106 src/NotificationTargetCommonITILObject.php:1783
 #: src/NotificationTargetCommonITILObject.php:1807
-#: src/NotificationTargetCommonITILObject.php:1843 src/Auth.php:1806
+#: src/NotificationTargetCommonITILObject.php:1843 src/Auth.php:1815
 #: src/AuthLDAP.php:993 src/AuthLDAP.php:1201 src/AuthLDAP.php:4052
 #: src/User.php:2972
 msgctxt "person"
@@ -3421,14 +3421,14 @@ msgstr ""
 msgid "Take me home"
 msgstr "Намайг home-руу аваач"
 
-#: templates/generic_show_form.html.twig src/Auth.php:1738
+#: templates/generic_show_form.html.twig src/Auth.php:1747
 #: src/AuthLDAP.php:951 src/AuthLDAP.php:1156 src/AuthLDAP.php:4047
 #: src/User.php:2768 src/User.php:3184 src/User.php:6764
 #: src/ContentTemplates/Parameters/UserParameters.php:82
 msgid "Surname"
 msgstr "Овог"
 
-#: templates/generic_show_form.html.twig src/Auth.php:1744
+#: templates/generic_show_form.html.twig src/Auth.php:1753
 #: src/AuthLDAP.php:954 src/AuthLDAP.php:1165 src/AuthLDAP.php:4048
 #: src/User.php:2779 src/User.php:3219 src/User.php:3794 src/User.php:6785
 #: src/NotificationTargetUser.php:164 src/Contact.php:265
@@ -3450,8 +3450,8 @@ msgstr "Нь идэвхтэй"
 #: src/SavedSearch_User.php:78 src/RuleImportComputer.php:161
 #: src/Item_SoftwareVersion.php:1183 src/Dropdown.php:1042
 #: src/Dropdown.php:1068 src/MailCollector.php:351
-#: src/Marketplace/View.php:1080 src/Search.php:5394 src/Config.php:1172
-#: src/Config.php:2462 src/Alert.php:151 src/SavedSearch.php:112
+#: src/Marketplace/View.php:1080 src/Search.php:5394 src/Config.php:1179
+#: src/Config.php:2473 src/Alert.php:151 src/SavedSearch.php:112
 #: src/SavedSearch.php:509 src/SavedSearch.php:1160 src/SavedSearch.php:1217
 #: src/Item_RemoteManagement.php:351 src/CommonDBChild.php:1028
 #: src/RuleImportAsset.php:250
@@ -3481,7 +3481,7 @@ msgstr "Мэдээллийн төвийн байрлал"
 msgid "Registration date"
 msgstr "Бүртгэлийн огноо"
 
-#: templates/generic_show_form.html.twig src/Auth.php:1757
+#: templates/generic_show_form.html.twig src/Auth.php:1766
 #: src/AuthLDAP.php:961 src/User.php:2961 src/User.php:3442 src/User.php:4002
 msgctxt "user"
 msgid "Administrative number"
@@ -3496,7 +3496,7 @@ msgstr "Админы дугаар"
 #: templates/generic_show_form.html.twig
 #: src/NotificationTargetCommonITILObject.php:1781
 #: src/NotificationTargetCommonITILObject.php:1812
-#: src/NotificationTargetCommonITILObject.php:1848 src/Auth.php:1794
+#: src/NotificationTargetCommonITILObject.php:1848 src/Auth.php:1803
 #: src/Contact_Supplier.php:312 src/AuthLDAP.php:986 src/AuthLDAP.php:1183
 #: src/AuthLDAP.php:4050 src/Dropdown.php:611 src/User.php:2946
 #: src/User.php:3404 src/User.php:3852 src/Contact.php:290
@@ -3507,7 +3507,7 @@ msgstr "Суурин утас 2"
 #: templates/generic_show_form.html.twig
 #: src/NotificationTargetCommonITILObject.php:1779
 #: src/NotificationTargetCommonITILObject.php:1810
-#: src/NotificationTargetCommonITILObject.php:1846 src/Auth.php:1800
+#: src/NotificationTargetCommonITILObject.php:1846 src/Auth.php:1809
 #: src/Contact_Supplier.php:313 src/AuthLDAP.php:990 src/AuthLDAP.php:1192
 #: src/AuthLDAP.php:4051 src/Dropdown.php:618 src/User.php:2930
 #: src/User.php:3363 src/User.php:3860 src/Contact.php:298
@@ -3688,7 +3688,7 @@ msgstr "Хариуцсан групп"
 #: src/DeviceDrive.php:65 src/DeviceDrive.php:105 src/DeviceControl.php:63
 #: src/DeviceControl.php:105 src/PDU.php:169 src/SocketModel.php:51
 #: src/RuleImportAsset.php:115 src/DeviceNetworkCard.php:78
-#: src/DeviceNetworkCard.php:120 src/RuleCollection.php:2368
+#: src/DeviceNetworkCard.php:120 src/RuleCollection.php:2367
 msgid "Model"
 msgid_plural "Models"
 msgstr[0] "Загвар"
@@ -3708,7 +3708,7 @@ msgstr "Хэрэглэгчийн өөр дугаар"
 #: src/Peripheral.php:247 src/NetworkEquipment.php:323 src/RuleAsset.php:114
 #: src/Monitor.php:263 src/NotificationTargetProject.php:716 src/Phone.php:277
 #: src/NotificationTargetProblem.php:209 src/Printer.php:403
-#: src/Appliance.php:172 src/Search.php:8321 src/Config.php:582
+#: src/Appliance.php:172 src/Search.php:8321 src/Config.php:589
 #: src/Computer.php:479 src/NotificationTargetChange.php:287
 #: src/Certificate.php:209 src/CommonDBTM.php:3542
 msgid "Alternate username"
@@ -3766,8 +3766,8 @@ msgstr[1] "Хувилбар"
 #: src/Entity.php:3663 src/Entity.php:3686 src/Contract.php:1571
 #: src/Contract.php:1593 src/Html.php:7010 src/LevelAgreement.php:193
 #: src/Transfer.php:3926 src/Features/PlanningEvent.php:749
-#: src/Infocom.php:1781 src/Config.php:746 src/Config.php:1177
-#: src/Config.php:1412 src/Config.php:3611 src/Alert.php:113 src/Alert.php:182
+#: src/Infocom.php:1781 src/Config.php:753 src/Config.php:1184
+#: src/Config.php:1419 src/Config.php:3622 src/Alert.php:113 src/Alert.php:182
 #: src/CronTask.php:667
 msgid "Never"
 msgstr "Хэзээ ч үгүй"
@@ -3966,10 +3966,10 @@ msgstr "Сүлжээний хаб"
 #: templates/pages/assets/monitor.html.twig
 #: templates/pages/assets/phone.html.twig
 #: templates/pages/assets/printer.html.twig
-#: templates/pages/admin/inventory/agent.html.twig src/Auth.php:1661
+#: templates/pages/admin/inventory/agent.html.twig src/Auth.php:1670
 #: src/AuthLdapReplicate.php:94 src/AuthLDAP.php:1114
 #: src/DatabaseInstance.php:293 src/DatabaseInstance.php:356
-#: src/NotificationMailingSetting.php:445 src/Config.php:2165
+#: src/NotificationMailingSetting.php:445 src/Config.php:2172
 #: src/Agent.php:146
 msgid "Port"
 msgid_plural "Ports"
@@ -3991,7 +3991,7 @@ msgstr "Endpoint %s"
 #: src/Entity.php:1308 src/Html.php:1325 src/Dashboard/Grid.php:1207
 #: src/Socket.php:1035 src/RuleLocation.php:82 src/Transfer.php:3964
 #: src/Event.php:171 src/Profile.php:161 src/Profile.php:1370
-#: src/Profile.php:2107 src/Config.php:482 src/Config.php:2640
+#: src/Profile.php:2107 src/Config.php:489 src/Config.php:2651
 #: src/AllAssets.php:45 src/RuleImportAsset.php:115
 #: src/RuleImportAsset.php:121 src/RuleImportAsset.php:124
 #: src/RuleImportAsset.php:127 src/RuleImportAsset.php:130
@@ -4268,7 +4268,7 @@ msgstr "Хайлтын хэрэгсэл"
 #: src/SavedSearch_User.php:55 src/SavedSearch_User.php:77
 #: src/RuleImportComputer.php:188 src/Item_SoftwareVersion.php:1182
 #: src/Dropdown.php:1046 src/Dropdown.php:1066 src/MailCollector.php:352
-#: src/Marketplace/View.php:1075 src/Search.php:5396 src/Config.php:1173
+#: src/Marketplace/View.php:1075 src/Search.php:5396 src/Config.php:1180
 #: src/Alert.php:152 src/SavedSearch.php:111 src/SavedSearch.php:508
 #: src/SavedSearch.php:1163 src/SavedSearch.php:1216
 #: src/Item_RemoteManagement.php:349 src/CommonDBChild.php:1024
@@ -4319,7 +4319,7 @@ msgstr "Тэмдэгтийн үндсэн хязгаар (хураангуй т�
 msgid "Default url length limit"
 msgstr "Үндсэн url уртын хязгаар"
 
-#: templates/pages/setup/general/general_setup.html.twig src/Config.php:1531
+#: templates/pages/setup/general/general_setup.html.twig src/Config.php:1538
 msgid "Item locks"
 msgstr "Үүний түгжээ"
 
@@ -4400,7 +4400,7 @@ msgstr ""
 "Мэдэгдлийг тохируулах боломжгүй: Дээрх тохиргоонд багадаа нэг followup "
 "төрлийг тохируулна уу."
 
-#: templates/pages/setup/authentication.html.twig src/Auth.php:1156
+#: templates/pages/setup/authentication.html.twig src/Auth.php:1165
 #: src/Dropdown.php:1270
 msgid "External authentications"
 msgstr "Гадаад танилтууд"
@@ -4535,7 +4535,7 @@ msgstr "Имэйлийн мэдэгдэл"
 #: src/Item_SoftwareVersion.php:1049 src/Dropdown.php:1253
 #: src/RuleSoftwareCategory.php:65 src/Software.php:67
 #: src/NotificationTargetSoftwareLicense.php:90 src/Profile.php:2142
-#: src/Config.php:3329 src/RuleDictionnarySoftware.php:74
+#: src/Config.php:3340 src/RuleDictionnarySoftware.php:74
 #: src/RuleDictionnarySoftware.php:101
 msgid "Software"
 msgid_plural "Software"
@@ -4619,7 +4619,7 @@ msgid "Device id"
 msgstr "Төхөөрөмжийн id"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Document_Item.php:769
-#: src/Document.php:1062 src/NotificationTemplateTranslation.php:422
+#: src/Document.php:1060 src/NotificationTemplateTranslation.php:422
 #: src/Agent.php:139 src/Agent.php:291
 msgid "Tag"
 msgstr "Таг"
@@ -4645,7 +4645,7 @@ msgid "Network inventory timeout"
 msgstr "Сүлжээний төхөөрөмжийн завсарлага"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Profile.php:2636
-#: src/Config.php:2107 src/Config.php:2638
+#: src/Config.php:2114 src/Config.php:2649
 msgid "General setup"
 msgstr "Ерөнхий тохиргоо"
 
@@ -4788,8 +4788,8 @@ msgstr[1] "LDAP директор"
 #: src/Item_SoftwareVersion.php:170 src/Item_SoftwareVersion.php:182
 #: src/Change_Ticket.php:133 src/Appliance.php:484
 #: src/Item_SoftwareLicense.php:132 src/Item_SoftwareLicense.php:143
-#: src/Item_SoftwareLicense.php:171 src/KnowbaseItem.php:1436
-#: src/KnowbaseItem.php:1490 src/MassiveAction.php:928
+#: src/Item_SoftwareLicense.php:171 src/KnowbaseItem.php:1574
+#: src/KnowbaseItem.php:1628 src/MassiveAction.php:928
 #: src/MassiveAction.php:1247 src/MassiveAction.php:1276 src/User.php:3689
 #: src/CommonITILObject.php:3907 src/Certificate.php:571
 #: src/Certificate.php:580 src/NetworkPortMigration.php:365
@@ -4808,14 +4808,14 @@ msgid "Login to your account"
 msgstr "Бүртгэлээрээ нэвтэрнэ үү"
 
 #: templates/pages/login.html.twig src/AuthMail.php:232 src/AuthLDAP.php:4029
-#: src/MailCollector.php:306 src/MailCollector.php:579 src/Config.php:2170
+#: src/MailCollector.php:306 src/MailCollector.php:579 src/Config.php:2177
 #: src/User.php:2709 src/User.php:3178 src/User.php:3767 src/User.php:4951
 #: src/User.php:5588 src/NotificationTargetUser.php:162 src/RuleRight.php:271
 #: src/ContentTemplates/Parameters/UserParameters.php:75
 msgid "Login"
 msgstr "Нэвтрэх"
 
-#: templates/pages/login.html.twig src/Auth.php:1818
+#: templates/pages/login.html.twig src/Auth.php:1827
 #: src/DropdownTranslation.php:437 src/DropdownTranslation.php:529
 #: src/ReminderTranslation.php:171 src/ReminderTranslation.php:229
 #: src/AuthLDAP.php:1000 src/AuthLDAP.php:1290
@@ -4823,7 +4823,7 @@ msgstr "Нэвтрэх"
 #: src/NotificationTemplateTranslation.php:234
 #: src/NotificationTemplateTranslation.php:353
 #: src/KnowbaseItemTranslation.php:238 src/KnowbaseItemTranslation.php:299
-#: src/Config.php:1100 src/User.php:3257 src/User.php:3943
+#: src/Config.php:1107 src/User.php:3257 src/User.php:3943
 msgid "Language"
 msgstr "Хэл"
 
@@ -4863,7 +4863,7 @@ msgstr "Session ID буруу байна"
 
 #: index.php:141 front/helpdesk.faq.php:54
 #: front/knowbaseitemtranslation.form.php:90 src/Auth.php:108
-#: src/Config.php:663 src/Config.php:818 src/User.php:2901 src/User.php:3896
+#: src/Config.php:670 src/Config.php:825 src/User.php:2901 src/User.php:3896
 msgid "Authentication"
 msgstr "Танилт"
 
@@ -5059,8 +5059,8 @@ msgstr "Хөрөнгүүд"
 #: src/Dashboard/Grid.php:1318 src/Dashboard/Grid.php:1335
 #: src/Dashboard/Grid.php:1355 src/Dropdown.php:1116 src/Event.php:173
 #: src/Search.php:8372 src/Profile.php:156 src/Profile.php:162
-#: src/Profile.php:1193 src/Profile.php:3177 src/Config.php:885
-#: src/Config.php:1376 src/Config.php:2641
+#: src/Profile.php:1193 src/Profile.php:3177 src/Config.php:892
+#: src/Config.php:1383 src/Config.php:2652
 msgid "Assistance"
 msgstr "Тусламж"
 
@@ -5512,7 +5512,7 @@ msgstr ""
 #: src/DropdownTranslation.php:588 src/RuleAction.php:197 src/Blacklist.php:90
 #: src/Blacklist.php:122 src/NotificationMailingSetting.php:116
 #: src/SavedSearch_Alert.php:167 src/SavedSearch_Alert.php:276
-#: src/Printer_CartridgeInfo.php:74 src/Config.php:3741
+#: src/Printer_CartridgeInfo.php:74 src/Config.php:3752
 #: src/Fieldblacklist.php:79 src/Fieldblacklist.php:121
 #: src/ITILTemplatePredefinedField.php:394 src/RuleCollection.php:1456
 msgid "Value"
@@ -5569,7 +5569,7 @@ msgstr "Нийт үнэлгээ"
 #: front/allassets.php:46 src/Html.php:1506
 #: src/RuleImportAssetCollection.php:68 src/Stat.php:1755 src/Stat.php:1767
 #: src/Stat.php:1776 src/Project.php:1909 src/Lock.php:235
-#: src/Lockedfield.php:160 src/Config.php:531 src/CommonITILObject.php:9686
+#: src/Lockedfield.php:160 src/Config.php:538 src/CommonITILObject.php:9686
 msgid "Global"
 msgstr "Глобал"
 
@@ -5751,7 +5751,7 @@ msgstr "%s Kanban"
 #: front/contract_item.form.php:66 front/change_problem.form.php:53
 #: front/change_ticket.form.php:69 front/slalevel.form.php:68
 #: front/projecttask_ticket.form.php:58 front/itil_project.form.php:58
-#: front/item_ticket.form.php:71 src/Document.php:380
+#: front/item_ticket.form.php:71 src/Document.php:378
 #, php-format
 msgid "%s adds a link with an item"
 msgstr "%s нь холбоосыг нэмнэ"
@@ -5951,15 +5951,15 @@ msgstr "%s сокетыг шинэчлэнэ"
 msgid "%1$s adds several sockets"
 msgstr "%1$s хэд хэдэн сокет нэмнэ"
 
-#: front/config.form.php:74
+#: front/config.form.php:77
 msgid "PHP OPcache reset successful"
 msgstr "PHP OPcache-г амжилттай сэргээлээ"
 
-#: front/config.form.php:82
+#: front/config.form.php:85
 msgid "GLPI cache reset successful"
 msgstr "GLPI кэшийг амжилттай сэргээлээ"
 
-#: front/config.form.php:90
+#: front/config.form.php:93
 msgid "Translation cache reset successful"
 msgstr "Орчуулгын кэшийг амжилттай сэргээлээ"
 
@@ -6106,7 +6106,7 @@ msgstr "Сүлжээний бүтцийг амжилттай сэргээв"
 msgid "Unknown file"
 msgstr "Үл мэдэгдэх файл байна"
 
-#: front/document.send.php:56 src/Document.php:1208 src/Document.php:1325
+#: front/document.send.php:56 src/Document.php:1206 src/Document.php:1323
 #, php-format
 msgid "File %s not found."
 msgstr "%s файл олдсонгүй."
@@ -6215,7 +6215,7 @@ msgstr "%s нь төрлийг холбодог"
 
 #: front/transfer.action.php:38 front/transfer.php:40 src/Entity.php:1937
 #: src/Rule.php:259 src/Profile.php:1064 src/Profile.php:3037
-#: src/RuleCollection.php:2306
+#: src/RuleCollection.php:2305
 msgid "Transfer"
 msgstr "Дамжуулалт"
 
@@ -6346,7 +6346,7 @@ msgstr "%s нь хэд хэдэн сүлжээний портыг нэмнэ"
 
 #. TRANS: %s is the user login
 #: front/rssfeed.form.php:133 front/knowbaseitem.form.php:144
-#: front/reminder.form.php:133 src/KnowbaseItem.php:395
+#: front/reminder.form.php:133 src/KnowbaseItem.php:404
 #, php-format
 msgid "%s adds a target"
 msgstr "%s зорилго нэмэх"
@@ -6807,8 +6807,8 @@ msgstr "Мэдлэгийн сан дах орчуулга %s хувилбарт 
 #: src/NotificationTargetReservation.php:177
 #: src/NotificationTargetProjectTask.php:566 src/Notepad.php:227
 #: src/ITILFollowup.php:788 src/CommonITILTask.php:912
-#: src/KnowbaseItem.php:1029 src/KnowbaseItem.php:1306
-#: src/KnowbaseItem.php:1958 src/Reminder.php:412
+#: src/KnowbaseItem.php:1167 src/KnowbaseItem.php:1444
+#: src/KnowbaseItem.php:2096 src/Reminder.php:412
 #: src/CommonITILObject.php:4532
 msgid "Writer"
 msgstr "Бичигч"
@@ -6831,7 +6831,7 @@ msgstr "Байрлалын бүтэц"
 #: src/ComputerVirtualMachine.php:457 src/LevelAgreementLevel.php:103
 #: src/Cable.php:114 src/CommonITILCost.php:99 src/Project.php:532
 #: src/SoftwareLicense.php:361 src/ProjectTask.php:764 src/Transfer.php:115
-#: src/ComputerAntivirus.php:105 src/Item_Disk.php:337 src/Document.php:1012
+#: src/ComputerAntivirus.php:105 src/Item_Disk.php:337 src/Document.php:1010
 #: src/ReservationItem.php:176 src/NetworkPortEthernet.php:213
 #: src/RSSFeed.php:424 src/Item_SoftwareVersion.php:63
 #: src/CommonTreeDropdown.php:737 src/Supplier.php:162
@@ -6843,10 +6843,10 @@ msgstr "Байрлалын бүтэц"
 #: src/CommonITILTask.php:744 src/NotificationTemplate.php:165
 #: src/NetworkPortFiberchannel.php:209 src/Infocom.php:1493
 #: src/Datacenter.php:84 src/NotificationMailingSetting.php:109
-#: src/Item_SoftwareLicense.php:73 src/KnowbaseItem.php:2278
+#: src/Item_SoftwareLicense.php:73 src/KnowbaseItem.php:2416
 #: src/CommonDBRelation.php:317 src/NetworkPort.php:621
 #: src/NetworkPort.php:1639 src/Search.php:8262 src/Search.php:8283
-#: src/Profile.php:2028 src/Reminder.php:395 src/Config.php:3734
+#: src/Profile.php:2028 src/Reminder.php:395 src/Config.php:3745
 #: src/User.php:3760 src/CommonITILObject.php:4039 src/SLM.php:218
 #: src/DCRoom.php:288 src/Link.php:204 src/Group_User.php:748
 #: src/Item_RemoteManagement.php:247 src/Certificate.php:90
@@ -7003,7 +7003,7 @@ msgstr "SLA"
 #: src/RuleAsset.php:77 src/RuleTicket.php:82 src/CommonDBVisible.php:322
 #: src/CommonDBVisible.php:393 src/NotificationTargetContract.php:184
 #: src/Notepad.php:370 src/Group.php:970 src/Search.php:2105
-#: src/Search.php:2235 src/Config.php:1816 src/Config.php:1835
+#: src/Search.php:2235 src/Config.php:1823 src/Config.php:1842
 #: src/IPNetwork.php:244 src/IPNetwork.php:250 src/IPNetwork.php:1162
 #, php-format
 msgid "%1$s / %2$s"
@@ -7241,7 +7241,7 @@ msgstr "Лиценз нэмэх"
 #: src/Rule.php:806 src/ProjectTask.php:837 src/Transfer.php:131
 #: src/Transfer.php:3924 src/Printer.php:453 src/AuthMail.php:146
 #: src/Cluster.php:111 src/AuthLDAP.php:468 src/AuthLDAP.php:1272
-#: src/Unmanaged.php:168 src/Document.php:1096 src/ReservationItem.php:259
+#: src/Unmanaged.php:168 src/Document.php:1094 src/ReservationItem.php:259
 #: src/DatabaseInstance.php:442 src/RSSFeed.php:519
 #: src/CommonTreeDropdown.php:811 src/Supplier.php:267 src/Database.php:181
 #: src/Enclosure.php:164 src/CommonDropdown.php:488
@@ -7250,8 +7250,8 @@ msgstr "Лиценз нэмэх"
 #: src/NotificationTargetProjectTask.php:581 src/Notepad.php:245
 #: src/MailCollector.php:604 src/Line.php:141 src/CommonDevice.php:304
 #: src/Software.php:386 src/Datacenter.php:111 src/Appliance.php:216
-#: src/KnowbaseItem.php:2344 src/DomainRecord.php:156 src/Search.php:8335
-#: src/Profile.php:2053 src/Reminder.php:483 src/Config.php:3316
+#: src/KnowbaseItem.php:2482 src/DomainRecord.php:156 src/Search.php:8335
+#: src/Profile.php:2053 src/Reminder.php:483 src/Config.php:3327
 #: src/User.php:3953 src/CommonITILObject.php:4170
 #: src/CommonITILObject.php:6758 src/Computer.php:513 src/DCRoom.php:339
 #: src/Link.php:237 src/Certificate.php:232 src/CronTask.php:1743
@@ -7269,7 +7269,7 @@ msgstr "Сүүлийн шинэчлэлт"
 #: src/Project.php:748 src/Project.php:979 src/Project.php:1556
 #: src/SoftwareLicense.php:492 src/Rule.php:815 src/ProjectTask.php:828
 #: src/Transfer.php:140 src/Printer.php:462 src/Cluster.php:120
-#: src/AuthLDAP.php:1281 src/Document.php:1105 src/DatabaseInstance.php:451
+#: src/AuthLDAP.php:1281 src/Document.php:1103 src/DatabaseInstance.php:451
 #: src/RSSFeed.php:528 src/KnowbaseItem_Item.php:205
 #: src/CommonTreeDropdown.php:822 src/Supplier.php:276 src/Database.php:190
 #: src/Enclosure.php:173 src/CommonDropdown.php:499
@@ -7279,7 +7279,7 @@ msgstr "Сүүлийн шинэчлэлт"
 #: src/KnowbaseItem_Revision.php:145 src/QueuedNotification.php:256
 #: src/QueuedNotification.php:819 src/Line.php:186 src/CommonDevice.php:313
 #: src/Software.php:395 src/Datacenter.php:120 src/Ticket.php:3404
-#: src/Lockedfield.php:143 src/KnowbaseItem.php:2353 src/DomainRecord.php:130
+#: src/Lockedfield.php:143 src/KnowbaseItem.php:2491 src/DomainRecord.php:130
 #: src/DomainRecord.php:411 src/Profile.php:2062 src/Reminder.php:492
 #: src/User.php:3962 src/Computer.php:522 src/DCRoom.php:348 src/Link.php:246
 #: src/Certificate.php:337 src/CronTask.php:1752 src/Contact.php:428
@@ -8075,13 +8075,13 @@ msgid_plural "Costs"
 msgstr[0] "Өртөг"
 msgstr[1] "Өртөг"
 
-#: src/Contract.php:424 src/SoftwareLicense.php:947 src/Document.php:1813
+#: src/Contract.php:424 src/SoftwareLicense.php:947 src/Document.php:1811
 #: src/Ticket.php:2634 src/Appliance.php:453
 msgctxt "button"
 msgid "Add an item"
 msgstr "Үүнийг нэмсэн"
 
-#: src/Contract.php:425 src/Document.php:1814 src/Ticket.php:2660
+#: src/Contract.php:425 src/Document.php:1812 src/Ticket.php:2660
 #: src/Appliance.php:454
 msgctxt "button"
 msgid "Remove an item"
@@ -8275,7 +8275,7 @@ msgstr "D=Динамик, R=Рекурсив"
 #: src/CommonDBVisible.php:332 src/CommonDBVisible.php:357
 #: src/CommonDBVisible.php:360 src/CommonDBVisible.php:390
 #: src/CommonDBVisible.php:402 src/Log.php:743 src/Log.php:761
-#: src/Auth.php:1770 src/Auth.php:1776 src/Auth.php:1782
+#: src/Auth.php:1779 src/Auth.php:1785 src/Auth.php:1791
 #: src/CommonITILCost.php:643 src/Project.php:1332 src/Project.php:1366
 #: src/Rule.php:2039 src/Rule.php:2086 src/Contact_Supplier.php:341
 #: src/ProjectTask.php:1166 src/AuthLDAP.php:971 src/AuthLDAP.php:976
@@ -8568,7 +8568,7 @@ msgstr "Үйл явц"
 
 #: src/Html.php:1357 src/Transfer.php:4085 src/Dropdown.php:1200
 #: src/Event.php:176 src/Infocom.php:166 src/Profile.php:164
-#: src/Profile.php:1419 src/Profile.php:2266 src/Config.php:2642
+#: src/Profile.php:1419 src/Profile.php:2266 src/Config.php:2653
 msgid "Management"
 msgstr "Менежмент"
 
@@ -8596,7 +8596,7 @@ msgstr "Админ"
 msgid "Create a ticket"
 msgstr "Дуудлага бүртгэх"
 
-#: src/Html.php:1596 src/Config.php:3322
+#: src/Html.php:1596 src/Config.php:3333
 msgid "Plugins"
 msgstr "Plugin"
 
@@ -8910,11 +8910,11 @@ msgid "Alert on duplicate record"
 msgstr "Давхардсан бичлэгт мэдэгдэл авах"
 
 #: src/NotificationTargetFieldUnicity.php:49 src/Log.php:1080
-#: src/Config.php:3296
+#: src/Config.php:3307
 msgid "Add the item"
 msgstr "Үүнийг нэмэх"
 
-#: src/NotificationTargetFieldUnicity.php:49 src/Config.php:3308
+#: src/NotificationTargetFieldUnicity.php:49 src/Config.php:3319
 msgid "Update the item"
 msgstr "Үүнийг шинэчлэх"
 
@@ -8975,12 +8975,12 @@ msgid "Associate an existing document"
 msgstr "Одоо байгаа документыг холбох"
 
 #: src/Document_Item.php:766 src/NotificationTargetProject.php:757
-#: src/NotificationTargetCommonITILObject.php:2102 src/Document.php:500
-#: src/Document.php:1046 src/NotificationTargetProjectTask.php:667
+#: src/NotificationTargetCommonITILObject.php:2102 src/Document.php:498
+#: src/Document.php:1044 src/NotificationTargetProjectTask.php:667
 msgid "Web link"
 msgstr "Веб холбоос"
 
-#: src/Document_Item.php:768 src/Document.php:510 src/Document.php:1054
+#: src/Document_Item.php:768 src/Document.php:508 src/Document.php:1052
 #: src/DocumentType.php:61 src/DocumentType.php:104
 msgid "MIME type"
 msgstr "MIME төрөл"
@@ -10034,7 +10034,7 @@ msgid "Number of tickets"
 msgstr "Дуудлагуудын тоо"
 
 #: src/NotificationTargetProject.php:710
-#: src/NotificationTargetCommonITILObject.php:1862 src/Document.php:992
+#: src/NotificationTargetCommonITILObject.php:1862 src/Document.php:990
 #: src/NotificationTargetProjectTask.php:618
 msgctxt "quantity"
 msgid "Number of documents"
@@ -10146,7 +10146,7 @@ msgid_plural "Project task templates"
 msgstr[0] "Төслийн task-н загвар"
 msgstr[1] "Төслийн task-н загвар"
 
-#: src/Dashboard/Dashboard.php:388 src/Planning.php:1816
+#: src/Dashboard/Dashboard.php:388 src/Planning.php:1819
 #, php-format
 msgid "Copy of %s"
 msgstr "%s-ийн хуулбар"
@@ -11180,8 +11180,8 @@ msgid "Processing %1$s"
 msgstr "%1$s ажиллаж байна"
 
 #: src/NotificationTargetCommonITILObject.php:2019 src/LevelAgreement.php:261
-#: src/CalendarSegment.php:423 src/CalendarSegment.php:454 src/Config.php:1500
-#: src/Config.php:1521
+#: src/CalendarSegment.php:423 src/CalendarSegment.php:454 src/Config.php:1507
+#: src/Config.php:1528
 msgid "Day"
 msgid_plural "Days"
 msgstr[0] "Өдөр"
@@ -11367,8 +11367,8 @@ msgstr[1] "Минут"
 
 #: src/LevelAgreement.php:260
 #: src/Stat/Data/Sglobal/StatDataTicketAverageTime.php:85
-#: src/Stat/Data/Graph/StatDataTicketNumber.php:94 src/Config.php:1499
-#: src/Config.php:1520
+#: src/Stat/Data/Graph/StatDataTicketNumber.php:94 src/Config.php:1506
+#: src/Config.php:1527
 msgid "Hour"
 msgid_plural "Hours"
 msgstr[0] "Цаг"
@@ -11458,8 +11458,8 @@ msgid_plural "Mandatory fields"
 msgstr[0] "Заавал байх талбар"
 msgstr[1] "Заавал байх талбарууд"
 
-#: src/ITILTemplateMandatoryField.php:177 src/Auth.php:1237 src/Auth.php:1254
-#: src/Auth.php:1271
+#: src/ITILTemplateMandatoryField.php:177 src/Auth.php:1246 src/Auth.php:1263
+#: src/Auth.php:1280
 #, php-format
 msgid "%1$s + %2$s"
 msgstr "%1$s + %2$s"
@@ -11509,7 +11509,7 @@ msgstr "%1$s-г %2$s болгож өөрчлөх"
 msgid "Update a field"
 msgstr "Талбарыг шинэчилнэ үү"
 
-#: src/Log.php:1084 src/Config.php:3299
+#: src/Log.php:1084 src/Config.php:3310
 msgid "Delete the item"
 msgstr "Төхөөрөмжийг устгах"
 
@@ -11521,7 +11521,7 @@ msgstr "Зүйлийг түгжих"
 msgid "Unlock the item"
 msgstr "Тухайн зүйлийн түгжээг тайлна уу"
 
-#: src/Log.php:1096 src/Config.php:3304
+#: src/Log.php:1096 src/Config.php:3315
 msgid "Restore the item"
 msgstr "Төхөөрөмжийг сэргээх"
 
@@ -11788,7 +11788,7 @@ msgstr "Хэрэглэгчийн нэр эсвэл нууц үг буруу ба
 msgid "Unsupported mail server type:%s."
 msgstr "Дэмжигдээгүй имэйл серверийн төрөл: %s."
 
-#: src/Auth.php:309 src/Auth.php:1025 src/Auth.php:1049
+#: src/Auth.php:309 src/Auth.php:1030 src/Auth.php:1058
 msgid "User not authorized to connect in GLPI"
 msgstr "Хэрэглэгч GLPI-д холбогдох эрхгүй байна"
 
@@ -11820,118 +11820,118 @@ msgstr[1] "Хэрэглэгч LDAP диретороос олдсонгүй"
 msgid "Empty login or password"
 msgstr "Нэвтрэх хэсэг эсвэл нууц үг хоосон байна"
 
-#: src/Auth.php:1069
+#: src/Auth.php:1078
 #, php-format
 msgid "%1$s log in from IP %2$s"
 msgstr "%1$sнь IP %2$s-р нэвтрэв"
 
-#: src/Auth.php:1086
+#: src/Auth.php:1095
 #, php-format
 msgid "Failed login for %1$s from IP %2$s"
 msgstr "%1$s-с IP %2$s-д нэвтрэх явц амжилтгүй боллоо"
 
-#: src/Auth.php:1155
+#: src/Auth.php:1164
 msgid "Authentication on GLPI database"
 msgstr "GLPI өгөгдлийн сан дээрх танилт"
 
-#: src/Auth.php:1168
+#: src/Auth.php:1177
 msgid "Authentication on a LDAP directory"
 msgstr "LDAP директор дээрх танилт"
 
-#: src/Auth.php:1180
+#: src/Auth.php:1189
 msgid "Authentication on mail server"
 msgstr "Имэйл сервер дээрх танилт"
 
-#: src/Auth.php:1194
+#: src/Auth.php:1203
 msgid "Version 1"
 msgstr "хувилбар 1 "
 
-#: src/Auth.php:1195
+#: src/Auth.php:1204
 msgid "Version 2"
 msgstr "хувилбар 2"
 
-#: src/Auth.php:1196
+#: src/Auth.php:1205
 msgid "Version 3+"
 msgstr "хувилбар 3+"
 
-#: src/Auth.php:1228 src/AuthMail.php:96 src/RuleRight.php:256
+#: src/Auth.php:1237 src/AuthMail.php:96 src/RuleRight.php:256
 msgid "Email server"
 msgstr "Имэйл сервер"
 
-#: src/Auth.php:1238 src/Auth.php:1245
+#: src/Auth.php:1247 src/Auth.php:1254
 msgid "CAS"
 msgstr "CAS"
 
-#: src/Auth.php:1255 src/Auth.php:1262 src/Auth.php:1686
+#: src/Auth.php:1264 src/Auth.php:1271 src/Auth.php:1695
 msgid "x509 certificate authentication"
 msgstr "x509 сертификатын танилт"
 
-#: src/Auth.php:1272 src/Auth.php:1279 src/Profile.php:3489
+#: src/Auth.php:1281 src/Auth.php:1288 src/Profile.php:3489
 msgid "Other"
 msgstr "Бусад"
 
-#: src/Auth.php:1282 src/Auth.php:1842
+#: src/Auth.php:1291 src/Auth.php:1851
 msgid "GLPI internal database"
 msgstr "GLPI дотоод өгөгдлийн сан"
 
-#: src/Auth.php:1285 src/Config.php:799 src/Config.php:2649
+#: src/Auth.php:1294 src/Config.php:806 src/Config.php:2660
 msgid "API"
 msgstr "API"
 
-#: src/Auth.php:1288
+#: src/Auth.php:1297
 msgid "Not yet authenticated"
 msgstr "Хараахан баталгаажуулаагүй байна"
 
-#: src/Auth.php:1536 src/User.php:3665
+#: src/Auth.php:1545 src/User.php:3665
 msgid "Force synchronization"
 msgstr "Хүчээр синхрончлох"
 
-#: src/Auth.php:1541 src/User.php:3667
+#: src/Auth.php:1550 src/User.php:3667
 msgid "Clean LDAP fields and force synchronisation"
 msgstr "LDAP дуудлагуудыг цэвэрлэж, синхрончлолыг хүчээр хийх"
 
-#: src/Auth.php:1556
+#: src/Auth.php:1565
 msgid "Change of the authentication method"
 msgstr "Танилт хийх аргачлалын өөрчлөлт"
 
-#: src/Auth.php:1595
+#: src/Auth.php:1604
 msgid "Synchronization"
 msgstr "Синхрончлол"
 
-#: src/Auth.php:1641
+#: src/Auth.php:1650
 msgid "CAS authentication"
 msgstr "CAS танилт"
 
-#: src/Auth.php:1643 src/Auth.php:1688 src/Auth.php:1711
+#: src/Auth.php:1652 src/Auth.php:1697 src/Auth.php:1720
 msgctxt "authentication"
 msgid "Enabled"
 msgstr "Идэвхжүүлсэн байна"
 
 #. TRANS: for CAS SSO system
-#: src/Auth.php:1652
+#: src/Auth.php:1661
 msgid "CAS Host"
 msgstr "CAS хост"
 
 #. TRANS: for CAS SSO system
-#: src/Auth.php:1655
+#: src/Auth.php:1664
 msgid "CAS Version"
 msgstr "CAS хувилбар"
 
 #. TRANS: for CAS SSO system
-#: src/Auth.php:1664
+#: src/Auth.php:1673
 msgid "Root directory (optional)"
 msgstr "Root директор (заавал биш)"
 
 #. TRANS: for CAS SSO system
-#: src/Auth.php:1667
+#: src/Auth.php:1676
 msgid "Log out fallback URL"
 msgstr "URL-ээс буцаж гарах"
 
-#: src/Auth.php:1673
+#: src/Auth.php:1682
 msgid "The CURL extension for your PHP parser isn't installed"
 msgstr "Таны PHP parser программын CURL extension суугаагүй байна"
 
-#: src/Auth.php:1677
+#: src/Auth.php:1686
 msgid ""
 "The CAS lib isn't available, GLPI doesn't package it anymore for license "
 "compatibility issue."
@@ -11939,28 +11939,28 @@ msgstr ""
 "CAS lib-г ашиглах боломжгүй, GLPI нь лицензийн нийцтэй байдлын үүднээс "
 "үүнийг дахиж багцлахгүй болно."
 
-#: src/Auth.php:1680
+#: src/Auth.php:1689
 msgid "Impossible to use CAS as external source of connection"
 msgstr "CAS-г гадаад холболтын эх үүсвэр болгон ашиглах боломжгүй"
 
-#: src/Auth.php:1692
+#: src/Auth.php:1701
 msgid "Email attribute for x509 authentication"
 msgstr "X509 танилтыг баталгаажуулах имэйлийн утга"
 
-#: src/Auth.php:1696 src/Auth.php:1700 src/Auth.php:1704
+#: src/Auth.php:1705 src/Auth.php:1709 src/Auth.php:1713
 #, php-format
 msgid "Restrict %s field for x509 authentication (separator $)"
 msgstr "X509 танилтын хувьд %s талбарыг хязгаарлах (тусгаарлагч $)"
 
-#: src/Auth.php:1709
+#: src/Auth.php:1718
 msgid "Other authentication sent in the HTTP request"
 msgstr "HTTP хүсэлтэд илгээсэн бусад танилт"
 
-#: src/Auth.php:1724
+#: src/Auth.php:1733
 msgid "SSO logout url"
 msgstr "SSO-с гарах url"
 
-#: src/Auth.php:1730
+#: src/Auth.php:1739
 msgid "Remove the domain of logins like login@domain"
 msgstr "login@domain гэх мэт бүртгэлийн домэйнийг устгах"
 
@@ -12557,7 +12557,7 @@ msgstr[0] "Төсөл"
 msgstr[1] "Төслүүд"
 
 #: src/Rule.php:119 src/Event.php:168 src/Profile.php:1903
-#: src/RuleCollection.php:2198
+#: src/RuleCollection.php:2197
 msgid "Rule"
 msgid_plural "Rules"
 msgstr[0] "Дүрэм"
@@ -12716,11 +12716,11 @@ msgstr "Дүрэм хүчинтэй байна"
 msgid "Rule is inactive"
 msgstr "Дүрэм хүчингүй байна"
 
-#: src/Rule.php:2221 src/RuleCollection.php:1948
+#: src/Rule.php:2221 src/RuleCollection.php:1947
 msgid "Result details"
 msgstr "Үр дүнгийн мэдээлэл"
 
-#: src/Rule.php:2246 src/RuleCollection.php:2020
+#: src/Rule.php:2246 src/RuleCollection.php:2019
 #: src/RuleRightCollection.php:76
 msgid "Rule results"
 msgstr "Дүрмийн үр дүн"
@@ -12734,7 +12734,7 @@ msgid "Key"
 msgstr "Түлхүүр"
 
 #: src/Rule.php:2481 src/CommonGLPI.php:106 src/Ticket.php:5141
-#: src/Ticket.php:5677 src/Config.php:3286 src/CommonITILObject.php:6620
+#: src/Ticket.php:5677 src/Config.php:3297 src/CommonITILObject.php:6620
 #: src/CommonItilObject_Item.php:148 src/RuleImportAsset.php:183
 #: src/RuleImportAsset.php:187 src/RuleImportAsset.php:192
 msgid "General"
@@ -13226,7 +13226,7 @@ msgid_plural "Subnet masks"
 msgstr[0] "Subnet mask"
 msgstr[1] "Subnet mask"
 
-#: src/NotificationEventMailing.php:390 src/NotificationMailing.php:114
+#: src/NotificationEventMailing.php:390 src/NotificationMailing.php:115
 #, php-format
 msgid "Original email address was %1$s"
 msgstr "Оригнал имэйл хаяг %1$s байсан"
@@ -13668,7 +13668,7 @@ msgid "Add a LDAP directory replica"
 msgstr "LDAP директорын хуулбарыг нэмнэ үү"
 
 #: src/AuthLdapReplicate.php:93 src/AuthMail.php:121 src/AuthLDAP.php:485
-#: src/AuthLDAP.php:1106 src/MailCollector.php:160 src/Config.php:2162
+#: src/AuthLDAP.php:1106 src/MailCollector.php:160 src/Config.php:2169
 #: src/Toolbox.php:1984
 msgid "Server"
 msgstr "Сервер"
@@ -13682,7 +13682,7 @@ msgstr "Завсарлага"
 msgid "No timeout"
 msgstr "Завсарлага байхгүй"
 
-#: src/Preference.php:42 src/Config.php:2632 src/Impact.php:380
+#: src/Preference.php:42 src/Config.php:2643 src/Impact.php:380
 #: src/Impact.php:1073 src/Impact.php:1132
 msgid "Settings"
 msgstr "Тохиргоо"
@@ -13744,9 +13744,9 @@ msgstr "Орчуулгын жагсаалт"
 #: src/ReminderTranslation.php:172 src/NotificationTemplateTranslation.php:152
 #: src/NotificationTemplateTranslation.php:362
 #: src/NotificationTemplateTranslation.php:584 src/QueuedNotification.php:238
-#: src/QueuedNotification.php:863 src/KnowbaseItem.php:1077
-#: src/KnowbaseItem.php:1231 src/KnowbaseItem.php:1951
-#: src/KnowbaseItem.php:2294 src/KnowbaseItemTranslation.php:167
+#: src/QueuedNotification.php:863 src/KnowbaseItem.php:1215
+#: src/KnowbaseItem.php:1369 src/KnowbaseItem.php:2089
+#: src/KnowbaseItem.php:2432 src/KnowbaseItemTranslation.php:167
 #: src/KnowbaseItemTranslation.php:239 src/KnowbaseItemTranslation.php:317
 #: src/ContentTemplates/Parameters/KnowbaseItemParameters.php:69
 msgid "Subject"
@@ -13884,7 +13884,7 @@ msgstr "Идэвхтэй директор"
 msgid "OpenLDAP"
 msgstr ""
 
-#: src/AuthLDAP.php:462 src/Config.php:2639
+#: src/AuthLDAP.php:462 src/Config.php:2650
 msgid "Default values"
 msgstr "Үндсэн утга"
 
@@ -13929,7 +13929,7 @@ msgstr "Нэвтрэх талбар"
 msgid "Synchronization field"
 msgstr "Синхрончлолын талбар"
 
-#: src/AuthLDAP.php:589 src/Config.php:2924
+#: src/AuthLDAP.php:589 src/Config.php:2935
 #, php-format
 msgid "%s extension is missing"
 msgstr "%s extension байхгүй байна"
@@ -14091,7 +14091,7 @@ msgid "Search filter for users"
 msgstr "Хэрэглэгчид зориулсан хайлтын хэсэг"
 
 #: src/AuthLDAP.php:1534 src/AuthLDAP.php:4099 src/ReservationItem.php:480
-#: src/KnowbaseItem.php:1381 src/Search.php:2578 src/Knowbase.php:66
+#: src/KnowbaseItem.php:1519 src/Search.php:2578 src/Knowbase.php:66
 #: src/Planning.php:584
 msgctxt "button"
 msgid "Search"
@@ -14332,8 +14332,8 @@ msgstr "Хөрвүүлэх"
 msgid "Select an itemtype: "
 msgstr "Зүйлийн төрлийг сонгоно уу:"
 
-#: src/Document.php:194 src/Document.php:1236 src/Document.php:1354
-#: src/Document.php:1451
+#: src/Document.php:194 src/Document.php:1234 src/Document.php:1352
+#: src/Document.php:1449
 #, php-format
 msgid "Successful deletion of the file %s"
 msgstr ""
@@ -14343,129 +14343,129 @@ msgstr ""
 msgid "Failed to delete the file %s"
 msgstr "%s файлыг устгахад алдаа гарлаа"
 
-#: src/Document.php:326 src/Document.php:422
+#: src/Document.php:324 src/Document.php:420
 msgid "Invalid link"
 msgstr "Хүчингүй холбоос"
 
-#: src/Document.php:456
+#: src/Document.php:454
 #, php-format
 msgid "Added by %s"
 msgstr "%s-г нэмсэн"
 
-#: src/Document.php:475
+#: src/Document.php:473
 msgid "Current file"
 msgstr "Одоогийн файл"
 
-#: src/Document.php:491 src/Document.php:1114
+#: src/Document.php:489 src/Document.php:1112
 msgid "Checksum"
 msgstr "Хяналтын дүн"
 
-#: src/Document.php:491 src/Document.php:1114
+#: src/Document.php:489 src/Document.php:1112
 msgid "SHA1"
 msgstr "SHA1"
 
-#: src/Document.php:516
+#: src/Document.php:514
 msgid "Blacklisted for import"
 msgstr "Импортоос хар жагсаалтад орсон"
 
-#: src/Document.php:522
+#: src/Document.php:520
 msgid "Use a FTP installed file"
 msgstr "FTP суулгасан файлыг ашиглана уу"
 
 #. TRANS: %s is a size
-#: src/Document.php:547
+#: src/Document.php:545
 #, php-format
 msgid "%s Mio max"
 msgstr "%s Mio max"
 
-#: src/Document.php:1131 src/Certificate.php:307
+#: src/Document.php:1129 src/Certificate.php:307
 msgctxt "quantity"
 msgid "Number of associated items"
 msgstr "Холбогдох зүйлсийн тоо"
 
-#: src/Document.php:1198 src/Document.php:1600
+#: src/Document.php:1196 src/Document.php:1598
 msgid "Upload directory doesn't exist"
 msgstr "Байршуулах директор байхгүй байна"
 
-#: src/Document.php:1251 src/Document.php:1369 src/Document.php:1466
+#: src/Document.php:1249 src/Document.php:1367 src/Document.php:1464
 #, php-format
 msgid "Failed to delete the file %1$s"
 msgstr "%1$s файлыг устгахад алдаа гарлаа"
 
-#: src/Document.php:1268
+#: src/Document.php:1266
 msgid "Document move succeeded."
 msgstr "Документыг амжилттай шилжүүлсэн."
 
-#: src/Document.php:1270
+#: src/Document.php:1268
 msgid "File move failed."
 msgstr "Файлыг зөөх явц амжилтгүй болсон."
 
-#: src/Document.php:1275 src/Document.php:1383
+#: src/Document.php:1273 src/Document.php:1381
 msgid "Document copy succeeded."
 msgstr "Документыг амжилттай хуулбарласан."
 
-#: src/Document.php:1277 src/Document.php:1385
+#: src/Document.php:1275 src/Document.php:1383
 msgid "File move failed"
 msgstr "Файлыг зөөх явц амжилтгүй болсон."
 
-#: src/Document.php:1315
+#: src/Document.php:1313
 msgid "Temporary directory doesn't exist"
 msgstr "Түр зуурын директор байхгүй байна"
 
-#: src/Document.php:1419
+#: src/Document.php:1417
 msgid "File too large to be added."
 msgstr "Файлыг нэмэхэд хэмжээ том байна."
 
-#: src/Document.php:1482 src/User.php:1020
+#: src/Document.php:1480 src/User.php:1020
 msgid "The file is valid. Upload is successful."
 msgstr "Файл нь хүчинтэй байна. Байршуулалт амжилттай болсон."
 
-#: src/Document.php:1492
+#: src/Document.php:1490
 msgid ""
 "Potential upload attack or file too large. Moving temporary file failed."
 msgstr ""
 "Байршуулах халдлага эсвэл файл хэт том байна. Түр зуурын файлыг шилжүүлэх "
 "үйлдэл амжилтгүй болсон байна."
 
-#: src/Document.php:1511 src/RuleCollection.php:1223
+#: src/Document.php:1509 src/RuleCollection.php:1223
 msgid "Unauthorized file type"
 msgstr "Зөвшөөрөлгүй файлын төрөл"
 
-#: src/Document.php:1516
+#: src/Document.php:1514
 msgid "Manage document types"
 msgstr "Документын төрлийг удирдах"
 
-#: src/Document.php:1532
+#: src/Document.php:1530
 msgid "Documents directory doesn't exist."
 msgstr ""
 
-#: src/Document.php:1546
+#: src/Document.php:1544
 #, php-format
 msgid "Create the directory %s"
 msgstr "%s директорыг үүсгэх"
 
-#: src/Document.php:1561
+#: src/Document.php:1559
 #, php-format
 msgid ""
 "Failed to create the directory %s. Verify that you have the correct "
 "permission"
 msgstr "%s директорыг үүсгэж чадсангүй. Зөвшөөрөл байгаа эсэхийг шалгана уу"
 
-#: src/Document.php:1597
+#: src/Document.php:1595
 msgid "No file available"
 msgstr "Файл байхгүй байна"
 
-#: src/Document.php:1807 src/CommonITILObject.php:6938
+#: src/Document.php:1805 src/CommonITILObject.php:6938
 msgctxt "button"
 msgid "Add a document"
 msgstr "Документ нэмэх"
 
-#: src/Document.php:1808
+#: src/Document.php:1806
 msgctxt "button"
 msgid "Remove a document"
 msgstr "Документ устгах"
 
-#: src/Document.php:1944
+#: src/Document.php:1942
 msgid ""
 "Clean orphaned documents: deletes all documents that are not associated with"
 " any items."
@@ -14914,7 +14914,7 @@ msgstr "Дэлгэц дэх төхөөрөмжийн тоо"
 msgid "Refresh rate"
 msgstr "Сэргээгдэх хурд"
 
-#: src/RSSFeed.php:556 src/KnowbaseItem.php:280 src/KnowbaseItem.php:1105
+#: src/RSSFeed.php:556 src/KnowbaseItem.php:280 src/KnowbaseItem.php:1243
 #: src/DomainRecord.php:616 src/Reminder.php:564
 #: src/Console/Database/UpdateCommand.php:164
 msgid "Target"
@@ -15167,7 +15167,7 @@ msgstr[1] "Холбогдсон гэрээ"
 msgid "Web"
 msgstr "Веб"
 
-#: src/Database.php:52 src/Config.php:732
+#: src/Database.php:52 src/Config.php:739
 msgid "Database"
 msgid_plural "Databases"
 msgstr[0] "Өгөгдлийн сан"
@@ -15189,27 +15189,27 @@ msgstr "Өгөгдлийн сан байхгүй байна"
 msgid "Sender email is not a valid email address."
 msgstr "Илгээгчийн имэйл нь хүчингүй байна."
 
-#: src/NotificationMailing.php:108
+#: src/NotificationMailing.php:109
 msgid "This is a test email."
 msgstr "Энэ бол тест имэйл"
 
-#: src/NotificationMailing.php:118
+#: src/NotificationMailing.php:119
 msgid "Mail test"
 msgstr "Имэйл тест"
 
-#: src/NotificationMailing.php:123
+#: src/NotificationMailing.php:124
 msgid "Failed to send test email to administrator"
 msgstr "Админ руу тестийн имэйлийг илгээж чадсангүй"
 
-#: src/NotificationMailing.php:130
+#: src/NotificationMailing.php:131
 msgid "Test email sent to administrator"
 msgstr "Тестийн имэйл админ руу илгээгдсэн"
 
-#: src/NotificationMailing.php:183
+#: src/NotificationMailing.php:184
 msgid "Error inserting email to queue"
 msgstr "Дарааллаар имэйлийг оруулах үед алдаа гарлаа"
 
-#: src/NotificationMailing.php:192
+#: src/NotificationMailing.php:193
 #, php-format
 msgid "An email to %s was added to queue"
 msgstr "%s-д ирсэн имэйл дараалалд нэмэгдсэн"
@@ -15284,7 +15284,7 @@ msgstr "Салсан төхөөрөмж"
 msgid "%1$s of %2$s: %3$s"
 msgstr "%2$s-н %1$s : %3$s"
 
-#: src/Item_Devices.php:1025 src/KnowbaseItem.php:2319
+#: src/Item_Devices.php:1025 src/KnowbaseItem.php:2457
 msgid "View"
 msgid_plural "Views"
 msgstr[0] "Үзсэн тоо"
@@ -15776,8 +15776,8 @@ msgid "Each year"
 msgstr "Жил бүр"
 
 #: src/Features/PlanningEvent.php:771 src/Profile.php:1091
-#: src/Profile.php:1151 src/Profile.php:2651 src/Config.php:1097
-#: src/Config.php:2625
+#: src/Profile.php:1151 src/Profile.php:2651 src/Config.php:1104
+#: src/Config.php:2636
 msgid "Personalization"
 msgstr "Хувийн тохируулга"
 
@@ -15789,31 +15789,31 @@ msgstr "Интервал"
 msgid "Until"
 msgstr "Хүртэл"
 
-#: src/Features/PlanningEvent.php:810 src/Config.php:956 src/Toolbox.php:2322
+#: src/Features/PlanningEvent.php:810 src/Config.php:963 src/Toolbox.php:2322
 msgid "Monday"
 msgstr "Даваа гариг"
 
-#: src/Features/PlanningEvent.php:811 src/Config.php:957 src/Toolbox.php:2323
+#: src/Features/PlanningEvent.php:811 src/Config.php:964 src/Toolbox.php:2323
 msgid "Tuesday"
 msgstr "Мягмар гариг"
 
-#: src/Features/PlanningEvent.php:812 src/Config.php:958 src/Toolbox.php:2324
+#: src/Features/PlanningEvent.php:812 src/Config.php:965 src/Toolbox.php:2324
 msgid "Wednesday"
 msgstr "Лхагва гариг"
 
-#: src/Features/PlanningEvent.php:813 src/Config.php:959 src/Toolbox.php:2325
+#: src/Features/PlanningEvent.php:813 src/Config.php:966 src/Toolbox.php:2325
 msgid "Thursday"
 msgstr "Пүрэв гариг"
 
-#: src/Features/PlanningEvent.php:814 src/Config.php:960 src/Toolbox.php:2326
+#: src/Features/PlanningEvent.php:814 src/Config.php:967 src/Toolbox.php:2326
 msgid "Friday"
 msgstr "Баасан гариг"
 
-#: src/Features/PlanningEvent.php:815 src/Config.php:961 src/Toolbox.php:2327
+#: src/Features/PlanningEvent.php:815 src/Config.php:968 src/Toolbox.php:2327
 msgid "Saturday"
 msgstr "Бямба гариг"
 
-#: src/Features/PlanningEvent.php:816 src/Config.php:962 src/Toolbox.php:2321
+#: src/Features/PlanningEvent.php:816 src/Config.php:969 src/Toolbox.php:2321
 msgid "Sunday"
 msgstr "Ням гариг"
 
@@ -16162,7 +16162,7 @@ msgid "Duplicate the element as many times as there are connections"
 msgstr "Холболтоос аль болох олон удаа элементийг хуулна"
 
 #: src/Dropdown.php:2449 src/Dropdown.php:2462 src/Dropdown.php:2464
-#: src/Dropdown.php:2544 src/Config.php:579
+#: src/Dropdown.php:2544 src/Config.php:586
 msgid "Unit management"
 msgstr "Нэгжийн менежмент"
 
@@ -16709,7 +16709,7 @@ msgstr ""
 msgid "Send alarms on receiver errors"
 msgstr "Хүлээн авагчийн алдаанд мэдэгдэл илгээх"
 
-#: src/MailCollector.php:2206
+#: src/MailCollector.php:2207
 msgid ""
 "Your email could not be processed.\n"
 "If the problem persists, contact the administrator"
@@ -16717,20 +16717,20 @@ msgstr ""
 "Таны имэйлийг боловсруулж чадсангүй. Хэрэв асуудал гарсаар байвал "
 "админтайгаа холбоо барина уу"
 
-#: src/MailCollector.php:2227
+#: src/MailCollector.php:2228
 #, php-format
 msgid "Receivers in error: %s"
 msgstr "Алдаа гарсан хүлээн авагч: %s"
 
-#: src/MailCollector.php:2236
+#: src/MailCollector.php:2237
 msgid "List of not imported emails"
 msgstr "Импорт хийгээгүй имэйлийн жагсаалт"
 
-#: src/MailCollector.php:2506
+#: src/MailCollector.php:2507
 msgid "No import"
 msgstr "Импорт байхгүй"
 
-#: src/MailCollector.php:2508
+#: src/MailCollector.php:2509
 #, php-format
 msgid "%s Mio"
 msgstr "%s Mio"
@@ -16840,7 +16840,7 @@ msgstr[1] "Шугам"
 msgid "Consumables alarm"
 msgstr "Хэрэглээний зүйлийн мэдэгдэл"
 
-#: src/Event.php:163 src/Config.php:2646
+#: src/Event.php:163 src/Config.php:2657
 msgid "System"
 msgstr "Систем"
 
@@ -17084,8 +17084,8 @@ msgstr "Гэрээ нэмэх"
 msgid "Add a ticket"
 msgstr "Дуудлага нэмэх"
 
-#: src/DBConnection.php:82 src/Config.php:720 src/Config.php:2136
-#: src/Config.php:2657
+#: src/DBConnection.php:82 src/Config.php:727 src/Config.php:2143
+#: src/Config.php:2668
 msgid "SQL replica"
 msgid_plural "SQL replicas"
 msgstr[0] "SQL хуулбар"
@@ -18272,7 +18272,7 @@ msgstr "%d дуудлагыг устгаж чадсангүй"
 msgid "%s merges ticket %s into %s"
 msgstr "%s дуудлага %s-г %s-д нэгтгэв"
 
-#: src/Blacklist.php:105 src/RuleCollection.php:2314
+#: src/Blacklist.php:105 src/RuleCollection.php:2313
 msgid "Blacklist"
 msgid_plural "Blacklists"
 msgstr[0] "Хар жагсаалт"
@@ -18847,113 +18847,113 @@ msgid_plural "Virtualization systems"
 msgstr[0] "Виртуалчлалын систем"
 msgstr[1] "Виртуалчлалын систем"
 
-#: src/KnowbaseItem.php:1009
+#: src/KnowbaseItem.php:1147
 msgid "Put this item in the FAQ"
 msgstr "FAQ-д оруулах"
 
-#: src/KnowbaseItem.php:1016 src/KnowbaseItem.php:1332
-#: src/KnowbaseItem.php:2020 src/KnowbaseItem.php:2253
-#: src/KnowbaseItem.php:2257
+#: src/KnowbaseItem.php:1154 src/KnowbaseItem.php:1470
+#: src/KnowbaseItem.php:2158 src/KnowbaseItem.php:2391
+#: src/KnowbaseItem.php:2395
 msgid "This item is part of the FAQ"
 msgstr "Энэ нь FAQ-н нэг хэсэг юм"
 
-#: src/KnowbaseItem.php:1018 src/KnowbaseItem.php:1334
+#: src/KnowbaseItem.php:1156 src/KnowbaseItem.php:1472
 msgid "This item is not part of the FAQ"
 msgstr "Энэ нь FAQ-н хэсэг биш юм"
 
-#: src/KnowbaseItem.php:1037 src/KnowbaseItem.php:1329
+#: src/KnowbaseItem.php:1175 src/KnowbaseItem.php:1467
 #, php-format
 msgid "%d view"
 msgid_plural "%d views"
 msgstr[0] "%d үзсэн"
 
-#: src/KnowbaseItem.php:1047
+#: src/KnowbaseItem.php:1185
 msgid "Add link"
 msgstr "Холбоос нэмэх"
 
-#: src/KnowbaseItem.php:1053
+#: src/KnowbaseItem.php:1191
 #, php-format
 msgid "link with %1$s"
 msgstr "%1$s-тай холбогдох"
 
-#: src/KnowbaseItem.php:1063
+#: src/KnowbaseItem.php:1201
 msgid "Visible since"
 msgstr "Үүнээс хойш харагдана"
 
-#: src/KnowbaseItem.php:1069
+#: src/KnowbaseItem.php:1207
 msgid "Visible until"
 msgstr "Хүртэл харагдана"
 
-#: src/KnowbaseItem.php:1326
+#: src/KnowbaseItem.php:1464
 msgid "Unpublished"
 msgstr "Publish хийгээгүй "
 
-#: src/KnowbaseItem.php:1481
+#: src/KnowbaseItem.php:1619
 msgid "My unpublished articles"
 msgstr "Миний publish хийгээгүй  нийтлэлүүд"
 
-#: src/KnowbaseItem.php:1482
+#: src/KnowbaseItem.php:1620
 msgid "All my articles"
 msgstr "Миний бүх нийтлэл"
 
-#: src/KnowbaseItem.php:1485
+#: src/KnowbaseItem.php:1623
 msgid "All unpublished articles"
 msgstr "Бүх publish хийгээгүй нийтлэлүүд"
 
-#: src/KnowbaseItem.php:1486
+#: src/KnowbaseItem.php:1624
 msgid "All published articles"
 msgstr "Бүх нийтлэлийг publish хийсэн"
 
-#: src/KnowbaseItem.php:2026
+#: src/KnowbaseItem.php:2164
 msgid "This item is not published yet"
 msgstr "Энэ зүйлийг хараахан publish хийгээгүй байна"
 
-#: src/KnowbaseItem.php:2108
+#: src/KnowbaseItem.php:2246
 msgid "Use as a solution"
 msgstr "Шийдэл болгон ашиглах"
 
-#: src/KnowbaseItem.php:2167
+#: src/KnowbaseItem.php:2305
 msgid "Recent entries"
 msgstr "Сүүлийн үед оруулсан зүйлс"
 
-#: src/KnowbaseItem.php:2170
+#: src/KnowbaseItem.php:2308
 msgid "Last updated entries"
 msgstr "Сүүлд шинэчлэгдсэн бичлэгүүд"
 
-#: src/KnowbaseItem.php:2173
+#: src/KnowbaseItem.php:2311
 msgid "Most popular questions"
 msgstr "Хамгийн түгээмэл асуултууд"
 
-#: src/KnowbaseItem.php:2311
+#: src/KnowbaseItem.php:2449
 msgid "FAQ item"
 msgstr "FAQ зүйл"
 
-#: src/KnowbaseItem.php:2328 src/Reminder.php:442
+#: src/KnowbaseItem.php:2466 src/Reminder.php:442
 msgid "Visibility start date"
 msgstr "Харагдах байдал эхлэх огноо"
 
-#: src/KnowbaseItem.php:2336 src/Reminder.php:450
+#: src/KnowbaseItem.php:2474 src/Reminder.php:450
 msgid "Visibility end date"
 msgstr "Харагдах байдал дуусах огноо"
 
-#: src/KnowbaseItem.php:2379
+#: src/KnowbaseItem.php:2517
 msgid "Knowledge base administration"
 msgstr "Мэдлэгийн сангийн админ"
 
-#: src/KnowbaseItem.php:2380
+#: src/KnowbaseItem.php:2518
 msgid "Publish in the FAQ"
 msgstr "FAQ-д нийтлэх"
 
-#: src/KnowbaseItem.php:2381
+#: src/KnowbaseItem.php:2519
 msgid "Comment KB entries"
 msgstr "KB оруулгууд дээр сэтгэгдэл бичих"
 
-#: src/KnowbaseItem.php:2383
+#: src/KnowbaseItem.php:2521
 msgid "Read the FAQ"
 msgstr "FAQ-г унших"
 
 #. TRANS: %1$s is the user login, %2$s the revision number
-#: src/KnowbaseItem.php:2473
+#: src/KnowbaseItem.php:2611
 #, php-format
 msgid "%1$s reverts item to revision %2$s"
 msgstr "%1$s -г %2$s хувилбар руу буцаана"
@@ -20020,166 +20020,170 @@ msgstr "Суурь URL буруу байна!"
 msgid "Invalid API base URL!"
 msgstr "API үндсэн URL буруу!"
 
-#: src/Config.php:297
+#: src/Config.php:197
+msgid "Invalid SSO logout URL."
+msgstr ""
+
+#: src/Config.php:304
 #: src/Console/Maintenance/EnableMaintenanceModeCommand.php:80
 #, php-format
 msgid "Maintenance mode activated. Backdoor using: %s"
 msgstr "Засвар үйлчилгээний горим идэвхжсэн. Арын хаалга ашиглан: %s"
 
-#: src/Config.php:319
+#: src/Config.php:326
 msgid ""
 "The specified profile doesn't exist or is not allowed to access the central "
 "interface."
 msgstr ""
 
-#: src/Config.php:331 src/User.php:7058
+#: src/Config.php:338 src/User.php:7058
 #, php-format
 msgid "The following field has an incorrect value: \"%s\"."
 msgstr ""
 
-#: src/Config.php:332 src/Config.php:1230 src/User.php:7059
+#: src/Config.php:339 src/Config.php:1237 src/User.php:7059
 msgid "PDF export font"
 msgstr "PDF экспорт хийх фонт"
 
-#: src/Config.php:485
+#: src/Config.php:492
 msgid "Enable the financial and administrative information by default"
 msgstr "Санхүүгийн болон administrative мэдээллийг анхдагчаар идэвхжүүлэх"
 
-#: src/Config.php:488
+#: src/Config.php:495
 msgid "Restrict monitor management"
 msgstr "Хяналтын менежментийг хязгаарлах"
 
-#: src/Config.php:497
+#: src/Config.php:504
 msgid "Software category deleted by the dictionary rules"
 msgstr "Сангийн дүрмүүдээр устгагдсан программын ангилал"
 
-#: src/Config.php:503
+#: src/Config.php:510
 msgid "Restrict device management"
 msgstr "Төхөөрөмжийн менежментийг хязгаарлах"
 
-#: src/Config.php:512
+#: src/Config.php:519
 msgid "End of fiscal year"
 msgstr "Төсвийн жилийн төгсгөл"
 
-#: src/Config.php:521
+#: src/Config.php:528
 msgid "Restrict phone management"
 msgstr "Суурин утасны менежментийг хязгаарлах"
 
-#: src/Config.php:530
+#: src/Config.php:537
 msgid "Automatic fields (marked by *)"
 msgstr "Автомат талбар (*-оор тэмдэглэсэн)"
 
-#: src/Config.php:532
+#: src/Config.php:539
 msgid "By entity"
 msgstr "Газар нэгжээр"
 
-#: src/Config.php:539
+#: src/Config.php:546
 msgid "Restrict printer management"
 msgstr "Принтерийн удирдлагыг хязгаарлах"
 
-#: src/Config.php:548
+#: src/Config.php:555
 msgid "Devices displayed in menu"
 msgstr "Цэс дээр харуулсан төхөөрөмж"
 
-#: src/Config.php:578
+#: src/Config.php:585
 msgid "Automatically update of the elements related to the computers"
 msgstr "Компьютеруудтай холбоотой элементүүдийг автоматаар шинэчлэх"
 
-#: src/Config.php:591
+#: src/Config.php:598
 msgid "When connecting or updating the relevant field"
 msgstr ""
 
-#: src/Config.php:593
+#: src/Config.php:600
 msgid "Do not copy"
 msgstr "Хуулбарлахгүй"
 
-#: src/Config.php:594
+#: src/Config.php:601
 msgid "Copy"
 msgstr "Хуулбарлах"
 
-#: src/Config.php:607
+#: src/Config.php:614
 msgid "Copy computer status"
 msgstr "Компьютерийн төлвийг хуулбарлах"
 
-#: src/Config.php:613
+#: src/Config.php:620
 msgid "When disconnecting"
 msgstr "Холболт салах үед"
 
-#: src/Config.php:615
+#: src/Config.php:622
 msgid "Do not delete"
 msgstr "Устгахгүй"
 
-#: src/Config.php:629
+#: src/Config.php:636
 msgid "Clear status"
 msgstr "Төлөвийг арилгах"
 
-#: src/Config.php:666
+#: src/Config.php:673
 msgid "Automatically add users from an external authentication source"
 msgstr "Гадны баталгаажуулалтын эх сурвалжаас хэрэглэгчдийг автоматаар нэмэх"
 
-#: src/Config.php:669
+#: src/Config.php:676
 msgid "Add a user without accreditation from a LDAP directory"
 msgstr "LDAP директороос магадлан итгэмжлэлгүйгээр хэрэглэгч нэмэх"
 
-#: src/Config.php:675
+#: src/Config.php:682
 msgid "Action when a user is deleted from the LDAP directory"
 msgstr "Хэрэглэгчийг LDAP директороос устгасан үед хийх үйлдэл"
 
-#: src/Config.php:677
+#: src/Config.php:684
 msgid "Action when a user is restored in the LDAP directory"
 msgstr "Хэрэглэгчийг LDAP директорт сэргээх үед хийх үйлдэл"
 
-#: src/Config.php:682
+#: src/Config.php:689
 msgid "GLPI server time zone"
 msgstr "GLPI серверийн time zone"
 
-#: src/Config.php:745
+#: src/Config.php:752
 msgid "Use the replica for the search engine"
 msgstr "Хайлтын системд зориулсан хуулбарыг ашиглах"
 
-#: src/Config.php:747
+#: src/Config.php:754
 msgid "If synced (all changes)"
 msgstr "Хэрэв синк хийгдсэн бол (бүх өөрчлөлтүүд)"
 
-#: src/Config.php:748
+#: src/Config.php:755
 msgid "If synced (current user changes)"
 msgstr "Синк хийсэн (одоогийн хэрэглэгчийн өөрчлөлт)"
 
-#: src/Config.php:749
+#: src/Config.php:756
 msgid "If synced or read-only account"
 msgstr "Хэрэв синк хийгдсэн эсвэл зөвхөн унших эрхтэй байвал"
 
-#: src/Config.php:750
+#: src/Config.php:757
 msgid "Always"
 msgstr "Үргэлж"
 
-#: src/Config.php:802
+#: src/Config.php:809
 msgid "URL of the API"
 msgstr "API-н URL"
 
-#: src/Config.php:806
+#: src/Config.php:813
 msgid "Enable Rest API"
 msgstr "Rest API-г идэвхжүүлэх"
 
-#: src/Config.php:813
+#: src/Config.php:820
 msgid "API inline Documentation"
 msgstr "API доторх документ"
 
-#: src/Config.php:822
+#: src/Config.php:829
 msgid "Enable login with credentials"
 msgstr "Итгэмжлэлээр нэвтрэх эрхийг идэвхжүүлэх"
 
-#: src/Config.php:823
+#: src/Config.php:830
 msgid "Allow to login to API and get a session token with user credentials"
 msgstr ""
 "API-д нэвтрэн орж, хэрэглэгчийн мэдээлэл бүхий session тэмдгийг авах "
 "боломжтой"
 
-#: src/Config.php:829
+#: src/Config.php:836
 msgid "Enable login with external token"
 msgstr "Гадаад token ашиглан нэвтрэх эрхийг идэвхжүүлэх"
 
-#: src/Config.php:830
+#: src/Config.php:837
 msgid ""
 "Allow to login to API and get a session token with user external token. See "
 "Remote access key in user Settings tab "
@@ -20188,418 +20192,418 @@ msgstr ""
 "боломжтой. Хэрэглэгчийн тохиргооны таб дээрээс алсын зайнаас нэвтрэх "
 "түлхүүрийг харна уу"
 
-#: src/Config.php:849
+#: src/Config.php:856
 msgid "Add API client"
 msgstr "API хэрэглэгч нэмэх"
 
-#: src/Config.php:888
+#: src/Config.php:895
 msgid "Step for the hours (minutes)"
 msgstr "Цагаар (минут) алхах"
 
-#: src/Config.php:903
+#: src/Config.php:910
 msgid "Limit of the schedules for planning"
 msgstr "Төлөвлөлт хийх хуваарийн хязгаар"
 
-#: src/Config.php:911
+#: src/Config.php:918
 msgid "Default file size limit imported by the mails receiver"
 msgstr "Имэйл хүлээн авагчийн импортлосон үндсэн файлын хэмжээний  хязгаар"
 
-#: src/Config.php:919
+#: src/Config.php:926
 msgid "Default heading when adding a document to a ticket"
 msgstr "Дуудлага дээр документ нэмэх үеийн тайлбар"
 
-#: src/Config.php:925
+#: src/Config.php:932
 msgid "By default, a software may be linked to a ticket"
 msgstr "Default-р програм хангамжийг дуудлагатай холбох"
 
-#: src/Config.php:934
+#: src/Config.php:941
 msgid "Keep tickets when purging hardware in the inventory"
 msgstr "Тоног төхөөрөмжийг устгахад дуудлагаа үлдээх"
 
-#: src/Config.php:936
+#: src/Config.php:943
 msgid "Show personnal information in new ticket form (simplified interface)"
 msgstr ""
 "Хувийн мэдээллийг шинэ дуудлага хэлбэрээр харуулах (хялбаршуулсан интерфэйс)"
 
-#: src/Config.php:942
+#: src/Config.php:949
 msgid "Allow anonymous ticket creation (helpdesk.receiver)"
 msgstr "Тодорхойгүй дуудлага үүсгэхийг зөвшөөрөх (helpdesk.receiver)"
 
-#: src/Config.php:944
+#: src/Config.php:951
 msgid "Allow anonymous followups (receiver)"
 msgstr "Тодорхойгүй followup-г зөвшөөрөх (хүлээн авагч)"
 
-#: src/Config.php:950
+#: src/Config.php:957
 msgid "Planning work days"
 msgstr "Ажлын өдрүүдийг төлөвлөх"
 
-#: src/Config.php:975
+#: src/Config.php:982
 msgid "Matrix of calculus for priority"
 msgstr "түвшин тоцооллын матриц"
 
-#: src/Config.php:1100
+#: src/Config.php:1107
 msgid "Default language"
 msgstr "Үндсэн хэл"
 
-#: src/Config.php:1111
+#: src/Config.php:1118
 msgid "Date format"
 msgstr "Огнооны формат"
 
-#: src/Config.php:1117
+#: src/Config.php:1124
 msgid "Display order of surnames firstnames"
 msgstr "Овог нэрсийн дарааллыг харах"
 
-#: src/Config.php:1118
+#: src/Config.php:1125
 msgid "Surname, First name"
 msgstr "Нэр, Овог"
 
-#: src/Config.php:1119
+#: src/Config.php:1126
 msgid "First name, Surname"
 msgstr "Овог, Нэр"
 
-#: src/Config.php:1123
+#: src/Config.php:1130
 msgid "Number format"
 msgstr "Тооны формат"
 
-#: src/Config.php:1135
+#: src/Config.php:1142
 msgid "Results to display by page"
 msgstr "Хуудаслаж харуулах үр дүн"
 
-#: src/Config.php:1146
+#: src/Config.php:1153
 msgid "Go to created item after creation"
 msgstr "Үүсгэсний дараа үүссэн хэсэгт очих"
 
-#: src/Config.php:1155
+#: src/Config.php:1162
 msgid "Display the tree dropdown complete name in dropdown inputs"
 msgstr ""
 
-#: src/Config.php:1159
+#: src/Config.php:1166
 msgid "Display the complete name of tree dropdown in search results"
 msgstr ""
 
-#: src/Config.php:1170
+#: src/Config.php:1177
 msgid "Display counters"
 msgstr "Тоологчийг харуулах"
 
-#: src/Config.php:1192
+#: src/Config.php:1199
 msgid "Show GLPI ID"
 msgstr "GLPI ID-г харах"
 
-#: src/Config.php:1199
+#: src/Config.php:1206
 msgid "Keep devices when purging an item"
 msgstr "Аливаа зүйлийг цэвэрлэхдээ төхөөрөмжийг үлдээх"
 
-#: src/Config.php:1210
+#: src/Config.php:1217
 msgid "Notifications for my changes"
 msgstr "Өөрчлөлтийн талаарх мэдэгдэл"
 
-#: src/Config.php:1214
+#: src/Config.php:1221
 msgid "Results to display on home page"
 msgstr "Нүүр хуудсан дээр харуулах үр дүн"
 
-#: src/Config.php:1241
+#: src/Config.php:1248
 msgid "CSV delimiter"
 msgstr "CSV хязгаарлагч"
 
-#: src/Config.php:1251
+#: src/Config.php:1258
 msgid "Color palette"
 msgstr "Өнгөний зохицол"
 
-#: src/Config.php:1284
+#: src/Config.php:1291
 msgid "Page layout"
 msgstr "Хуудасны зохион байгуулалт"
 
-#: src/Config.php:1288
+#: src/Config.php:1295
 msgid "Horizontal (menu in header)"
 msgstr "Хэвтээ (header дах menu)"
 
-#: src/Config.php:1289
+#: src/Config.php:1296
 msgid "Vertical (menu in sidebar)"
 msgstr "Босоо (menu in sidebar)"
 
-#: src/Config.php:1319
+#: src/Config.php:1326
 msgid "Rich text field layout"
 msgstr "Текст талбарын зохион байгуулалт"
 
-#: src/Config.php:1324
+#: src/Config.php:1331
 msgid "Inline (no toolbars)"
 msgstr "Inline (хэрэгслийн мөр байхгүй)"
 
-#: src/Config.php:1325
+#: src/Config.php:1332
 msgid "Classic (toolbar on top)"
 msgstr "Классик (дээд талд байгаа хэрэгслийн самбар)"
 
-#: src/Config.php:1334
+#: src/Config.php:1341
 msgid "Enable high contrast"
 msgstr "High contrast идэвхжүүлэх"
 
-#: src/Config.php:1338 src/RuleRight.php:385
+#: src/Config.php:1345 src/RuleRight.php:385
 msgid "Timezone"
 msgstr "Timezone"
 
-#: src/Config.php:1348 src/User.php:2831 src/User.php:3319
+#: src/Config.php:1355 src/User.php:2831 src/User.php:3319
 msgid "Use server configuration"
 msgstr "Серверийн тохиргоог ашиглах"
 
-#: src/Config.php:1352 src/User.php:2836 src/User.php:3324
+#: src/Config.php:1359 src/User.php:2836 src/User.php:3324
 msgid "Timezone usage has not been activated."
 msgstr "Timezone ашиглалт идэвхжээгүй байна."
 
-#: src/Config.php:1354 src/User.php:2838 src/User.php:3326
+#: src/Config.php:1361 src/User.php:2838 src/User.php:3326
 #, php-format
 msgid "Run the \"%1$s\" command to activate it."
 msgstr ""
 
-#: src/Config.php:1357
+#: src/Config.php:1364
 msgid "Default central tab"
 msgstr "Үндсэн төв tab"
 
-#: src/Config.php:1363
+#: src/Config.php:1370
 msgid "Timeline order"
 msgstr "Цагийн дараалал"
 
-#: src/Config.php:1366
+#: src/Config.php:1373
 msgid "Natural order (old items on top, recent on bottom)"
 msgstr "Байгалийн захиалга (дээд талд нь хуучин зүйлс, доод талд нь саяхных)"
 
-#: src/Config.php:1367
+#: src/Config.php:1374
 msgid "Reverse order (old items on bottom, recent on top)"
 msgstr "Урвуу дараалал (доод талд хуучин зүйлс, дээд талд одоогийнх)"
 
-#: src/Config.php:1379
+#: src/Config.php:1386
 msgid "Private followups by default"
 msgstr "Хувийн followup-ууд нь default байдлаар сонгогдох"
 
-#: src/Config.php:1381
+#: src/Config.php:1388
 msgid "Show new tickets on the home page"
 msgstr "Шинэ дуудлагыг нүүр хуудсанд харуулах"
 
-#: src/Config.php:1394
+#: src/Config.php:1401
 msgid "Private tasks by default"
 msgstr "Хувийн task-ууд нь default байдлаар сонгогдох"
 
-#: src/Config.php:1396
+#: src/Config.php:1403
 msgid "Request sources by default"
 msgstr "Дуудлага ирүүлэх default суваг"
 
-#: src/Config.php:1405
+#: src/Config.php:1412
 msgid "Tasks state by default"
 msgstr "Task-н төлөв default байдлаар сонгогдох"
 
-#: src/Config.php:1407
+#: src/Config.php:1414
 msgid "Automatically refresh data (tickets list, project kanban) in minutes."
 msgstr ""
 "Мэдээллийг (дуудлагын жагсаалт, төслийн канбан) минутын дотор автоматаар "
 "уншуулах."
 
-#: src/Config.php:1417
+#: src/Config.php:1424
 msgid "Pre-select me as a technician when creating a ticket"
 msgstr "Дуудлага үүсгэх үед техникчээр сонгох эсэх"
 
-#: src/Config.php:1424
+#: src/Config.php:1431
 msgid "Pre-select me as a requester when creating a ticket"
 msgstr "Дуудлага үүсгэх үед дуудлага мэдээлэгчээр сонгох"
 
-#: src/Config.php:1431
+#: src/Config.php:1438
 msgid "Action button layout"
 msgstr ""
 
-#: src/Config.php:1434
+#: src/Config.php:1441
 msgid "Merged"
 msgstr ""
 
-#: src/Config.php:1435
+#: src/Config.php:1442
 msgid "Splitted"
 msgstr ""
 
-#: src/Config.php:1443
+#: src/Config.php:1450
 msgid "Timeline date display"
 msgstr ""
 
-#: src/Config.php:1446
+#: src/Config.php:1453
 msgid "Relative"
 msgstr ""
 
-#: src/Config.php:1447
+#: src/Config.php:1454
 msgid "Precise"
 msgstr ""
 
-#: src/Config.php:1455
+#: src/Config.php:1462
 msgid "Priority colors"
 msgstr "Түвшний өнгүүд"
 
-#: src/Config.php:1482
+#: src/Config.php:1489
 msgid "Due date progression"
 msgstr "Хугацаа дуусах үйл явц"
 
-#: src/Config.php:1485
+#: src/Config.php:1492
 msgid "OK state color"
 msgstr "OK төлвийн өнгө"
 
-#: src/Config.php:1491
+#: src/Config.php:1498
 msgid "Warning state color"
 msgstr "Анхааруулга төлвийн өнгө"
 
-#: src/Config.php:1495
+#: src/Config.php:1502
 msgid "Warning state threshold"
 msgstr "Анхааруулга төлвийн хязгаар"
 
-#: src/Config.php:1511
+#: src/Config.php:1518
 msgid "Critical state color"
 msgstr "Чухал төлөвийн өнгө"
 
-#: src/Config.php:1515
+#: src/Config.php:1522
 msgid "Critical state threshold"
 msgstr "Чухал төлөвийн хязгаар"
 
-#: src/Config.php:1534
+#: src/Config.php:1541
 msgid "Auto-lock Mode"
 msgstr "Автомат-түгжих горим"
 
-#: src/Config.php:1536
+#: src/Config.php:1543
 msgid ""
 "Direct Notification (requester for unlock will be the notification sender)"
 msgstr ""
 "Шууд мэдэгдэл (түгжээг тайлсан дуудлага мэдээлэгч нь мэдэгдэл илгээгч болно)"
 " "
 
-#: src/Config.php:1543
+#: src/Config.php:1550
 msgid "Dashboards"
 msgstr "Dashboard-ууд"
 
-#: src/Config.php:1546
+#: src/Config.php:1553
 msgid "Default for central"
 msgstr "Үндсэн төв"
 
-#: src/Config.php:1551
+#: src/Config.php:1558
 msgid "Default for Assets"
 msgstr "Үндсэн хөрөнгө"
 
-#: src/Config.php:1560
+#: src/Config.php:1567
 msgid "Default for Assistance"
 msgstr "Үндсэн тусламжийн утга"
 
-#: src/Config.php:1565
+#: src/Config.php:1572
 msgid "Default for tickets (mini dashboard)"
 msgstr "Үндсэн дуудлага (Жижиг хэмжээний dashboard)"
 
-#: src/Config.php:1616 src/Config.php:3511
+#: src/Config.php:1623 src/Config.php:3522
 msgid "Password minimum length"
 msgstr "Нууц үгийн minimum урт"
 
-#: src/Config.php:1634
+#: src/Config.php:1641
 msgid "Digit"
 msgstr "Тоон"
 
-#: src/Config.php:1645
+#: src/Config.php:1652
 msgid "Lowercase"
 msgstr "Жижиг"
 
-#: src/Config.php:1656
+#: src/Config.php:1663
 msgid "Uppercase"
 msgstr "Том үсэг"
 
-#: src/Config.php:1667
+#: src/Config.php:1674
 msgid "Symbol"
 msgstr "Тэмдэг"
 
-#: src/Config.php:1682
+#: src/Config.php:1689
 msgid "Password must contains"
 msgstr "Нууц үг агуулсан байх ёстой"
 
-#: src/Config.php:1710 src/Config.php:1712
+#: src/Config.php:1717 src/Config.php:1719
 msgid "Password too short!"
 msgstr "Нууц үг хэт богино байна!"
 
-#: src/Config.php:1722 src/Config.php:1727
+#: src/Config.php:1729 src/Config.php:1734
 msgid "Password must include at least a digit!"
 msgstr "Нууц үгэнд дор хаяж нэг цифр орсон байх ёстой!"
 
-#: src/Config.php:1737 src/Config.php:1742
+#: src/Config.php:1744 src/Config.php:1749
 msgid "Password must include at least a lowercase letter!"
 msgstr "Нууц үгэнд дор хаяж нэг жижиг үсэг орсон байх ёстой!"
 
-#: src/Config.php:1752 src/Config.php:1757
+#: src/Config.php:1759 src/Config.php:1764
 msgid "Password must include at least a uppercase letter!"
 msgstr "Нууц үгэнд дор хаяж нэг том үсэг орсон байх ёстой!"
 
-#: src/Config.php:1767 src/Config.php:1772
+#: src/Config.php:1774 src/Config.php:1779
 msgid "Password must include at least a symbol!"
 msgstr "Нууц үгэнд дор хаяж нэг тэмдэгт орсон байх ёстой!"
 
-#: src/Config.php:1800
+#: src/Config.php:1807
 msgid "PHP opcode cache"
 msgstr "PHP opcode кэш"
 
-#: src/Config.php:1803 src/Config.php:2917
+#: src/Config.php:1810 src/Config.php:2928
 #, php-format
 msgid "%s extension is installed"
 msgstr "%s extension-г суулгасан байна"
 
-#: src/Config.php:1804
+#: src/Config.php:1811
 #, php-format
 msgid "The \"%s\" extension is installed"
 msgstr "\"%s\" extension суусан байна"
 
-#: src/Config.php:1822
+#: src/Config.php:1829
 #, php-format
 msgid "%1$s memory usage is too low or too high"
 msgstr "%1$s memory ашиглалт хэт бага эсвэл хэт өндөр байна"
 
-#: src/Config.php:1825
+#: src/Config.php:1832
 #, php-format
 msgid "%1$s memory usage is correct"
 msgstr "%1$s memory ашиглалт зөв байна"
 
-#: src/Config.php:1834
+#: src/Config.php:1841
 msgid "Hits rate"
 msgstr "Үзсэн тоо"
 
-#: src/Config.php:1841
+#: src/Config.php:1848
 #, php-format
 msgid "%1$s hits rate is low"
 msgstr "%1$s-ийн үзэлт бага байна"
 
-#: src/Config.php:1844
+#: src/Config.php:1851
 #, php-format
 msgid "%1$s hits rate is correct"
 msgstr "%1$s үзсэн тоо зөв байна"
 
-#: src/Config.php:1850
+#: src/Config.php:1857
 msgid "Out of memory restart"
 msgstr "Санах ойг дахин эхлүүллээ"
 
-#: src/Config.php:1854
+#: src/Config.php:1861
 #, php-format
 msgid "%1$s restart rate is too high"
 msgstr "%1$s дахин эхлүүлэх түвшин хэт өндөр байна"
 
-#: src/Config.php:1857
+#: src/Config.php:1864
 #, php-format
 msgid "%1$s restart rate is correct"
 msgstr "%1$s-г дахин эхлүүлэх үзүүлэлт зөв байна"
 
-#: src/Config.php:1867 src/Config.php:1899 src/Config.php:1918
+#: src/Config.php:1874 src/Config.php:1906 src/Config.php:1925
 msgid "Reset"
 msgstr "Дахин тохируулах"
 
-#: src/Config.php:1873 src/Config.php:2930
+#: src/Config.php:1880 src/Config.php:2941
 #, php-format
 msgid "%s extension is not present"
 msgstr "%s extension байхгүй байна"
 
-#: src/Config.php:1874
+#: src/Config.php:1881
 #, php-format
 msgid "Installing and enabling the \"%s\" extension may improve GLPI performance"
 msgstr ""
 "\"%s\" extension-г суулгаж идэвхжүүлснээр GLPI ажиллагааг сайжруулж магадгүй"
 " юм"
 
-#: src/Config.php:1878
+#: src/Config.php:1885
 msgid "User data cache"
 msgstr "Хэрэглэгчийн мэдээллийн кэш"
 
-#: src/Config.php:1879
+#: src/Config.php:1886
 msgid ""
 "You can use \"php bin/console cache:configure\" command to configure cache "
 "system."
@@ -20607,268 +20611,268 @@ msgstr ""
 "Та кэшийн системийг тохируулахын тулд \"php bin/console cache:configure\" "
 "командыг ашиглаж болно."
 
-#: src/Config.php:1884
+#: src/Config.php:1891
 #, php-format
 msgid "The \"%s\" cache extension is installed"
 msgstr "\"%s\" кэш extension-г суулгасан байна"
 
-#: src/Config.php:1886 src/Config.php:1908
+#: src/Config.php:1893 src/Config.php:1915
 #, php-format
 msgid "\"%s\" cache system is used"
 msgstr "\"%s\" кэш систем ашиглагдсан"
 
-#: src/Config.php:1905
+#: src/Config.php:1912
 msgid "Translation cache"
 msgstr "Орчуулгын кэш"
 
-#: src/Config.php:1941
+#: src/Config.php:1948
 msgid "Information about system installation and configuration"
 msgstr "Системийн суурилуулалт болон тохируулгын талаарх мэдээлэл"
 
-#: src/Config.php:2082
+#: src/Config.php:2089
 msgid "To copy/paste in your support request"
 msgstr "Дэмжих хүсэлтийг хуулбарлах/буулгах"
 
-#: src/Config.php:2110
+#: src/Config.php:2117
 msgid "Log Level"
 msgstr "Лог түвшин"
 
-#: src/Config.php:2113
+#: src/Config.php:2120
 msgid "1- Critical (login error only)"
 msgstr "1- Ноцтой (зөвхөн нэвтрэх үеийн алдаа)"
 
-#: src/Config.php:2114
+#: src/Config.php:2121
 msgid "2- Severe (not used)"
 msgstr "2- Хүнд (ашиглагдаагүй)"
 
-#: src/Config.php:2115
+#: src/Config.php:2122
 msgid "3- Important (successful logins)"
 msgstr "3- Чухал (нэвтрэлт амжилттай)"
 
-#: src/Config.php:2116
+#: src/Config.php:2123
 msgid "4- Notices (add, delete, tracking)"
 msgstr "4- Мэдэгдэл (нэмэх, устгах, хайх)"
 
-#: src/Config.php:2117
+#: src/Config.php:2124
 msgid "5- Complete (all)"
 msgstr "5- Бүрэн (бүгд)"
 
-#: src/Config.php:2125
+#: src/Config.php:2132
 msgid "Maximal number of automatic actions (run by CLI)"
 msgstr "Автомат үйлдлийн хамгийн их тоо (CLI ажиллуулдаг)"
 
-#: src/Config.php:2134
+#: src/Config.php:2141
 msgid "Logs in files (SQL, email, automatic action...)"
 msgstr "Файлд нэвтрэх (SQL, имэйл, автомат үйлдэл...)"
 
-#: src/Config.php:2142 src/Config.php:2146
+#: src/Config.php:2149 src/Config.php:2153
 msgid "Maintenance mode"
 msgstr "Засварын төлөв"
 
 #. TRANS: Proxy port
-#: src/Config.php:2151
+#: src/Config.php:2158
 msgid "Maintenance text"
 msgstr "Засвар үйлчилгээний текст"
 
-#: src/Config.php:2158
+#: src/Config.php:2165
 msgid "Proxy configuration for upgrade check"
 msgstr "Шинэчлэлтийг шалгах прокси тохиргоо"
 
-#: src/Config.php:2195
+#: src/Config.php:2202
 msgid "Copy system information"
 msgstr "Системийн мэдээлэл хуулбарлах"
 
-#: src/Config.php:2205
+#: src/Config.php:2212
 msgid "Check if a new version is available"
 msgstr "Шинэ хувилбар байгаа эсэхийг шалгах"
 
-#: src/Config.php:2460
+#: src/Config.php:2471
 msgid "Yes - Restrict to unit management"
 msgstr "Тийм - Нэгжийн менежментийг хязгаарлах"
 
-#: src/Config.php:2461
+#: src/Config.php:2472
 msgid "Yes - Restrict to global management"
 msgstr "Тийм - Глобал менежментийг хязгаарлах"
 
-#: src/Config.php:2645 src/PurgeLogs.php:42
+#: src/Config.php:2656 src/PurgeLogs.php:42
 msgid "Logs purge"
 msgstr "Лог цэвэрлэх"
 
-#: src/Config.php:2648
+#: src/Config.php:2659
 msgid "Performance"
 msgstr "Гүйцэтгэл"
 
-#: src/Config.php:2761
+#: src/Config.php:2772
 #, php-format
 msgid "Database version seems correct (%s) - Perfect!"
 msgstr "Өгөгдлийн сангийн хувилбар зөв харагдаж байна (%s) - Төгс!"
 
-#: src/Config.php:2762
+#: src/Config.php:2773
 #, php-format
 msgid "Your database engine version seems too old: %s."
 msgstr ""
 "Таны өгөгдлийн сангийн хөдөлгүүр болсон хувилбар хэт хуучин байна: %s."
 
-#: src/Config.php:3207
+#: src/Config.php:3218
 msgid "You are using a development version, be careful!"
 msgstr "Та хөгжүүлэлтийн хувилбар ашиглаж байна, болгоомжтой байгаарай!"
 
-#: src/Config.php:3208
+#: src/Config.php:3219
 msgid "You are using a pre-release version, be careful!"
 msgstr "Та өмнөх хувилбарыг ашиглаж байна, болгоомжтой байгаарай!"
 
-#: src/Config.php:3215
+#: src/Config.php:3226
 msgid "I know I am using a unstable version."
 msgstr "Би тогтворгүй хувилбарыг ашиглаж байгааг мэдэж байна."
 
-#: src/Config.php:3223
+#: src/Config.php:3234
 msgid "Please check the unstable version checkbox."
 msgstr "Тогтворгүй хувилбарын чекбоксыг шалгана уу."
 
-#: src/Config.php:3268
+#: src/Config.php:3279
 msgid "Logs purge configuration"
 msgstr "Логыг цэвэрлэх тохиргоо"
 
-#: src/Config.php:3270
+#: src/Config.php:3281
 msgid "Change all"
 msgstr "Бүгдийг өөрчлөх"
 
-#: src/Config.php:3287
+#: src/Config.php:3298
 msgid "Add/update relation between items"
 msgstr "Хоорондын харилцааг нэмэх/шинэчлэх"
 
-#: src/Config.php:3291
+#: src/Config.php:3302
 msgid "Delete relation between items"
 msgstr "Хоорондын холбоог устгах"
 
-#: src/Config.php:3331
+#: src/Config.php:3342
 msgid "Installation/uninstallation of software on items"
 msgstr "Програм суулгах/устгах"
 
-#: src/Config.php:3337
+#: src/Config.php:3348
 msgid "Installation/uninstallation versions on software"
 msgstr "Програм хангамж дээрх суулгах/устгах хувилбарууд"
 
-#: src/Config.php:3346
+#: src/Config.php:3357
 msgid "Add/Remove items from software versions"
 msgstr "Програм хангамжийн хувилбар нэмэх/хасах"
 
-#: src/Config.php:3357
+#: src/Config.php:3368
 msgid "Add financial information to an item"
 msgstr "Санхүүгийн мэдээлэл нэмэх"
 
-#: src/Config.php:3365
+#: src/Config.php:3376
 msgid "Add/remove profiles to users"
 msgstr "Хэрэглэгчид профайл нэмэх/арилгах"
 
-#: src/Config.php:3368
+#: src/Config.php:3379
 msgid "Add/remove groups to users"
 msgstr "Хэрэглэгчийг группт нэмэх/хасах"
 
-#: src/Config.php:3374
+#: src/Config.php:3385
 msgid "User authentication method changes"
 msgstr "Хэрэглэгчийг таних аргачлалыг өөрчлөх"
 
-#: src/Config.php:3377 src/User.php:4019
+#: src/Config.php:3388 src/User.php:4019
 msgid "Deleted user in LDAP directory"
 msgstr "LDAP директорын устгасан хэрэглэгч"
 
-#: src/Config.php:3385
+#: src/Config.php:3396
 msgid "Add component"
 msgstr "Бүрэлдэхүүн хэсэг нэмэх"
 
-#: src/Config.php:3388
+#: src/Config.php:3399
 msgid "Update component"
 msgstr "Бүрэлдэхүүн хэсгийг шинэчлэх"
 
-#: src/Config.php:3393
+#: src/Config.php:3404
 msgid "Disconnect a component"
 msgstr "Бүрэлдэхүүн хэсгийн холболтыг салгах"
 
-#: src/Config.php:3397
+#: src/Config.php:3408
 msgid "Connect a component"
 msgstr "Бүрэлдэхүүн хэсэгтэй холбох"
 
-#: src/Config.php:3402
+#: src/Config.php:3413
 msgid "Delete component"
 msgstr "Бүрэлдэхүүн хэсгийг устгах"
 
-#: src/Config.php:3408
+#: src/Config.php:3419
 msgid "All sections"
 msgstr "Бүх хэсгүүд"
 
-#: src/Config.php:3410
+#: src/Config.php:3421
 msgid "Purge all log entries"
 msgstr "Бүх логийн бүртгэлийг цэвэрлэх"
 
-#: src/Config.php:3440
+#: src/Config.php:3451
 msgid "Delete all"
 msgstr "Бүгдийг устгах"
 
-#: src/Config.php:3441
+#: src/Config.php:3452
 msgid "Keep all"
 msgstr "Бүгдийг нь хадгал"
 
-#: src/Config.php:3446
+#: src/Config.php:3457
 #, php-format
 msgid "Delete if older than %s month"
 msgid_plural "Delete if older than %s months"
 msgstr[0] "%s сараас дээш бол устгах"
 msgstr[1] "%s сараас дээш бол устгах"
 
-#: src/Config.php:3487
+#: src/Config.php:3498
 msgid "Security setup"
 msgstr "Аюулгүй байдлын тохиргоо"
 
-#: src/Config.php:3496
+#: src/Config.php:3507
 msgid "Password security policy validation"
 msgstr "Нууц үгийн аюулгүй байдлын бодлогын баталгаажуулалт"
 
-#: src/Config.php:3530
+#: src/Config.php:3541
 msgid "Password need digit"
 msgstr "Нууц үгэнд цифр ашиглана"
 
-#: src/Config.php:3545
+#: src/Config.php:3556
 msgid "Password need lowercase character"
 msgstr "Нууц үгэнд жижиг үсэг ашиглана"
 
-#: src/Config.php:3563
+#: src/Config.php:3574
 msgid "Password need uppercase character"
 msgstr "Нууц үгэнд том үсэг ашиглана"
 
-#: src/Config.php:3578
+#: src/Config.php:3589
 msgid "Password need symbol"
 msgstr "Нууц үгэнд тэмдэг ашиглана"
 
-#: src/Config.php:3594
+#: src/Config.php:3605
 msgid "Password expiration policy"
 msgstr "Нууц үг дуусах бодлого"
 
-#: src/Config.php:3600
+#: src/Config.php:3611
 msgid "Password expiration delay (in days)"
 msgstr "Нууц үг дуусах хугацаа (өдрөөр)"
 
-#: src/Config.php:3618
+#: src/Config.php:3629
 msgid "Password expiration notice time (in days)"
 msgstr "Нууц үг дуусах мэдэгдлийн хугацаа (өдөрт)"
 
-#: src/Config.php:3629
+#: src/Config.php:3640
 msgid "Notification disabled"
 msgstr "Мэдэгдлийг идэвхгүй болгосон"
 
-#: src/Config.php:3639
+#: src/Config.php:3650
 msgid "Delay before account deactivation (in days)"
 msgstr "Эрхийг идэвхгүй болгохоос өмнө хойшлуулах (өдрөөр)"
 
-#: src/Config.php:3650
+#: src/Config.php:3661
 msgid "Do not deactivate"
 msgstr "Идэвхгүй болгох"
 
-#: src/Config.php:3692
+#: src/Config.php:3703
 msgid "Documents setup"
 msgstr "Документын тохиргоо"
 
-#: src/Config.php:3697
+#: src/Config.php:3708
 msgid "Document files maximum size (Mio)"
 msgstr "Документын файлын дээд хэмжээ (Mio)"
 
@@ -23058,24 +23062,24 @@ msgstr "Арга хэмжээний төрөл"
 msgid "Period"
 msgstr "Хугацаа"
 
-#: src/Planning.php:2648
+#: src/Planning.php:2667
 msgid "Your planning"
 msgstr "Таны төлөвлөлт"
 
-#: src/Planning.php:2745
+#: src/Planning.php:2764
 #, php-format
 msgid "Ticket #%1$s %2$s"
 msgstr "Дуудлага #%1$s %2$s"
 
-#: src/Planning.php:2785
+#: src/Planning.php:2804
 msgid "See personnal planning"
 msgstr "Хувийн төлөвлөгөөг харах"
 
-#: src/Planning.php:2786
+#: src/Planning.php:2805
 msgid "See schedule of people in my groups"
 msgstr "Өөрийн групп дэх хүмүүсийн хуваарийг харах"
 
-#: src/Planning.php:2787
+#: src/Planning.php:2806
 msgid "See all plannings"
 msgstr "Бүх төлөвлөгөөг харах"
 
@@ -26036,25 +26040,25 @@ msgstr "Амжилттай импорт"
 msgid "No element to be tested"
 msgstr "Тест хийх элемент байхгүй"
 
-#: src/RuleCollection.php:1963
+#: src/RuleCollection.php:1962
 msgid "Inactive"
 msgstr "Идэвхгүй"
 
-#: src/RuleCollection.php:2209
+#: src/RuleCollection.php:2208
 #, php-format
 msgid "Rules applied: %s"
 msgstr "Хэрэглэсэн дүрэм: %s"
 
-#: src/RuleCollection.php:2220
+#: src/RuleCollection.php:2219
 #, php-format
 msgid "Local rules: %s"
 msgstr "Локал дүрмүүд: %s "
 
-#: src/RuleCollection.php:2229
+#: src/RuleCollection.php:2228
 msgid "Rules applicable in the sub-entities"
 msgstr "Дэд нэгжүүдэд хамаарах дүрмүүд"
 
-#: src/RuleCollection.php:2361
+#: src/RuleCollection.php:2360
 msgid "Global dictionary"
 msgstr "Глобал сан"
 
