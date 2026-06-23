@@ -859,22 +859,22 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
             'linkedprojecttask.planstartdate'   => sprintf(
                 __('%1$s: %2$s'),
                 _n('Linked project task', 'Linked project tasks', 1),
-                __('Plan start date')
+                __('Planned start date')
             ),
             'linkedprojecttask.planenddate'   => sprintf(
                 __('%1$s: %2$s'),
                 _n('Linked project task', 'Linked project tasks', 1),
-                __('Plan end date')
+                __('Planned end date')
             ),
             'linkedprojecttask.realstartdate'   => sprintf(
                 __('%1$s: %2$s'),
                 _n('Linked project task', 'Linked project tasks', 1),
-                __('Plan start date')
+                __('Real start date')
             ),
             'linkedprojecttask.realenddate'   => sprintf(
                 __('%1$s: %2$s'),
                 _n('Linked project task', 'Linked project tasks', 1),
-                __('Plan start date')
+                __('Real end date')
             ),
         ];
 
