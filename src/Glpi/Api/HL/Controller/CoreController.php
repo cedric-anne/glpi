@@ -817,6 +817,9 @@ HTML;
     )]
     public function transferEntity(Request $request): Response
     {
+        if (!Session::haveRight(Transfer::$rightname, READ)) {
+            return self::getAccessDeniedErrorResponse();
+        }
         $params = $request->getParameters();
         $transfer = new Transfer();
 

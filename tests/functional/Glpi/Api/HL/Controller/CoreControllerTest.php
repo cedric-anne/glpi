@@ -34,10 +34,12 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Transfer;
 
 class CoreControllerTest extends HLAPITestCase
 {
@@ -184,7 +186,21 @@ class CoreControllerTest extends HLAPITestCase
             ],
         ];
 
-        $this->login();
+        $request = new Request('POST', '/Transfer', [
+            'Content-Type' => 'application/json',
+            'GLPI-Entity' => $root_entity,
+            'GLPI-Entity-Recursive' => 'true',
+        ], json_encode($transfer_records));
+
+        $_SESSION['glpiactiveprofile'][Transfer::$rightname] = 0;
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isAccessDenied();
+        });
+
+        $_SESSION['glpiactiveprofile'][Transfer::$rightname] = READ;
 
         $request = new Request('POST', '/Transfer', [
             'Content-Type' => 'application/json',
