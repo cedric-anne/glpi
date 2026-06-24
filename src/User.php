@@ -886,6 +886,10 @@ class User extends CommonDBTM
             }
         }
 
+        if (isset($input['use_mode']) && !Config::canUpdate()) {
+            unset($input['use_mode']);
+        }
+
         return $input;
     }
 
@@ -1215,6 +1219,10 @@ class User extends CommonDBTM
         }
 
         // Manage preferences fields
+        if (isset($input['use_mode']) && !Config::canUpdate()) {
+            unset($input['use_mode']);
+        }
+
         if (Session::getLoginUserID() == $input['id']) {
             if (
                 isset($input['use_mode'])
