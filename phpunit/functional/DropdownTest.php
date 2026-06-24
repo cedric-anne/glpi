@@ -1584,15 +1584,20 @@ class DropdownTest extends DbTestCase
             array_keys((array) $values['results'][0])
         );
 
-        //use a array condition
+        //use a string condition
+        // Put condition in session and post its key
+        $condition = ['name' => ['LIKE', "%3%"]];
+        $condition_key = sha1(serialize($condition));
+        $_SESSION['glpicondition'][$condition_key] = $condition;
+
         $post = [
             'itemtype'              => $location::getType(),
-            'condition'             => ['name' => ['LIKE', "%3%"]],
+            'condition'             => $condition_key,
             'display_emptychoice'   => true,
             'entity_restrict'       => 0,
             'page'                  => 1,
             'page_limit'            => 10,
-            '_idor_token'           => \Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => ['name' => ['LIKE', "%3%"]]]),
+            '_idor_token'           => \Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => $condition_key]),
         ];
         $values = \Dropdown::getDropdownValue($post);
         $values = (array) json_decode($values);
@@ -1600,27 +1605,16 @@ class DropdownTest extends DbTestCase
         $this->assertEquals(2, $values['count']);
         $this->assertCount(2, $values['results']);
 
-        //use a string condition
-        // Put condition in session and post its key
-        $condition_key = sha1(serialize($post['condition']));
-        $_SESSION['glpicondition'][$condition_key] = $post['condition'];
-        $post['condition']   = $condition_key;
-        $post['_idor_token'] = \Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => $condition_key]);
-        $values = \Dropdown::getDropdownValue($post);
-        $values = (array) json_decode($values);
-
-        $this->assertEquals(2, $values['count']);
-        $this->assertCount(2, $values['results']);
-
         //use a condition that does not exist in session
+        $condition_key = 'not_in_session';
         $post = [
             'itemtype'              => $location::getType(),
-            'condition'             => '`name` LIKE "%4%"',
+            'condition'             => $condition_key,
             'display_emptychoice'   => true,
             'entity_restrict'       => 0,
             'page'                  => 1,
             'page_limit'            => 10,
-            '_idor_token'           => \Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => '`name` LIKE "%4%"']),
+            '_idor_token'           => \Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => $condition_key]),
         ];
         $values = \Dropdown::getDropdownValue($post);
         $values = (array) json_decode($values);

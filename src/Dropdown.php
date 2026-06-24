@@ -2701,13 +2701,12 @@ JAVASCRIPT;
             $post['permit_select_parent'] = false;
         }
 
+        $condition = [];
         if (isset($post['condition']) && !empty($post['condition']) && !is_array($post['condition'])) {
             // Retreive conditions from SESSION using its key
             $key = $post['condition'];
             if (isset($_SESSION['glpicondition']) && isset($_SESSION['glpicondition'][$key])) {
-                $post['condition'] = $_SESSION['glpicondition'][$key];
-            } else {
-                $post['condition'] = [];
+                $condition = $_SESSION['glpicondition'][$key];
             }
         }
 
@@ -2748,15 +2747,15 @@ JAVASCRIPT;
 
         $ljoin = [];
 
-        if (isset($post['condition']) && !empty($post['condition'])) {
-            if (isset($post['condition']['LEFT JOIN'])) {
-                $ljoin = $post['condition']['LEFT JOIN'];
-                unset($post['condition']['LEFT JOIN']);
+        if (!empty($condition)) {
+            if (isset($condition['LEFT JOIN'])) {
+                $ljoin = $condition['LEFT JOIN'];
+                unset($condition['LEFT JOIN']);
             }
-            if (isset($post['condition']['WHERE'])) {
-                $where = array_merge($where, $post['condition']['WHERE']);
+            if (isset($condition['WHERE'])) {
+                $where = array_merge($where, $condition['WHERE']);
             } else {
-                $where = array_merge($where, $post['condition']);
+                $where = array_merge($where, $condition);
             }
         }
 
