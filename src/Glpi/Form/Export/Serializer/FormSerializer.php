@@ -90,6 +90,7 @@ use function Safe\file_put_contents;
 use function Safe\json_decode;
 use function Safe\json_encode;
 use function Safe\md5_file;
+use function Safe\preg_match;
 
 final class FormSerializer extends AbstractFormSerializer
 {
@@ -1143,6 +1144,11 @@ final class FormSerializer extends AbstractFormSerializer
         }
 
         $prefix = IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX;
+
+        // Reject keys that could escape the illustration directory via path traversal
+        if (!preg_match('/^[a-zA-Z0-9._-]+$/', $illustration->key)) {
+            throw new RuntimeException("Invalid illustration key: " . $illustration->key);
+        }
 
         // Check if file already exist
         $manager = new IllustrationManager();
