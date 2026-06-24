@@ -498,7 +498,7 @@ class Group extends CommonTreeDropdown
     {
         if (
             !$this->fields['is_usergroup']
-            || !self::canUpdate()
+            || !$this->can($this->getID(), UPDATE)
             || !Session::haveRight("user", User::UPDATEAUTHENT)
             || !AuthLDAP::useAuthLdap()
         ) {
@@ -520,7 +520,7 @@ class Group extends CommonTreeDropdown
      **/
     public function showSecurityForm($ID)
     {
-        $canedit = self::canUpdate() && Session::haveRight("user", User::UPDATEAUTHENT);
+        $canedit = $this->can($this->getID(), UPDATE) && Session::haveRight("user", User::UPDATEAUTHENT);
         TemplateRenderer::getInstance()->display('pages/2fa/2fa_config.html.twig', [
             'canedit' => $canedit,
             'item'   => $this,

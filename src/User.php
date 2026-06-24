@@ -3307,10 +3307,17 @@ HTML;
                     return;
                 }
                 if (Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
-                    if (User::changeAuthMethod($ids, $input["authtype"], $input["auths_id"])) {
-                        $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
-                    } else {
-                        $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    foreach ($ids as $id) {
+                        $user = new User();
+                        if (!$user->can($id, UPDATE)) {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        } elseif (User::changeAuthMethod([$id], $input["authtype"], $input["auths_id"])) {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
+                        } else {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
+                        }
                     }
                 } else {
                     $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
@@ -4744,10 +4751,6 @@ HTML;
     public static function changeAuthMethod(array $IDs = [], $authtype = 1, $server = 0)
     {
         global $DB;
-
-        if (!Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
-            return false;
-        }
 
         if (
             $IDs !== []
