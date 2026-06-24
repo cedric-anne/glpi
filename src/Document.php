@@ -794,8 +794,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      */
     private function canViewFileFromItem($itemtype, $items_id): bool
     {
-        global $DB;
-
         if (!is_a($itemtype, CommonDBTM::class, true)) {
             return false;
         }
@@ -812,22 +810,24 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             return false;
         }
 
+        return $this->hasLinkedItem($itemtype, $items_id);
+    }
+
+    private function hasLinkedItem(string $itemtype, int $items_id): bool
+    {
+        global $DB;
+
         $result = $DB->request([
             'FROM'  => Document_Item::getTable(),
-            'COUNT' => 'cpt',
+            'COUNT' => 'nb_of_linked_documents',
             'WHERE' => [
                 'itemtype'     => $itemtype,
                 'items_id'     => $items_id,
                 'documents_id' => $this->getID(),
             ],
-            'LIMIT' => 1, // Only need to see one result
         ])->current();
 
-        if ($result['cpt'] === 0) {
-            return false;
-        }
-
-        return true;
+        return $result['nb_of_linked_documents'] > 0;
     }
 
     /**
@@ -1768,6 +1768,10 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
     private function canViewFileFromForm(string $itemtype, int $items_id): bool
     {
+        if (!$this->hasLinkedItem($itemtype, $items_id)) {
+            return false;
+        }
+
         if ($itemtype === Form::class) {
             $form = Form::getById($items_id);
             if (!$form) {
