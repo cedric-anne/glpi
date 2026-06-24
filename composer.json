@@ -94,6 +94,7 @@
         "symfony/polyfill-php84": "^1.33",
         "symfony/property-access": "^6.4",
         "symfony/property-info": "^6.4",
+        "symfony/rate-limiter": "^6.4",
         "symfony/routing": "^6.4",
         "symfony/serializer": "^6.4",
         "tecnickcom/tc-lib-barcode": "^2.4",
