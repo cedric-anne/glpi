@@ -1743,60 +1743,22 @@ HTML;
             array_keys((array) $values['results'][0])
         );
 
-        //use a array condition
-        $post = [
-            'itemtype'              => $location::getType(),
-            'condition'             => ['name' => ['LIKE', "%3%"]],
-            'display_emptychoice'   => true,
-            'entity_restrict'       => 0,
-            'page'                  => 1,
-            'page_limit'            => 10,
-            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => ['name' => ['LIKE', "%3%"]]]),
-        ];
-        $values = Dropdown::getDropdownValue($post);
-        $values = (array) json_decode($values);
-
-        $this->assertEquals(3, $values['count']);
-        $this->assertCount(2, $values['results']);
-
-        //use a WHERE array condition
-        $post = [
-            'itemtype'              => $location::getType(),
-            'condition'             => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]],
-            'display_emptychoice'   => true,
-            'entity_restrict'       => 0,
-            'page'                  => 1,
-            'page_limit'            => 10,
-            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]]]),
-        ];
-        $values = Dropdown::getDropdownValue($post);
-        $values = (array) json_decode($values);
-
-        $this->assertEquals(3, $values['count']);
-        $this->assertCount(2, $values['results']);
-
-        //use a "multiple" WHERE array condition
-        $post = [
-            'itemtype'              => $location::getType(),
-            'condition'             => [0 => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]]],
-            'display_emptychoice'   => true,
-            'entity_restrict'       => 0,
-            'page'                  => 1,
-            'page_limit'            => 10,
-            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => [0 => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]]]]),
-        ];
-        $values = Dropdown::getDropdownValue($post);
-        $values = (array) json_decode($values);
-
-        $this->assertEquals(3, $values['count']);
-        $this->assertCount(2, $values['results']);
-
         //use a string condition
         // Put condition in session and post its key
-        $condition_key = sha1(serialize($post['condition']));
-        $_SESSION['glpicondition'][$condition_key] = $post['condition'];
-        $post['condition']   = $condition_key;
-        $post['_idor_token'] = Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => $condition_key]);
+        $condition = ['name' => ['LIKE', "%3%"]];
+        $condition_key = sha1(serialize($condition));
+        $_SESSION['glpicondition'][$condition_key] = $condition;
+
+        $post = [
+            'itemtype'              => $location::getType(),
+            'condition'             => $condition_key,
+            'display_emptychoice'   => true,
+            'entity_restrict'       => 0,
+            'page'                  => 1,
+            'page_limit'            => 10,
+            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => $condition_key]),
+        ];
+
         $values = Dropdown::getDropdownValue($post);
         $values = (array) json_decode($values);
 
@@ -1804,14 +1766,15 @@ HTML;
         $this->assertCount(2, $values['results']);
 
         //use a condition that does not exist in session
+        $condition_key = 'not_in_session';
         $post = [
             'itemtype'              => $location::getType(),
-            'condition'             => '`name` LIKE "%4%"',
+            'condition'             => $condition_key,
             'display_emptychoice'   => true,
             'entity_restrict'       => 0,
             'page'                  => 1,
             'page_limit'            => 10,
-            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => '`name` LIKE "%4%"']),
+            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => $condition_key]),
         ];
         $values = Dropdown::getDropdownValue($post);
         $values = (array) json_decode($values);
@@ -3015,12 +2978,16 @@ HTML;
             'projects_id' => $project->getID(),
         ]);
 
+        $condition = ['NOT' => ['glpi_projecttasks.name' => ['Task excluded by condition']]];
+        $condition_key = sha1(serialize($condition));
+        $_SESSION['glpicondition'][$condition_key] = $condition;
+
         $params = [
             'itemtype' => ProjectTask::class,
             'display_emptychoice' => false,
             'entity_restrict' => 0,
             'used' => [$task_used->getID() => $task_used->getID()],
-            'condition' => ['NOT' => ['glpi_projecttasks.name' => ['Task excluded by condition']]],
+            'condition' => $condition_key,
         ];
         $params['_idor_token'] = Session::getNewIDORToken(ProjectTask::class, $params);
 
@@ -3070,11 +3037,15 @@ HTML;
         $this->assertNotContains($project->getID(), $ids);
 
         // Ensure deleted project is present if the condition is overriden
+        $condition = ['is_deleted' => 1];
+        $condition_key = sha1(serialize($condition));
+        $_SESSION['glpicondition'][$condition_key] = $condition;
+
         $params = [
             'itemtype'            => Project::class,
             'display_emptychoice' => false,
             'entity_restrict'     => $root_entity_id,
-            'condition' => ['is_deleted' => 1],
+            'condition' => $condition_key,
         ];
         $params['_idor_token'] = Session::getNewIDORToken(Project::class, $params);
 

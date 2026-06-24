@@ -991,6 +991,10 @@ class User extends CommonDBTM implements TreeBrowseInterface
             }
         }
 
+        if (isset($input['use_mode']) && !Config::canUpdate()) {
+            unset($input['use_mode']);
+        }
+
         return $input;
     }
 
@@ -1111,6 +1115,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 }
                 if (!str_starts_with($fullpath, realpath(GLPI_TMP_DIR))) {
                     trigger_error(sprintf('Invalid picture path `%s`', $input["_picture"]), E_USER_WARNING);
+                    return false;
                 }
                 if (Document::isImage($fullpath)) {
                     // Unlink old picture (clean on changing format)
@@ -1273,13 +1278,17 @@ class User extends CommonDBTM implements TreeBrowseInterface
             }
         }
 
-        // blank password when authtype changes
-        if (
-            isset($input["authtype"])
-            && $input["authtype"] != Auth::DB_GLPI
-            && $input["authtype"] != $this->fields['authtype']
-        ) {
-            $input["password"] = "";
+        if (isset($input['authtype'])) {
+            if (
+                Session::getLoginUserID() !== false // always allow update from backend routines
+                && !Session::haveRight(self::$rightname, self::UPDATEAUTHENT)
+            ) {
+                // prevent unexpected authentication type change
+                unset($input['authtype']);
+            } elseif ($input['authtype'] != $this->fields['authtype'] && $input['authtype'] != Auth::DB_GLPI) {
+                // blank password when authtype changes
+                $input['password'] = '';
+            }
         }
 
         // Update User in the database
@@ -1386,6 +1395,10 @@ class User extends CommonDBTM implements TreeBrowseInterface
         }
 
         // Manage preferences fields
+        if (isset($input['use_mode']) && !Config::canUpdate()) {
+            unset($input['use_mode']);
+        }
+
         if (Session::getLoginUserID() == $input['id']) {
             if (
                 isset($input['use_mode'])
@@ -3310,10 +3323,17 @@ HTML;
                     return;
                 }
                 if (Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
-                    if (User::changeAuthMethod($ids, $input["authtype"], $input["auths_id"])) {
-                        $ma->itemDone($item::class, $ids, MassiveAction::ACTION_OK);
-                    } else {
-                        $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
+                    foreach ($ids as $id) {
+                        $user = new User();
+                        if (!$user->can($id, UPDATE)) {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        } elseif (User::changeAuthMethod([$id], $input["authtype"], $input["auths_id"])) {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
+                        } else {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
+                        }
                     }
                 } else {
                     $ma->itemDone($item::class, $ids, MassiveAction::ACTION_NORIGHT);
@@ -4750,10 +4770,6 @@ HTML;
     public static function changeAuthMethod(array $IDs = [], $authtype = 1, $server = 0)
     {
         global $DB;
-
-        if (!Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
-            return false;
-        }
 
         if (
             $IDs !== []

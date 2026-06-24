@@ -2553,22 +2553,22 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             'linkedproject.planstartdate'   => sprintf(
                 __('%1$s: %2$s'),
                 _n('Linked project', 'Linked projects', 1),
-                __('Plan start date')
+                __('Planned start date')
             ),
             'linkedproject.planenddate'   => sprintf(
                 __('%1$s: %2$s'),
                 _n('Linked project', 'Linked projects', 1),
-                __('Plan end date')
+                __('Planned end date')
             ),
             'linkedproject.realstartdate'   => sprintf(
                 __('%1$s: %2$s'),
                 _n('Linked project', 'Linked projects', 1),
-                __('Plan start date')
+                __('Real start date')
             ),
             'linkedproject.realenddate'   => sprintf(
                 __('%1$s: %2$s'),
                 _n('Linked project', 'Linked projects', 1),
-                __('Plan start date')
+                __('Real start date')
             ),
         ];
 

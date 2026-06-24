@@ -2969,25 +2969,24 @@ HTML;
 
         $ljoin = [];
 
+        $condition = [];
         if (!empty($post['condition']) && !is_array($post['condition'])) {
             // Retrieve conditions from SESSION using its key
             $key = $post['condition'];
             if (isset($_SESSION['glpicondition'][$key])) {
-                $post['condition'] = $_SESSION['glpicondition'][$key];
-            } else {
-                $post['condition'] = [];
+                $condition = $_SESSION['glpicondition'][$key];
             }
         }
 
-        if (!empty($post['condition'])) {
-            if (isset($post['condition']['LEFT JOIN'])) {
-                $ljoin = $post['condition']['LEFT JOIN'];
-                unset($post['condition']['LEFT JOIN']);
+        if (!empty($condition)) {
+            if (isset($condition['LEFT JOIN'])) {
+                $ljoin = $condition['LEFT JOIN'];
+                unset($condition['LEFT JOIN']);
             }
-            if (isset($post['condition']['WHERE'])) {
-                $where = array_merge($where, $post['condition']['WHERE']);
+            if (isset($condition['WHERE'])) {
+                $where = array_merge($where, $condition['WHERE']);
             } else {
-                foreach ($post['condition'] as $key => $value) {
+                foreach ($condition as $key => $value) {
                     if (is_array($value) && isset($value['LEFT JOIN'])) {
                         $ljoin = $value['LEFT JOIN'];
                     }

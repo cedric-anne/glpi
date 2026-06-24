@@ -1593,7 +1593,7 @@ class Auth extends CommonGLPI
      */
     public static function showSynchronizationForm(User $user)
     {
-        if (Session::haveRight("user", User::UPDATEAUTHENT)) {
+        if (Session::haveRight("user", User::UPDATEAUTHENT) && $user->can($user->getID(), READ)) {
             TemplateRenderer::getInstance()->display('pages/setup/authentication/sync.html.twig', [
                 'user' => $user,
             ]);

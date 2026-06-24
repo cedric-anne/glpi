@@ -151,7 +151,7 @@
                                     {% if item.fields['2fa'] is not same as null %}
                                         <br>
                                         {{ __('2FA enabled') }}
-                                        {% if has_profile_right('user', constant('User::UPDATEAUTHENT')) %}
+                                        {% if item.can(item.getID(), constant('UPDATE')) and has_profile_right('user', constant('User::UPDATEAUTHENT')) %}
                                             <button type="submit" name="disable_2fa" class="btn btn-outline-danger btn-sm ms-1" data-bs-toggle="tooltip"
                                                     title="{{ __('If 2FA is mandatory for this user, they will be required to set it back up the next time they log in.') }}">
                                                 {{ __('Disable') }}

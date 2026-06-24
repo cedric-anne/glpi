@@ -750,6 +750,35 @@ class UserTest extends DbTestCase
         }
     }
 
+    public function testPrepareInputForUpdateAuthTypeWithSession(): void
+    {
+        $this->login();
+
+        $target_user = \getItemByTypeName(User::class, 'glpi');
+
+        // Check with right to update auth method
+        $_SESSION['glpiactiveprofile']['user'] = \ALLSTANDARDRIGHT + User::UPDATEAUTHENT;
+        $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), 'authtype' => \Auth::EXTERNAL]);
+        $this->assertArrayHasKey('authtype', $output);
+        $this->assertEquals(\Auth::EXTERNAL, $output['authtype']);
+
+        // Check without right to update auth method
+        $_SESSION['glpiactiveprofile']['user'] = \ALLSTANDARDRIGHT;
+        $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), 'authtype' => \Auth::EXTERNAL]);
+        $this->assertArrayNotHasKey('authtype', $output);
+    }
+
+    public function testPrepareInputForUpdateAuthTypeAsSystemRoutine(): void
+    {
+        $target_user = \getItemByTypeName(User::class, 'glpi');
+
+        // Check without right to update auth method
+        $_SESSION['glpiactiveprofile']['user'] = 0;
+        $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), 'authtype' => \Auth::EXTERNAL]);
+        $this->assertArrayHasKey('authtype', $output);
+        $this->assertEquals(\Auth::EXTERNAL, $output['authtype']);
+    }
+
     public function testPost_addItem()
     {
         $this->login();

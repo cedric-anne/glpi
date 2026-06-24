@@ -615,6 +615,9 @@ class ITILControllerTest extends HLAPITestCase
     {
         $this->loginWeb();
         $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+
+        $original_ticket_rights = $_SESSION['glpiactiveprofile'][Ticket::$rightname];
+
         $ticket = $this->createItem(Ticket::class, [
             'name' => __FUNCTION__,
             'content' => 'test',
@@ -627,6 +630,18 @@ class ITILControllerTest extends HLAPITestCase
             ['type' => 'User', 'id' => 2, 'role' => 'observer'],
             ['type' => 'User', 'id' => 4, 'role' => 'assigned'],
         ];
+
+        $_SESSION['glpiactiveprofile'][Ticket::$rightname] = 0;
+        $request = new Request('POST', "/Assistance/Ticket/{$ticket->getID()}/TeamMember");
+        $request->setParameter('type', $members[0]['type']);
+        $request->setParameter('id', $members[0]['id']);
+        $request->setParameter('role', $members[0]['role']);
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isAccessDenied();
+        });
+
+        $_SESSION['glpiactiveprofile'][Ticket::$rightname] = $original_ticket_rights;
         foreach ($members as $member) {
             $request = new Request('POST', "/Assistance/Ticket/{$ticket->getID()}/TeamMember");
             $request->setParameter('type', $member['type']);
@@ -639,6 +654,13 @@ class ITILControllerTest extends HLAPITestCase
         }
 
         // Get all members
+        $_SESSION['glpiactiveprofile'][Ticket::$rightname] = 0;
+        $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket->getID()}/TeamMember"), function ($call) use ($members) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isAccessDenied();
+        });
+        $_SESSION['glpiactiveprofile'][Ticket::$rightname] = $original_ticket_rights;
         $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket->getID()}/TeamMember"), function ($call) use ($members) {
             /** @var \HLAPICallAsserter $call */
             $call->response
@@ -653,6 +675,21 @@ class ITILControllerTest extends HLAPITestCase
         });
 
         // Get by role
+        $_SESSION['glpiactiveprofile'][Ticket::$rightname] = 0;
+        $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket->getID()}/TeamMember/requester"), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isAccessDenied();
+        });
+        $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket->getID()}/TeamMember/observer"), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isAccessDenied();
+        });
+        $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket->getID()}/TeamMember/assigned"), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isAccessDenied();
+        });
+
+        $_SESSION['glpiactiveprofile'][Ticket::$rightname] = $original_ticket_rights;
         $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket->getID()}/TeamMember/requester"), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
@@ -682,6 +719,17 @@ class ITILControllerTest extends HLAPITestCase
         });
 
         // Remove members
+        $_SESSION['glpiactiveprofile'][Ticket::$rightname] = 0;
+        $request = new Request('DELETE', "/Assistance/Ticket/{$ticket->getID()}/TeamMember");
+        $request->setParameter('type', $members[0]['type']);
+        $request->setParameter('id', $members[0]['id']);
+        $request->setParameter('role', $members[0]['role']);
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isAccessDenied();
+        });
+
+        $_SESSION['glpiactiveprofile'][Ticket::$rightname] = $original_ticket_rights;
         foreach ($members as $member) {
             $request = new Request('DELETE', "/Assistance/Ticket/{$ticket->getID()}/TeamMember");
             $request->setParameter('type', $member['type']);
