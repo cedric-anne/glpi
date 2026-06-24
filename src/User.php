@@ -1273,13 +1273,17 @@ class User extends CommonDBTM implements TreeBrowseInterface
             }
         }
 
-        // blank password when authtype changes
-        if (
-            isset($input["authtype"])
-            && $input["authtype"] != Auth::DB_GLPI
-            && $input["authtype"] != $this->getField('authtype')
-        ) {
-            $input["password"] = "";
+        if (isset($input['authtype'])) {
+            if (
+                Session::getLoginUserID() !== false // always allow update from backend routines
+                && !Session::haveRight(self::$rightname, self::UPDATEAUTHENT)
+            ) {
+                // prevent unexpected authentication type change
+                unset($input['authtype']);
+            } elseif ($input['authtype'] != $this->fields['authtype'] && $input['authtype'] != Auth::DB_GLPI) {
+                // blank password when authtype changes
+                $input['password'] = '';
+            }
         }
 
         // Update User in the database
