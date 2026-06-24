@@ -44,12 +44,15 @@ include('../inc/includes.php');
 
 $translation = new KnowbaseItemTranslation();
 if (isset($_POST['add'])) {
+    $translation->check(-1, CREATE, $_POST);
     $translation->add($_POST);
     Html::back();
 } elseif (isset($_POST['update'])) {
+    $translation->check($_POST['id'], UPDATE, $_POST);
     $translation->update($_POST);
     Html::back();
 } elseif (isset($_POST["purge"])) {
+    $translation->check($_POST['id'], PURGE, $_POST);
     $translation->delete($_POST, true);
     Html::redirect(KnowbaseItem::getFormURLWithID($_POST['knowbaseitems_id']));
 } elseif (isset($_GET["id"]) and isset($_GET['to_rev'])) {
@@ -73,7 +76,6 @@ if (isset($_POST['add'])) {
     }
     Html::redirect($translation->getFormURLWithID($_GET['id']));
 } elseif (isset($_GET["id"])) {
-    // modifier un item dans la base de connaissance
     $translation->check($_GET["id"], READ);
 
     if (Session::getLoginUserID()) {
