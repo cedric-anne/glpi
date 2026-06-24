@@ -1523,7 +1523,7 @@ class Auth extends CommonGLPI
          */
         global $CFG_GLPI, $DB;
 
-        if (Session::haveRight("user", User::UPDATEAUTHENT)) {
+        if (Session::haveRight("user", User::UPDATEAUTHENT) && $user->can($user->getID(), READ)) {
             echo "<form method='post' action='" . Toolbox::getItemTypeFormURL('User') . "'>";
             echo "<div class='firstbloc'>";
             echo "<input type='hidden' name='id' value='" . $user->getID() . "'>";
