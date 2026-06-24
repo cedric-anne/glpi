@@ -1110,6 +1110,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 }
                 if (!str_starts_with($fullpath, realpath(GLPI_TMP_DIR))) {
                     trigger_error(sprintf('Invalid picture path `%s`', $input["_picture"]), E_USER_WARNING);
+                    return false;
                 }
                 if (Document::isImage($fullpath)) {
                     // Unlink old picture (clean on changing format)
