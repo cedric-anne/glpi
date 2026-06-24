@@ -17888,12 +17888,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/QueuedNotification.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method QueuedNotification\\:\\:canCreate\\(\\) should return bool but returns int\\|string\\|false\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/QueuedNotification.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method QueuedNotification\\:\\:getSpecificValueToSelect\\(\\) should return string but returns int\\|string\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
