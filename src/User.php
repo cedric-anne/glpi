@@ -986,6 +986,10 @@ class User extends CommonDBTM implements TreeBrowseInterface
             }
         }
 
+        if (isset($input['use_mode']) && !Config::canUpdate()) {
+            unset($input['use_mode']);
+        }
+
         return $input;
     }
 
@@ -1381,6 +1385,10 @@ class User extends CommonDBTM implements TreeBrowseInterface
         }
 
         // Manage preferences fields
+        if (isset($input['use_mode']) && !Config::canUpdate()) {
+            unset($input['use_mode']);
+        }
+
         if (Session::getLoginUserID() == $input['id']) {
             if (
                 isset($input['use_mode'])
