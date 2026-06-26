@@ -8086,8 +8086,6 @@ CREATE TABLE `glpi_users` (
   `personal_token_date` timestamp NULL DEFAULT NULL,
   `api_token` varchar(255) DEFAULT NULL,
   `api_token_date` timestamp NULL DEFAULT NULL,
-  `cookie_token` varchar(255) DEFAULT NULL,
-  `cookie_token_date` timestamp NULL DEFAULT NULL,
   `display_count_on_home` int DEFAULT NULL,
   `notification_to_myself` tinyint DEFAULT NULL,
   `duedateok_color` varchar(255) DEFAULT NULL,
@@ -10529,6 +10527,21 @@ CREATE TABLE `glpi_sharetokens` (
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`),
   KEY `date_expiration` (`date_expiration`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_usertokens`;
+CREATE TABLE `glpi_usertokens` (
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `users_id` int unsigned NOT NULL,
+    `type` varchar(64) NOT NULL,
+    `token_uid` char(16) NOT NULL,
+    `token_hash` varchar(255) NOT NULL,
+    `date_expiration` timestamp NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `token_uid` (`token_uid`),
+    KEY `users_id` (`users_id`),
+    KEY `type` (`type`),
+    KEY `date_expiration` (`date_expiration`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;
