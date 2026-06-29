@@ -6956,6 +6956,77 @@ class SearchTest extends DbTestCase
         $this->assertContains('80', $ids);
         $this->assertContains('86', $ids);
     }
+
+    public function testTypeHasAssetUrlSearchOption(): void
+    {
+        global $CFG_GLPI;
+
+        foreach ($CFG_GLPI["asset_types"] as $itemtype) {
+            $item = new $itemtype();
+            $options = $item->rawSearchOptions();
+
+            $filtered_options = array_filter($options, function ($option) {
+                return isset($option['id']) && $option['id'] === 290
+                    && isset($option['field']) && $option['field'] === 'asset_url';
+            });
+
+            $this->assertEquals(
+                1,
+                count($filtered_options),
+                "Itemtype $itemtype does not have the asset_url search option (id=290)"
+            );
+        }
+    }
+
+    public function testSearchByAssetUrl(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $computer = $this->createItem(Computer::class, [
+            'name'        => '_test_computer_for_asset_url_search',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $expected_url = $CFG_GLPI['url_base'] . Computer::getFormURL(false) . '?id=' . $computer->getID();
+
+        //search for the computer by its asset URL
+        $result = \Search::getDatas(
+            Computer::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => 290,
+                        'searchtype' => 'contains',
+                        'value'      => $expected_url,
+                    ],
+                ],
+                'forcetoview' => [1, 290],
+            ]
+        );
+
+        $this->assertArrayHasKey('data', $result);
+        $this->assertEquals(1, $result['data']['totalcount']);
+        $this->assertEquals($computer->getID(), $result['data']['rows'][0]['raw']['id']);
+
+        //sreach for a non-existing asset URL
+        $result = \Search::getDatas(
+            Computer::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => 290,
+                        'searchtype' => 'contains',
+                        'value'      => Computer::getFormURL(false) . '?id=99999999',
+                    ],
+                ],
+                'forcetoview' => [1, 290],
+            ]
+        );
+
+        $this->assertArrayHasKey('data', $result);
+        $this->assertEquals(0, $result['data']['totalcount'], 'Should find no computer for a non-existing asset URL');
+    }
 }
 
 // @codingStandardsIgnoreStart
