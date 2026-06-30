@@ -37,6 +37,7 @@ namespace Glpi\Kernel\Listener\PostBootListener;
 use Glpi\Debug\Profiler;
 use Glpi\Http\RequestRouterTrait;
 use Glpi\Http\SessionManager;
+use Glpi\Kernel\Kernel;
 use Glpi\Kernel\KernelListenerTrait;
 use Glpi\Kernel\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
@@ -76,7 +77,8 @@ class SessionStart implements EventSubscriberInterface
 
     public function onPostBoot(): void
     {
-        global $CFG_GLPI;
+        /** @var Kernel $kernel */
+        global $CFG_GLPI, $kernel;
 
         Profiler::getInstance()->start('SessionStart::execute', Profiler::CATEGORY_BOOT);
 
@@ -97,7 +99,7 @@ class SessionStart implements EventSubscriberInterface
         if ($this->php_sapi === 'cli') {
             $is_stateless = true;
         } else {
-            $request = Request::createFromGlobals();
+            $request = $kernel->getMainRequest();
             $is_stateless = $this->session_manager->isResourceStateless($request);
         }
 
