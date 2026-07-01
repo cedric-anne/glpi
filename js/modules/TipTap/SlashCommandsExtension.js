@@ -425,6 +425,15 @@ const SlashCommands = Extension.create({
                             // Initial position
                             updatePosition(props);
 
+                            const suggestionEl = document.querySelector('.suggestion');
+                            if (suggestionEl) {
+                                if (props.query === '') {
+                                    suggestionEl.classList.add('is-empty');
+                                } else {
+                                    suggestionEl.classList.remove('is-empty');
+                                }
+                            }
+
                             // Auto-update position on scroll/resize
                             const virtualElement = {
                                 getBoundingClientRect: props.clientRect,
@@ -457,6 +466,15 @@ const SlashCommands = Extension.create({
                                 cleanupAutoUpdate = autoUpdate(virtualElement, floatingElement, () => {
                                     updatePosition(props);
                                 });
+                            }
+
+                            const suggestionEl = document.querySelector('.suggestion');
+                            if (suggestionEl) {
+                                if (props.query === '') {
+                                    suggestionEl.classList.add('is-empty');
+                                } else {
+                                    suggestionEl.classList.remove('is-empty');
+                                }
                             }
                         },
 
