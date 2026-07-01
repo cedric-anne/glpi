@@ -605,19 +605,12 @@ PHP;
      */
     private function clearSymfonyCache(): void
     {
-        /** @var Kernel|null $kernel */
+        /** @var Kernel $kernel */
         global $kernel;
-
-        $localKernel = $kernel;
-
-        if (!$localKernel instanceof Kernel) {
-            // This must be usable in non-kernel contexts, env vars will get the proper Kernel env.
-            $localKernel = new Kernel();
-        }
 
         // Execute the `cache:clear` command provided by Symfony itself, not our own `cache:clear` command.
         // This command will clear the Symfony cache gracefully.
-        $app = new Application($localKernel);
+        $app = new Application($kernel);
         $app->setAutoExit(false);
         // Skip optional cache warmers (e.g. Twig templates, more than 400 to cache so cause memory exception - default 128M).
         // Templates are compiled lazily on first render.
