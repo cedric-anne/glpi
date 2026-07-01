@@ -59,7 +59,7 @@ jobs:
         run: |
           set -o pipefail
           CODE=0
-          LOG=$( npm audit package-lock-only 2>&1 | tee /dev/stderr ) || CODE=$?
+          LOG=$( npm run audit 2>&1 | tee /dev/stderr ) || CODE=$?
           echo "CODE=$CODE" >> $GITHUB_OUTPUT
           printf "LOG<<EOF\n$LOG\nEOF" >> $GITHUB_OUTPUT
       - name: "Create issue if npm audit fails"
