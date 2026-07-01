@@ -44,6 +44,7 @@ use Glpi\Form\Form;
 use Glpi\Helpdesk\Tile\LinkableToTilesInterface;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\Inventory\Conf;
+use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\ArrayNormalizer;
 
 /**
@@ -3398,7 +3399,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      */
     public static function getHelpdeskItemtypes()
     {
-        global $CFG_GLPI;
+        global $CFG_GLPI, $PLUGIN_HOOKS;
 
         $values = [];
         foreach ($CFG_GLPI["ticket_types"] as $key => $itemtype) {
@@ -3408,6 +3409,18 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                 unset($CFG_GLPI["ticket_types"][$key]);
             }
         }
+
+        if (isset($PLUGIN_HOOKS[Hooks::ASSIGN_TO_TICKET])) {
+            $plugin_types = [];
+            foreach ($PLUGIN_HOOKS[Hooks::ASSIGN_TO_TICKET] as $plugin => $value) {
+                if (!Plugin::isPluginActive($plugin)) {
+                    continue;
+                }
+                $plugin_types = Plugin::doOneHook($plugin, Hooks::AUTO_ASSIGN_TO_TICKET, $plugin_types) ?? $plugin_types;
+            }
+            $values += $plugin_types;
+        }
+
         return $values;
     }
 
