@@ -75,10 +75,11 @@
         "tinycolor2": "^1.6.0",
         "tinymce": "^8.6.0",
         "tinymce-i18n": "^26.5.18",
-        "vue": "^3.5.35",
+        "vue": "^3.5.39",
         "wunderbaum": "^0.14.1"
     },
     "scripts": {
+        "audit": "better-npm-audit audit",
         "build:pack": "webpack --config .webpack.config.js",
         "build:vue": "webpack --config .vue.webpack.config.js",
         "build:illustration-translations": "php bin/console tools:generate_illustration_translations --allow-superuser",
@@ -107,9 +108,10 @@
         "@typescript-eslint/parser": "^8.60.1",
         "@vitejs/plugin-vue": "^6.0.7",
         "@vitest/coverage-v8": "^4.1.8",
-        "@vue/test-utils": "^2.4.10",
+        "@vue/test-utils": "^2.4.11",
         "axe-core": "^4.12.0",
         "axios": "^1.16.1",
+        "better-npm-audit": "^3.11.0",
         "clean-webpack-plugin": "^4.0.0",
         "copy-webpack-plugin": "^14.0.0",
         "css-loader": "^7.1.4",
@@ -145,7 +147,7 @@
         "vitest": "^4.1.8",
         "vue-eslint-parser": "^10.4.0",
         "vue-loader": "^17.4.2",
-        "vue3-gettext": "^4.0.0-beta.1",
+        "vue3-gettext": "^4.0.1",
         "webpack": "^5.107.2",
         "webpack-cli": "^7.0.3",
         "webpack-dev-server": "^5.2.5"
