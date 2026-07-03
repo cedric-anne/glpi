@@ -397,10 +397,11 @@ class DBmysql
      */
     public function doQuery(BasePart|string $query): true|mysqli_result
     {
-        $params = null;
+        $is_stmt = false;
         if ($query instanceof BasePart) {
             $params = $query->getParams();
             $query = $query->getQuery();
+            $is_stmt = true;
         }
         $debug_data = [
             'query' => $query,
@@ -415,7 +416,7 @@ class DBmysql
         $this->checkForDeprecatedTableOptions($query);
         $this->checkForDDLInsideTransaction($query);
 
-        if ($params !== null) {
+        if ($is_stmt) {
             $stmt = $this->prepare($query);
             $this->executeStatement($stmt, $params);
             $this->affected_rows = (int) $stmt->affected_rows;
@@ -449,10 +450,11 @@ class DBmysql
         // Trigger warning errors if any SQL warnings was produced by the query
         $debug_data['warnings'] = $this->getSQLWarnings($query);
 
-        if (isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
+        //query data for prepared statements are added in executeStatement method
+        if (!$is_stmt && isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
             Profile::getCurrent()->addSQLQueryData(
                 $debug_data['query'],
-                $params ?? [],
+                [],
                 $debug_data['time'],
                 $debug_data['rows'],
                 $debug_data['errors'],
@@ -2208,7 +2210,8 @@ class DBmysql
 
         $duration = (microtime(true) - $start_time) * 1000;
         $debug_data['time'] = $duration;
-        $debug_data['rows'] = $this->getAffectedRows();
+        $debug_data['rows'] = (int) $stmt->affected_rows;
+        $debug_data['warnings'] = $this->getSQLWarnings($query);
 
         if (isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
             Profile::getCurrent()->addSQLQueryData(
@@ -2217,7 +2220,7 @@ class DBmysql
                 $debug_data['time'],
                 $debug_data['rows'],
                 $debug_data['errors'],
-                $this->getSQLWarnings($query)
+                $debug_data['warnings']
             );
         }
     }
