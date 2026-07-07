@@ -53,6 +53,9 @@ jobs:
       - name: "Show versions"
         run: |
           .github/actions/init_show-versions.sh
+      - name: "Build dependencies / translations"
+        run: |
+          docker compose exec -T app .github/actions/init_build.sh
       - name: "Audit npm dependencies"
         continue-on-error: true
         id: "npmaudit"
