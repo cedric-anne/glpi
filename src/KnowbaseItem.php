@@ -1260,6 +1260,28 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             );
         }
 
+        // Include base actions that are available for articles in the aside
+        $management = $this->getAsideActions();
+        if ($management !== []) {
+            if ($actions !== []) {
+                $actions[] = new EditorActionSeparator();
+            }
+            array_push($actions, ...$management);
+        }
+
+        return $actions;
+    }
+
+    /**
+     * Build the actions that will be available on the aside dots menu for
+     * the loaded article.
+     *
+     * @return array<EditorAction|EditorActionSeparator>
+     */
+    public function getAsideActions(): array
+    {
+        $actions = [];
+
         // Toggle actions
         $toggles = [];
         if (KnowbaseItem_Favorite::canCreate()) {
@@ -1285,15 +1307,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 ],
             );
         }
-        if ($toggles !== []) {
-            if ($actions !== []) {
-                $actions[] = new EditorActionSeparator();
-            }
-            array_push($actions, ...$toggles);
-        }
+        array_push($actions, ...$toggles);
 
         if ($this->can($this->fields['id'], PURGE)) {
-            $actions[] = new EditorActionSeparator();
+            if ($toggles !== []) {
+                $actions[] = new EditorActionSeparator();
+            }
             $actions[] = new EditorAction(
                 label: __("Delete article"),
                 icon: "ti ti-trash",
@@ -2851,6 +2870,14 @@ TWIG, $twig_params);
             return null;
         }
 
+        // Whether to render the per-article dots menu trigger. This is a cheap
+        // session-level check: the menu content itself (and its per-article
+        // permission gating) is lazy-loaded on demand, so we never load every
+        // tree article here just to know if any action is available.
+        $show_actions = KnowbaseItem_Favorite::canCreate()
+            || self::canUpdate()
+            || self::canPurge();
+
         return TemplateRenderer::getInstance()->render(
             'pages/tools/kb/aside.html.twig',
             [
@@ -2858,6 +2885,7 @@ TWIG, $twig_params);
                 'favorites'           => $favorites,
                 'current_is_favorite' => $current_is_favorite,
                 'has_other_favorites' => $has_other_favorites,
+                'show_actions'        => $show_actions,
             ]
         );
     }
