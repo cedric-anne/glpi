@@ -1046,30 +1046,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/report.networking.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Binary operation "\\." between array\\|int\\|string and \'\\?\' results in an error\\.$#',
-	'identifier' => 'binaryOp.invalid',
-	'count' => 1,
-	'path' => __DIR__ . '/front/reservation.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$haystack of function str_contains expects string, string\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/front/reservation.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$string of function parse_str expects string, array\\|int\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/reservation.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$url of function Safe\\\\parse_url expects string, string\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/front/reservation.form.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$id of method CommonGLPI\\:\\:getFormURLWithID\\(\\) expects int, int\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -2744,12 +2720,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$string1 of function strcmp expects string, array\\<string\\>\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$type of method CommonITILObject\\:\\:getTemplateFieldName\\(\\) expects int\\|null, int\\<min, \\-1\\>\\|int\\<1, max\\>\\|true given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
@@ -2781,12 +2751,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$items_id of closure expects int, float\\|int\\|string\\|false\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$string2 of function strcmp expects string, array\\<string\\>\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
@@ -2840,19 +2804,19 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject_CommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Binary operation "%%" between int\\|string and 86400 results in an error\\.$#',
+	'message' => '#^Binary operation "%%" between int\\|non\\-empty\\-string and 86400 results in an error\\.$#',
 	'identifier' => 'binaryOp.invalid',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILRecurrent.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Binary operation "/" between int\\|string and 3600 results in an error\\.$#',
+	'message' => '#^Binary operation "/" between int\\|non\\-empty\\-string and 3600 results in an error\\.$#',
 	'identifier' => 'binaryOp.invalid',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILRecurrent.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Binary operation "/" between int\\|string and 86400 results in an error\\.$#',
+	'message' => '#^Binary operation "/" between int\\|non\\-empty\\-string and 86400 results in an error\\.$#',
 	'identifier' => 'binaryOp.invalid',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILRecurrent.php',
@@ -3644,7 +3608,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CronTask.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset 1 might not exist on list\\{0\\?\\: string, 1\\?\\: non\\-falsy\\-string&numeric\\-string\\}\\.$#',
+	'message' => '#^Offset 1 might not exist on array\\{\\}\\|array\\{non\\-falsy\\-string, non\\-falsy\\-string&numeric\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CronTask.php',
@@ -3716,19 +3680,19 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DBmysql.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'alias\' might not exist on array\\{0\\?\\: string, name\\?\\: non\\-falsy\\-string, 1\\?\\: non\\-falsy\\-string, alias\\?\\: non\\-falsy\\-string, 2\\?\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'alias\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, name\\: non\\-falsy\\-string, 1\\: non\\-falsy\\-string, alias\\: non\\-falsy\\-string, 2\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DBmysql.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'name\' might not exist on array\\{0\\?\\: string, name\\?\\: non\\-falsy\\-string, 1\\?\\: non\\-falsy\\-string, alias\\?\\: non\\-falsy\\-string, 2\\?\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'name\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, name\\: non\\-falsy\\-string, 1\\: non\\-falsy\\-string, alias\\: non\\-falsy\\-string, 2\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DBmysql.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'table\' might not exist on array\\{0\\?\\: string, 1\\?\\: non\\-falsy\\-string, 2\\?\\: string, 3\\?\\: string, 4\\?\\: non\\-empty\\-string, table\\?\\: non\\-empty\\-string, 5\\?\\: non\\-empty\\-string, 6\\?\\: non\\-empty\\-string\\}\\.$#',
+	'message' => '#^Offset \'table\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, 1\\: non\\-falsy\\-string, 2\\: string, 3\\: string, 4\\: non\\-empty\\-string, table\\: non\\-empty\\-string, 5\\: non\\-empty\\-string, 6\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DBmysql.php',
@@ -3842,7 +3806,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DbUtils.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset 1 might not exist on list\\{0\\?\\: string, 1\\?\\: non\\-empty\\-string\\}\\.$#',
+	'message' => '#^Offset 1 might not exist on array\\{\\}\\|array\\{non\\-falsy\\-string, \'\\#\'\\|\'\\#\\#\'\\|\'\\#\\#\\#\'\\|\'\\#\\#\\#\\#\'\\|\'\\#\\#\\#\\#\\#\'\\|\'\\#\\#\\#\\#\\#\\#\'\\|\'\\#\\#\\#\\#\\#\\#\\#\'\\|\'\\#\\#\\#\\#\\#\\#\\#\\#\'\\|\'\\#\\#\\#\\#\\#\\#\\#\\#\\#\'\\|\'\\#\\#\\#\\#\\#\\#\\#\\#\\#\\#\'\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DbUtils.php',
@@ -5642,12 +5606,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Binary operation "\\." between non\\-falsy\\-string and array\\<string\\>\\|string results in an error\\.$#',
-	'identifier' => 'binaryOp.invalid',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Search/RecordSet.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'itemtype\' might not exist on array\\{ids\\: non\\-empty\\-list\\<string\\>\\}\\|array\\{table\\: string, itemtype\\: class\\-string\\<CommonDBTM\\>\\|null, ids\\: list\\<string\\>\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
@@ -5656,12 +5614,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Offset \'table\' might not exist on array\\{ids\\: non\\-empty\\-list\\<string\\>\\}\\|array\\{table\\: string, itemtype\\: class\\-string\\<CommonDBTM\\>\\|null, ids\\: list\\<string\\>\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Search/RecordSet.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$alias of class Glpi\\\\DBAL\\\\QueryExpression constructor expects string\\|null, array\\<string\\>\\|string given\\.$#',
-	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Search/RecordSet.php',
 ];
@@ -5675,18 +5627,6 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#3 \\$length of function substr expects int\\|null, int\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Search/RecordSet.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$subject of function str_replace expects array\\<string\\>\\|string, array\\<string\\>\\|int\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Search/RecordSet.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$alias of static method Glpi\\\\DBAL\\\\QueryFunction\\:\\:ifnull\\(\\) expects string\\|null, array\\<string\\>\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Search/RecordSet.php',
 ];
 $ignoreErrors[] = [
@@ -5780,13 +5720,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Application/View/Extension/FrontEndAssetsExtension.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Application/View/Extension/FrontEndAssetsExtension.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Application/View/Extension/FrontEndAssetsExtension.php',
@@ -6062,7 +6002,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Cache/CacheManager.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'scheme\' might not exist on array\\{0\\?\\: string, scheme\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string\\}\\.$#',
+	'message' => '#^Offset \'scheme\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, scheme\\: non\\-empty\\-string, 1\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Cache/CacheManager.php',
@@ -6374,13 +6314,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'hash\' might not exist on array\\{0\\?\\: string, version\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, hash\\?\\: non\\-empty\\-string, 2\\?\\: non\\-empty\\-string\\}\\.$#',
+	'message' => '#^Offset \'hash\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, version\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, hash\\: non\\-empty\\-string, 2\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'version\' might not exist on array\\{0\\?\\: string, version\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, hash\\?\\: non\\-empty\\-string, 2\\?\\: non\\-empty\\-string\\}\\.$#',
+	'message' => '#^Offset \'version\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, version\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, hash\\: non\\-empty\\-string, 2\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
@@ -6776,7 +6716,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
@@ -8396,13 +8336,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeRequester.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'id\' might not exist on array\\{0\\?\\: string, itemtype\\: class\\-string\\<CommonDBTM\\>, 1\\?\\: non\\-empty\\-string, id\\?\\: numeric\\-string, 2\\?\\: numeric\\-string\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeUserDevice.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'itemtype\' might not exist on array\\{0\\?\\: string, itemtype\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, id\\?\\: numeric\\-string, 2\\?\\: numeric\\-string\\}\\.$#',
+	'message' => '#^Offset \'itemtype\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, itemtype\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, id\\: numeric\\-string, 2\\: numeric\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeUserDevice.php',
@@ -8436,24 +8370,6 @@ $ignoreErrors[] = [
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/ServiceCatalog/ServiceCatalogManager.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset 1 might not exist on array\\{0\\: string, 1\\?\\: non\\-empty\\-string\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 4,
-	'path' => __DIR__ . '/src/Glpi/Form/Tag/FormTagsManager.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$string of function strlen expects string, array\\<string\\>\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/FuzzyMatcher/FuzzyMatcher.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$subject of function Safe\\\\preg_split expects string, array\\<string\\>\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/FuzzyMatcher/FuzzyMatcher.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#3 \\$subject of function Safe\\\\preg_replace expects array\\<string\\>\\|string, string\\|false given\\.$#',
@@ -8534,49 +8450,49 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Helpdesk/Tile/TilesManager.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: non\\-falsy\\-string, 2\\?\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: non\\-falsy\\-string, 2\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Http/Firewall.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Http/Firewall.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: non\\-falsy\\-string, 2\\?\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: non\\-falsy\\-string, 2\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Http/Firewall.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Http/Firewall.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: non\\-falsy\\-string, 2\\?\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: non\\-falsy\\-string, 2\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Http/SessionManager.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Http/SessionManager.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: non\\-falsy\\-string, 2\\?\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: non\\-falsy\\-string, 2\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Http/SessionManager.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Http/SessionManager.php',
@@ -11174,49 +11090,49 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/ExceptionListener/AccessErrorListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: non\\-falsy\\-string, 2\\?\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: non\\-falsy\\-string, 2\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/PostBootListener/SessionStart.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/PostBootListener/SessionStart.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: non\\-falsy\\-string, 2\\?\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: non\\-falsy\\-string, 2\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/PostBootListener/SessionStart.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/PostBootListener/SessionStart.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: non\\-falsy\\-string, 2\\?\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: non\\-falsy\\-string, 2\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/FrontEndAssetsListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 3,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/FrontEndAssetsListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: non\\-falsy\\-string, 2\\?\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: non\\-falsy\\-string, 2\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/FrontEndAssetsListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/FrontEndAssetsListener.php',
@@ -11228,13 +11144,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyItemtypeRouteListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'itemtype\' might not exist on array\\{0\\?\\: string, 1\\?\\: non\\-falsy\\-string, plugin\\?\\: non\\-empty\\-string, 2\\?\\: non\\-empty\\-string, itemtype\\?\\: non\\-empty\\-string, 3\\?\\: non\\-empty\\-string, form\\?\\: non\\-falsy\\-string, 4\\?\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'itemtype\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, 1\\: non\\-falsy\\-string, plugin\\: non\\-empty\\-string, 2\\: non\\-empty\\-string, itemtype\\: non\\-empty\\-string, 3\\: non\\-empty\\-string, form\\?\\: non\\-falsy\\-string, 4\\?\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyItemtypeRouteListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin\' might not exist on array\\{0\\?\\: string, 1\\?\\: non\\-falsy\\-string, plugin\\?\\: non\\-empty\\-string, 2\\?\\: non\\-empty\\-string, itemtype\\?\\: non\\-empty\\-string, 3\\?\\: non\\-empty\\-string, form\\?\\: non\\-falsy\\-string, 4\\?\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'plugin\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, 1\\: non\\-falsy\\-string, plugin\\: non\\-empty\\-string, 2\\: non\\-empty\\-string, itemtype\\: non\\-empty\\-string, 3\\: non\\-empty\\-string, form\\?\\: non\\-falsy\\-string, 4\\?\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyItemtypeRouteListener.php',
@@ -11276,25 +11192,25 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyItemtypeRouteListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: non\\-falsy\\-string, 2\\?\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: non\\-falsy\\-string, 2\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyRouterListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 3,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyRouterListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: non\\-falsy\\-string, 2\\?\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: non\\-falsy\\-string, 2\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyRouterListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyRouterListener.php',
@@ -11312,19 +11228,19 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/PluginsRouterListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/PluginsRouterListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/PluginsRouterListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset 1 might not exist on list\\{0\\?\\: string, 1\\?\\: numeric\\-string\\}\\.$#',
+	'message' => '#^Offset 1 might not exist on array\\{\\}\\|array\\{non\\-empty\\-string, numeric\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Knowbase/History/LogEvent.php',
@@ -11468,7 +11384,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Migration/GenericobjectPluginMigration.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'itemtype_chunk\' might not exist on array\\{0\\?\\: string, itemtype_chunk\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string\\}\\.$#',
+	'message' => '#^Offset \'itemtype_chunk\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, itemtype_chunk\\: non\\-empty\\-string, 1\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 3,
 	'path' => __DIR__ . '/src/Glpi/Migration/GenericobjectPluginMigration.php',
@@ -11888,13 +11804,19 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#3 \\$subject of function Safe\\\\preg_replace expects array\\<string\\>\\|string, int\\|string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Part \\$token \\(array\\<int\\>\\|int\\|string\\|null\\) of encapsed string cannot be cast to string\\.$#',
 	'identifier' => 'encapsedStringPart.nonString',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset 1 might not exist on list\\{0\\?\\: string, 1\\?\\: non\\-empty\\-string\\}\\.$#',
+	'message' => '#^Offset 1 might not exist on array\\{\\}\\|array\\{non\\-falsy\\-string, non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Search/SearchEngine.php',
@@ -12152,20 +12074,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/DatabaseSchemaIntegrityChecker.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/DatabaseSchemaIntegrityChecker.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$version of static method Glpi\\\\Toolbox\\\\DatabaseSchema\\:\\:getEmptySchemaPath\\(\\) expects string, array\\<string\\>\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/DatabaseSchemaIntegrityChecker.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$version of static method Glpi\\\\Toolbox\\\\VersionParser\\:\\:isStableRelease\\(\\) expects string, array\\<string\\>\\|string given\\.$#',
-	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/DatabaseSchemaIntegrityChecker.php',
 ];
@@ -12284,13 +12194,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Toolbox/URL.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'major\' might not exist on array\\{0\\?\\: string, major\\?\\: numeric\\-string, 1\\?\\: numeric\\-string, minor\\?\\: numeric\\-string, 2\\?\\: numeric\\-string, 3\\?\\: string, bugfix\\?\\: \'\'\\|numeric\\-string, 4\\?\\: \'\'\\|numeric\\-string, \\.\\.\\.\\}\\.$#',
+	'message' => '#^Offset \'major\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, major\\: numeric\\-string, 1\\: numeric\\-string, minor\\: numeric\\-string, 2\\: numeric\\-string, 3\\?\\: string, bugfix\\?\\: \'\'\\|numeric\\-string, 4\\?\\: \'\'\\|numeric\\-string, \\.\\.\\.\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Toolbox/VersionParser.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'minor\' might not exist on array\\{0\\?\\: string, major\\?\\: numeric\\-string, 1\\?\\: numeric\\-string, minor\\?\\: numeric\\-string, 2\\?\\: numeric\\-string, 3\\?\\: string, bugfix\\?\\: \'\'\\|numeric\\-string, 4\\?\\: \'\'\\|numeric\\-string, \\.\\.\\.\\}\\.$#',
+	'message' => '#^Offset \'minor\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, major\\: numeric\\-string, 1\\: numeric\\-string, minor\\: numeric\\-string, 2\\: numeric\\-string, 3\\?\\: string, bugfix\\?\\: \'\'\\|numeric\\-string, 4\\?\\: \'\'\\|numeric\\-string, \\.\\.\\.\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Toolbox/VersionParser.php',
@@ -12410,13 +12320,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_key\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{0\\?\\: string, plugin_key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, plugin_resource\\?\\: string, 2\\?\\: string\\}\\.$#',
+	'message' => '#^Offset \'plugin_resource\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, plugin_resource\\: string, 2\\: string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Html.php',
@@ -13934,19 +13844,19 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Log.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'key\' might not exist on array\\{0\\?\\: string, key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, operator\\?\\: string, 2\\?\\: string, values\\?\\: non\\-empty\\-string, 3\\?\\: non\\-empty\\-string\\}\\.$#',
+	'message' => '#^Offset \'key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, operator\\: string, 2\\: string, values\\: non\\-empty\\-string, 3\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Log.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'operator\' might not exist on array\\{0\\?\\: string, key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, operator\\?\\: string, 2\\?\\: string, values\\?\\: non\\-empty\\-string, 3\\?\\: non\\-empty\\-string\\}\\.$#',
+	'message' => '#^Offset \'operator\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, operator\\: string, 2\\: string, values\\: non\\-empty\\-string, 3\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Log.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'values\' might not exist on array\\{0\\?\\: string, key\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, operator\\?\\: string, 2\\?\\: string, values\\?\\: non\\-empty\\-string, 3\\?\\: non\\-empty\\-string\\}\\.$#',
+	'message' => '#^Offset \'values\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, operator\\: string, 2\\: string, values\\: non\\-empty\\-string, 3\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Log.php',
@@ -14018,25 +13928,25 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/MailCollector.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'event\' might not exist on array\\{0\\?\\: string, uuid\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, 2\\?\\: string, itemtype\\?\\: string, 3\\?\\: string, items_id\\?\\: \'\'\\|numeric\\-string, 4\\?\\: \'\'\\|numeric\\-string, \\.\\.\\.\\}\\.$#',
+	'message' => '#^Offset \'event\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, uuid\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, 2\\: string, itemtype\\: string, 3\\: string, items_id\\: \'\'\\|numeric\\-string, 4\\: \'\'\\|numeric\\-string, \\.\\.\\.\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/MailCollector.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'uuid\' might not exist on array\\{0\\?\\: string, uuid\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, 2\\?\\: string, itemtype\\?\\: string, 3\\?\\: string, items_id\\?\\: \'\'\\|numeric\\-string, 4\\?\\: \'\'\\|numeric\\-string, \\.\\.\\.\\}\\.$#',
+	'message' => '#^Offset \'uuid\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, uuid\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, 2\\: string, itemtype\\: string, 3\\: string, items_id\\: \'\'\\|numeric\\-string, 4\\: \'\'\\|numeric\\-string, \\.\\.\\.\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/MailCollector.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'uuid\' might not exist on array\\{0\\?\\: string, uuid\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, 2\\?\\: string, itemtype\\?\\: string, 3\\?\\: string, items_id\\?\\: numeric\\-string, 4\\?\\: numeric\\-string\\}\\.$#',
+	'message' => '#^Offset \'uuid\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, uuid\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, 2\\?\\: string, itemtype\\?\\: string, 3\\?\\: string, items_id\\?\\: numeric\\-string, 4\\?\\: numeric\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/MailCollector.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset 1 might not exist on list\\{0\\?\\: string, 1\\?\\: numeric\\-string\\}\\.$#',
+	'message' => '#^Offset 1 might not exist on array\\{\\}\\|array\\{non\\-falsy\\-string, numeric\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/MailCollector.php',
@@ -14417,12 +14327,6 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$user_id of static method DisplayPreference\\:\\:getForTypeUser\\(\\) expects int, int\\|string\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Possibly invalid array key type array\\<string\\>\\|string\\.$#',
-	'identifier' => 'offsetAccess.invalidOffset',
-	'count' => 2,
 	'path' => __DIR__ . '/src/NetworkPort.php',
 ];
 $ignoreErrors[] = [
@@ -17384,7 +17288,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleCommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset 1 might not exist on list\\{0\\?\\: string, 1\\?\\: non\\-empty\\-string\\}\\.$#',
+	'message' => '#^Offset 1 might not exist on array\\{\\}\\|array\\{non\\-falsy\\-string, non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleCommonITILObject.php',
@@ -17438,7 +17342,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleCommonITILObjectCollection.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset 1 might not exist on list\\{0\\?\\: string, 1\\?\\: string\\}\\.$#',
+	'message' => '#^Offset 1 might not exist on array\\{\\}\\|array\\{non\\-falsy\\-string, string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleCommonITILObjectCollection.php',
@@ -18170,7 +18074,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/TaskTemplate.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'engine\' might not exist on array\\{0\\?\\: string, engine\\?\\: non\\-empty\\-string, 1\\?\\: non\\-empty\\-string, 2\\?\\: string, version\\?\\: string, 3\\?\\: string, 4\\?\\: string, comment\\?\\: non\\-falsy\\-string, \\.\\.\\.\\}\\.$#',
+	'message' => '#^Offset \'engine\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, engine\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, 2\\?\\: string, version\\?\\: string, 3\\?\\: string, 4\\?\\: string, comment\\?\\: non\\-falsy\\-string, \\.\\.\\.\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Telemetry.php',
@@ -18362,6 +18266,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Offset 2 on array\\{non\\-empty\\-string, non\\-empty\\-string, string\\} in isset\\(\\) always exists and is not nullable\\.$#',
+	'identifier' => 'isset.offset',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$ID of method CommonDBTM\\:\\:isNewID\\(\\) expects int, int\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -18482,18 +18392,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Transfer.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method USBVendor\\:\\:getManufacturer\\(\\) should return string\\|false but returns non\\-empty\\-array\\<string\\>\\|non\\-falsy\\-string\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/USBVendor.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method USBVendor\\:\\:getProductName\\(\\) should return string\\|false but returns non\\-empty\\-array\\<string\\>\\|non\\-falsy\\-string\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/USBVendor.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on Agent\\|null\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 4,
@@ -18524,7 +18422,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Unmanaged.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'target_version\' might not exist on array\\{0\\?\\: string, source_version\\?\\: non\\-falsy\\-string, 1\\?\\: non\\-falsy\\-string, target_version\\?\\: non\\-falsy\\-string, 2\\?\\: non\\-falsy\\-string\\}\\.$#',
+	'message' => '#^Offset \'target_version\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, source_version\\: non\\-falsy\\-string, 1\\: non\\-falsy\\-string, target_version\\: non\\-falsy\\-string, 2\\: non\\-falsy\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 4,
 	'path' => __DIR__ . '/src/Update.php',
@@ -18566,19 +18464,19 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/UploadHandler.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Offset 1 might not exist on array\\{\\}\\|array\\{non\\-empty\\-string, non\\-empty\\-string, string\\}\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Offset 1 might not exist on array\\|null\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/UploadHandler.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset 1 might not exist on list\\{0\\?\\: string, 1\\?\\: non\\-empty\\-string, 2\\?\\: string\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/UploadHandler.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset 2 might not exist on list\\{0\\?\\: string, 1\\?\\: non\\-empty\\-string, 2\\?\\: string\\}\\.$#',
+	'message' => '#^Offset 2 might not exist on array\\{\\}\\|array\\{non\\-empty\\-string, non\\-empty\\-string, string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/UploadHandler.php',

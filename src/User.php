@@ -5480,6 +5480,7 @@ HTML;
     {
         TemplateRenderer::getInstance()->display('forgotpassword.html.twig', [
             'title'    => __('Password Initialization'),
+            'type'     => 'init',
             'token'    => $token,
             'token_ok' => User::getUserByForgottenPasswordToken($token) !== null,
         ]);
@@ -5507,6 +5508,7 @@ HTML;
     {
         TemplateRenderer::getInstance()->display('forgotpassword.html.twig', [
             'title' => __('Password initialization'),
+            'type'  => 'init',
         ]);
     }
 
