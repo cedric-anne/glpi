@@ -7299,6 +7299,253 @@ class SearchTest extends DbTestCase
         $this->assertArrayHasKey('data', $result);
         $this->assertEquals(0, $result['data']['totalcount'], 'Should find no computer for a non-existing asset URL');
     }
+
+    /**
+     * The deferred-join pagination optimisation must produce, for a grouped search (here a
+     * Computer search displaying the 1:N "Group in charge" column, option 49), the exact same
+     * total count and the same ordered page of ids as a non-paginated reference run.
+     */
+    public function testDeferredJoinPaginationConsistency()
+    {
+        $this->login();
+        $entity = (int) $_SESSION['glpiactive_entity'];
+
+        $token    = 'deferredjoin_' . mt_rand();
+        $computer = new Computer();
+        $created  = [];
+        for ($i = 0; $i < 5; $i++) {
+            $id = $computer->add([
+                'name'        => sprintf('%s %02d', $token, $i),
+                'entities_id' => $entity,
+            ]);
+            $this->assertGreaterThan(0, $id);
+            $created[] = (int) $id;
+        }
+        sort($created);
+
+        // option 49 ("Group in charge") is forcegroupby, so forcing its display triggers the
+        // GROUP BY and therefore the deferred-join optimisation; criterion on the main-table
+        // name (option 1) isolates our 5 computers.
+        $base = [
+            'reset'    => 'reset',
+            'sort'     => [2], // id (plain main-table column)
+            'order'    => ['ASC'],
+            'criteria' => [
+                ['field' => 1, 'searchtype' => 'contains', 'value' => $token],
+            ],
+        ];
+        $get_ids = static fn(array $d): array => array_values(
+            array_map('intval', array_column(array_column($d['data']['rows'], 'raw'), 'id'))
+        );
+
+        // Reference: one large page.
+        $ref = \Search::getDatas(Computer::class, $base + ['start' => 0, 'list_limit' => 1000], [49]);
+        $query = $ref['sql']['search']->getQuery();
+        $this->assertStringContainsString('deferred_page', $query, 'deferred-join optimisation should be active');
+        $this->assertSame(
+            substr_count($query, '?'),
+            count($ref['sql']['search']->getParams()),
+            'placeholder/param count mismatch: ' . $query
+        );
+        $this->assertSame(5, $ref['data']['totalcount']);
+        $this->assertSame($created, $get_ids($ref));
+
+        // Paginated: 2 + 2 + 1 must equal the reference slices, with a stable total count.
+        $page1 = \Search::getDatas(Computer::class, $base + ['start' => 0, 'list_limit' => 2], [49]);
+        $page2 = \Search::getDatas(Computer::class, $base + ['start' => 2, 'list_limit' => 2], [49]);
+        $page3 = \Search::getDatas(Computer::class, $base + ['start' => 4, 'list_limit' => 2], [49]);
+
+        foreach ([$page1, $page2, $page3] as $page) {
+            $this->assertSame(5, $page['data']['totalcount']);
+        }
+        $this->assertSame(array_slice($created, 0, 2), $get_ids($page1));
+        $this->assertSame(array_slice($created, 2, 2), $get_ids($page2));
+        $this->assertSame(array_slice($created, 4, 1), $get_ids($page3));
+    }
+
+    /**
+     * A criterion on a forcegroupby (1:N) field produces a HAVING clause: the deferred-join
+     * inner subquery must then expose the aggregated SELECT aliases referenced by HAVING and
+     * keep a consistent placeholder/parameter count, and the whole thing must execute.
+     */
+    public function testDeferredJoinSkippedForHavingAndAggregateSort()
+    {
+        $this->login();
+
+        // Filtering on a HAVING (usehaving) field — Ticket option 188 "Next escalation level":
+        // the aggregate must be computed over the whole relation, so deferral is skipped.
+        $having = \Search::prepareDatasForSearch(Ticket::class, [
+            'reset'    => 'reset',
+            'sort'     => [2],
+            'order'    => ['ASC'],
+            'criteria' => [['field' => 188, 'searchtype' => 'contains', 'value' => '2020']],
+        ]);
+        \Search::constructSQL($having);
+        $this->assertStringNotContainsString('deferred_page', $having['sql']['search']->getQuery());
+
+        // Sorting on a 1:N aggregate — Software option 72 "Number of installations": same reason,
+        // deferral is skipped and the regular query is emitted.
+        $agg = \Search::prepareDatasForSearch(\Software::class, [
+            'reset'    => 'reset',
+            'sort'     => [72],
+            'order'    => ['DESC'],
+            'criteria' => [['field' => 'view', 'searchtype' => 'contains', 'value' => '']],
+        ]);
+        \Search::constructSQL($agg);
+        $this->assertStringNotContainsString('deferred_page', $agg['sql']['search']->getQuery());
+    }
+
+    /**
+     * The optimisation must be skipped for union itemtypes and for full exports, falling back
+     * to the regular (non deferred) query.
+     */
+    public function testDeferredJoinSkippedForUnionAndExport()
+    {
+        $this->login();
+
+        // Union itemtype: never deferred.
+        $union = \Search::getDatas(\AllAssets::class, [
+            'reset'      => 'reset',
+            'start'      => 0,
+            'list_limit' => 10,
+            'criteria'   => [['field' => 'view', 'searchtype' => 'contains', 'value' => '']],
+        ]);
+        $this->assertStringNotContainsString('deferred_page', $union['sql']['search']->getQuery());
+
+        // Full export: LIMIT is cleared, so no SQL pagination / deferral.
+        $data = \Search::prepareDatasForSearch(Computer::class, [
+            'reset'    => 'reset',
+            'criteria' => [['field' => 1, 'searchtype' => 'contains', 'value' => '']],
+        ]);
+        $data['search']['export_all'] = true;
+        \Search::constructSQL($data);
+        $this->assertStringNotContainsString('deferred_page', $data['sql']['search']->getQuery());
+        $this->assertFalse($data['sql']['has_sql_limit']);
+    }
+
+    /**
+     * Sorting on a computed-ORDER column must not be deferred. Contract "End date" (option 20,
+     * a `date_delay` whose `field` is the non-existent column `end_date`) previously reached the
+     * deferred inner subquery, which emitted `ORDER BY glpi_contracts.end_date` and crashed with
+     * "Unknown column". The optimisation must now be skipped for such fields: the regular query
+     * (ordering by DATE_ADD()) is emitted and returns correctly ordered rows.
+     */
+    public function testDeferredJoinSkippedForComputedOrderColumn()
+    {
+        $this->login();
+        $entity = (int) $_SESSION['glpiactive_entity'];
+
+        $token    = 'deferredorder_' . mt_rand();
+        $contract = new \Contract();
+        // Same begin_date, different duration => distinct computed end dates.
+        $c_short = (int) $contract->add([
+            'name'        => $token . ' short',
+            'entities_id' => $entity,
+            'begin_date'  => '2020-01-01',
+            'duration'    => 12, // ends 2021-01-01
+        ]);
+        $c_long = (int) $contract->add([
+            'name'        => $token . ' long',
+            'entities_id' => $entity,
+            'begin_date'  => '2020-01-01',
+            'duration'    => 24, // ends 2022-01-01
+        ]);
+        $this->assertGreaterThan(0, $c_short);
+        $this->assertGreaterThan(0, $c_long);
+
+        // Displaying option 29 (Associated supplier, a forcegroupby 1:N column) forces GROUP BY
+        // and thus the deferred-join optimisation; the criterion on the main-table name isolates
+        // our contracts.
+        $base = [
+            'reset'    => 'reset',
+            'sort'     => [20], // End date (date_delay, main table)
+            'criteria' => [
+                ['field' => 1, 'searchtype' => 'contains', 'value' => $token],
+            ],
+        ];
+        $get_ids = static fn(array $d): array => array_values(
+            array_map('intval', array_column(array_column($d['data']['rows'], 'raw'), 'id'))
+        );
+
+        $asc = \Search::getDatas(\Contract::class, $base + ['order' => ['ASC'], 'start' => 0, 'list_limit' => 30], [29]);
+        $query = $asc['sql']['search']->getQuery();
+        // Computed-ORDER field => deferral skipped, regular query with the DATE_ADD expression.
+        $this->assertStringNotContainsString('deferred_page', $query);
+        $this->assertStringContainsStringIgnoringCase('DATE_ADD', $query);
+        $this->assertSame(2, $asc['data']['totalcount']);
+        $this->assertSame([$c_short, $c_long], $get_ids($asc));
+
+        $desc = \Search::getDatas(\Contract::class, $base + ['order' => ['DESC'], 'start' => 0, 'list_limit' => 30], [29]);
+        $this->assertSame([$c_long, $c_short], $get_ids($desc));
+    }
+
+    /**
+     * Filtering on a forcegroupby (1:N) field puts a condition on its joined table in the WHERE,
+     * so that join must be kept in the minimal FROM (its searchopt id is collected). A former
+     * int-vs-string strict comparison never matched, so the join was deferred out and
+     * minimalFromCoversWhere() silently disabled the optimisation. It must stay active.
+     */
+    public function testDeferredJoinKeepsForcegroupbyFilterJoin()
+    {
+        $this->login();
+
+        // Computer option 49 = "Group in charge" (forcegroupby, no usehaving) => WHERE condition.
+        $data = \Search::prepareDatasForSearch(Computer::class, [
+            'reset'    => 'reset',
+            'sort'     => [2], // id (plain main-table column)
+            'order'    => ['ASC'],
+            'criteria' => [
+                ['field' => 49, 'searchtype' => 'contains', 'value' => 'whatever'],
+            ],
+        ]);
+        \Search::constructSQL($data);
+        $query = $data['sql']['search']->getQuery();
+
+        $this->assertStringContainsString(
+            'deferred_page',
+            $query,
+            'filtering a forcegroupby field must not disable the deferred-join optimisation'
+        );
+        // The filtered group join must be present (inside the inner subquery / minimal FROM).
+        $this->assertStringContainsString('glpi_groups', $query);
+        $this->assertSame(
+            substr_count($query, '?'),
+            count($data['sql']['search']->getParams()),
+            'placeholder/param count mismatch: ' . $query
+        );
+    }
+
+    /**
+     * Requesting a page past the last one under an active SQL LIMIT (stale bookmark / edited URL
+     * / API) must not error: it falls back to the first page, matching the pre-optimization
+     * behaviour where the full result was fetched and the start clamped.
+     */
+    public function testActiveSearchOutOfRangeStart()
+    {
+        $this->login();
+        $entity = (int) $_SESSION['glpiactive_entity'];
+
+        $token    = 'oorstart_' . mt_rand();
+        $computer = new Computer();
+        $id = (int) $computer->add(['name' => $token, 'entities_id' => $entity]);
+        $this->assertGreaterThan(0, $id);
+
+        $data = \Search::getDatas(Computer::class, [
+            'reset'      => 'reset',
+            'sort'       => [2],
+            'order'      => ['ASC'],
+            'start'      => 50, // far past the single match
+            'list_limit' => 20,
+            'criteria'   => [
+                ['field' => 1, 'searchtype' => 'contains', 'value' => $token],
+            ],
+        ]);
+
+        $this->assertTrue($data['sql']['has_sql_limit']);
+        $this->assertSame(1, $data['data']['totalcount']);
+        $ids = array_values(array_map('intval', array_column(array_column($data['data']['rows'], 'raw'), 'id')));
+        $this->assertSame([$id], $ids);
+    }
 }
 
 // @codingStandardsIgnoreStart

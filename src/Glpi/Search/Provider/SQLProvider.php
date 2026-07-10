@@ -114,6 +114,7 @@ use User;
 use ValidatorSubstitute;
 
 use function Safe\preg_match;
+use function Safe\preg_match_all;
 use function Safe\preg_replace;
 use function Safe\preg_split;
 use function Safe\strtotime;
@@ -4426,6 +4427,303 @@ final class SQLProvider implements SearchProviderInterface
         return $orderby_criteria;
     }
 
+    /**
+     * IDs of forcegroupby (1:N) fields used as a WHERE filter: their join must stay in the
+     * minimal FROM (the WHERE references it), unlike display-only 1:N joins which are deferred.
+     *
+     * @param array<int|string, mixed> $criteria
+     * @param array<int|string, mixed> $searchopt
+     * @return list<int>
+     */
+    private static function collectFilterForcegroupbyIds(array $criteria, array $searchopt): array
+    {
+        $ids = [];
+        foreach ($criteria as $criterion) {
+            if (isset($criterion['criteria']) && is_array($criterion['criteria'])) {
+                $ids = array_merge($ids, self::collectFilterForcegroupbyIds($criterion['criteria'], $searchopt));
+                continue;
+            }
+            if (
+                isset($criterion['field'])
+                && !in_array($criterion['field'], ['all', 'view'], true)
+                && !($criterion['meta'] ?? false)
+                && isset($criterion['value'])
+                && (string) $criterion['value'] !== ''
+                && !empty($searchopt[$criterion['field']]['forcegroupby'])
+            ) {
+                $ids[] = (int) $criterion['field'];
+            }
+        }
+        return array_values(array_unique($ids));
+    }
+
+    /**
+     * Minimal FROM for the inner/COUNT queries: base + default join + 1:1 joins, deferring
+     * display-only 1:N (forcegroupby) joins except those in $keep_forcegroupby_ids (WHERE-filtered).
+     * Uses its own $already_link_tables so a kept filter join re-emits any `beforejoin` parent a
+     * deferred join would otherwise have supplied. Not valid with meta criterion / all_search.
+     *
+     * @param array<int|string, mixed> $data
+     * @param array<int|string, mixed> $searchopt
+     * @param array<int, string>       $blacklist_tables
+     * @param list<int>                $keep_forcegroupby_ids Forcegroupby field IDs filtered in WHERE.
+     * @return array{query: string, params: array<int, mixed>}
+     */
+    private static function buildMinimalFrom(
+        array $data,
+        string $itemtable,
+        array $searchopt,
+        array $blacklist_tables,
+        array $keep_forcegroupby_ids
+    ): array {
+        $already_link_tables = [$itemtable];
+
+        $query  = self::buildFrom($itemtable) . ' ';
+        $default_ljoin = Search::addDefaultJoin($data['itemtype'], $itemtable, $already_link_tables);
+        $query .= $default_ljoin->getQuery() . ' ';
+        $params = $default_ljoin->getParams();
+
+        foreach ($data['tocompute'] as $val) {
+            if (
+                !isset($searchopt[$val]['table'])
+                || in_array($searchopt[$val]['table'], $blacklist_tables, true)
+            ) {
+                continue;
+            }
+            // Defer display-only 1:N joins; keep WHERE-filtered ones ((int) $val: mixed id types).
+            if (!empty($searchopt[$val]['forcegroupby']) && !in_array((int) $val, $keep_forcegroupby_ids, true)) {
+                continue;
+            }
+            $ljoin = Search::addLeftJoin(
+                $data['itemtype'],
+                $itemtable,
+                $already_link_tables,
+                $searchopt[$val]['table'],
+                $searchopt[$val]['linkfield'],
+                false,
+                '',
+                $searchopt[$val]['joinparams'] ?? [],
+                $searchopt[$val]['field'] ?? '',
+                ($searchopt[$val]['use_join_subquery'] ?? false)
+            );
+            $query  .= $ljoin->getQuery() . ' ';
+            $params  = array_merge($params, $ljoin->getParams());
+        }
+
+        return ['query' => $query, 'params' => $params];
+    }
+
+    /**
+     * Inner-subquery ORDER BY: bare main-table column per sort field + trailing `id` for stable
+     * paging. The outer ORDER BY can't be reused (it uses the `ITEM_x` SELECT aliases, absent
+     * here); canUseDeferredJoin() guarantees each sort field is a plain column, so this is valid.
+     *
+     * @param array<int|string, mixed> $sort_fields
+     * @param array<int|string, mixed> $searchopt
+     */
+    private static function buildInnerOrderBy(string $itemtable, array $sort_fields, array $searchopt): string
+    {
+        global $DB;
+
+        $criteria = [];
+        foreach ($sort_fields as $sort_field) {
+            $ID = $sort_field['searchopt_id'];
+            if (!isset($searchopt[$ID]['field'])) {
+                continue;
+            }
+            $order      = (($sort_field['order'] ?? 'ASC') === 'ASC') ? 'ASC' : 'DESC';
+            $criteria[] = $DB::quoteName("{$itemtable}.{$searchopt[$ID]['field']}") . ' ' . $order;
+        }
+        $criteria[] = $DB::quoteName("{$itemtable}.id") . ' ASC';
+
+        return ' ORDER BY ' . implode(', ', $criteria);
+    }
+
+    /**
+     * Inner subquery resolving the page of main-table IDs alone (no display 1:N joins), grouped
+     * by id with ORDER BY + LIMIT. getParams() order: minimal-FROM, then WHERE.
+     *
+     * @param array{query: string, params: array<int, mixed>} $minimal_from
+     * @param array<int, mixed>                                $WHERE_VALUES
+     */
+    private static function buildDeferredInnerQuery(
+        string $itemtable,
+        array $minimal_from,
+        string $WHERE,
+        array $WHERE_VALUES,
+        string $inner_order,
+        string $LIMIT
+    ): Select {
+        $query = 'SELECT `' . $itemtable . '`.`id`'
+            . $minimal_from['query']
+            . $WHERE
+            . ' GROUP BY `' . $itemtable . '`.`id`'
+            . $inner_order
+            . $LIMIT;
+
+        return (new Select())
+            ->setQuery($query)
+            ->setParams(array_merge($minimal_from['params'], $WHERE_VALUES));
+    }
+
+    /**
+     * COUNT(DISTINCT id) query giving the total row count for an active (SQL-limited) search.
+     *
+     * @param array{query: string, params: array<int, mixed>} $minimal_from
+     * @param array<int, mixed>                                $WHERE_VALUES
+     */
+    private static function buildActiveCountQuery(
+        string $itemtable,
+        array $minimal_from,
+        string $WHERE,
+        array $WHERE_VALUES
+    ): Select {
+        $query = 'SELECT COUNT(DISTINCT `' . $itemtable . '`.`id`)'
+            . $minimal_from['query']
+            . $WHERE;
+
+        return (new Select())
+            ->setQuery($query)
+            ->setParams(array_merge($minimal_from['params'], $WHERE_VALUES));
+    }
+
+    /**
+     * Whether deferred-join pagination is safe: grouped, limited, ordered, non-union search with
+     * no meta/`view`/`all` criterion, no HAVING, and every sort field a plain main-table column
+     * (so the page can be resolved and ordered from the main table alone). HAVING / 1:N-aggregate
+     * sorts are excluded on purpose — the aggregate must be computed over the whole relation
+     * anyway, so deferral buys little. Otherwise the normal query is emitted.
+     *
+     * @param array<int|string, mixed> $data
+     * @param array<int|string, mixed> $sort_fields
+     * @param array<int|string, mixed> $searchopt
+     */
+    private static function canUseDeferredJoin(
+        array $data,
+        string $itemtable,
+        string $GROUPBY,
+        string $LIMIT,
+        string $ORDER,
+        string $HAVING,
+        array $sort_fields,
+        array $searchopt
+    ): bool {
+        global $CFG_GLPI;
+
+        if (isset($CFG_GLPI['union_search_type'][$data['itemtype']])) {
+            return false;
+        }
+        if ($GROUPBY === '' || $LIMIT === '' || $ORDER === '' || $HAVING !== '') {
+            return false;
+        }
+        if (!empty($data['search']['all_search'])) {
+            return false;
+        }
+        if (count($data['search']['metacriteria'] ?? []) > 0) {
+            return false;
+        }
+        if (self::hasMetaCriteria($data['search']['criteria'] ?? [])) {
+            return false;
+        }
+        // `view`/`all` filters over every displayed column (incl. deferred 1:N joins).
+        if (self::criteriaReferenceAllColumns($data['search']['criteria'] ?? [])) {
+            return false;
+        }
+
+        foreach ($sort_fields as $sort_field) {
+            $ID = $sort_field['searchopt_id'];
+            if (!isset($searchopt[$ID]['table']) || !isset($searchopt[$ID]['field'])) {
+                return false;
+            }
+            $opt = $searchopt[$ID];
+            // Only plain main-table columns are orderable in the inner subquery.
+            if (
+                $opt['table'] !== $itemtable
+                || !empty($opt['joinparams'])
+                || !empty($opt['forcegroupby'])
+                || !empty($opt['nosort'])
+                || isset($opt['computation'])
+            ) {
+                return false;
+            }
+            // Skip if the sort has a computed ORDER expression (date_delay, IP, plugin, …): the
+            // inner subquery can only order by the bare column. getOrderByCriteria() returns the
+            // `ITEM_x` alias only for plain columns, so anything else disqualifies deferral.
+            $order_exprs = self::getOrderByCriteria($data['itemtype'], [$sort_field]);
+            if (
+                count($order_exprs) !== 1
+                || !str_starts_with($order_exprs[0]->getValue(), '`ITEM_' . $data['itemtype'] . '_' . $ID . '`')
+            ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Whether the criteria tree contains any meta criterion (recursively).
+     *
+     * @param array<int|string, mixed> $criteria
+     */
+    private static function hasMetaCriteria(array $criteria): bool
+    {
+        foreach ($criteria as $criterion) {
+            if (isset($criterion['criteria']) && is_array($criterion['criteria'])) {
+                if (self::hasMetaCriteria($criterion['criteria'])) {
+                    return true;
+                }
+            } elseif ($criterion['meta'] ?? false) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Whether the criteria tree has a `view`/`all` criterion with a non-empty value: it expands
+     * the WHERE over every displayed column (incl. deferred 1:N joins), so we cannot optimise.
+     *
+     * @param array<int|string, mixed> $criteria
+     */
+    private static function criteriaReferenceAllColumns(array $criteria): bool
+    {
+        foreach ($criteria as $criterion) {
+            if (isset($criterion['criteria']) && is_array($criterion['criteria'])) {
+                if (self::criteriaReferenceAllColumns($criterion['criteria'])) {
+                    return true;
+                }
+            } elseif (
+                isset($criterion['field'])
+                && in_array($criterion['field'], ['all', 'view'], true)
+                && isset($criterion['value'])
+                && (string) $criterion['value'] !== ''
+            ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Whether every `alias`.`column` table reference in the WHERE clause has its alias present in
+     * the given (minimal) FROM clause. Guards against a WHERE that pulls in a deferred 1:N join
+     * via the itemtype visibility/default restriction. Errs on the safe side: a subquery-local
+     * alias (rare in WHERE) yields false → the optimisation is skipped, never a broken query.
+     */
+    private static function minimalFromCoversWhere(string $minimal_from, string $where): bool
+    {
+        if (!preg_match_all('/`([a-z0-9_]+)`\s*\.\s*`/i', $where, $matches)) {
+            return true;
+        }
+        foreach (array_unique($matches[1]) as $alias) {
+            if (!str_contains($minimal_from, '`' . $alias . '`')) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     #[Override]
     public static function constructSQL(array &$data)
     {
@@ -4439,6 +4737,10 @@ final class SQLProvider implements SearchProviderInterface
         $data['sql']['count']  = [];
         $data['sql']['search'] = '';
         $data['sql']['raw']    = [];
+        // Set to true when a SQL LIMIT is applied to an *active* search (see the deferred-join
+        // optimisation below): pagination then happens in the database and the total row count
+        // is obtained from the dedicated COUNT queries rather than from numrows().
+        $data['sql']['has_sql_limit'] = false;
 
         $searchopt        = SearchOption::getOptionsForItemtype($data['itemtype']);
 
@@ -4470,6 +4772,11 @@ final class SQLProvider implements SearchProviderInterface
         // Set reference table
         $FROM = self::buildFrom($itemtable);
 
+        // LEFT JOIN part kept in its own buffers (in lockstep with $FROM), so the deferred-join
+        // outer query can reuse the display joins without substring extraction.
+        $FROM_JOINS = '';
+        $FROM_JOINS_VALUES = [];
+
         // Init already linked tables array in order not to link a table several times
         // Put reference table
         $already_link_tables = [$itemtable];
@@ -4479,6 +4786,8 @@ final class SQLProvider implements SearchProviderInterface
         $COMMONLEFTJOIN = $default_ljoin->getQuery() . ' ';
         $FROM          .= $COMMONLEFTJOIN;
         $FROM_VALUES = $default_ljoin->getParams();
+        $FROM_JOINS        .= $COMMONLEFTJOIN;
+        $FROM_JOINS_VALUES  = $default_ljoin->getParams();
 
         // Add all table for toview items
         foreach ($data['tocompute'] as $val) {
@@ -4497,6 +4806,8 @@ final class SQLProvider implements SearchProviderInterface
                 );
                 $FROM .= $ljoin->getQuery() . ' ';
                 $FROM_VALUES = array_merge($FROM_VALUES, $ljoin->getParams());
+                $FROM_JOINS .= $ljoin->getQuery() . ' ';
+                $FROM_JOINS_VALUES = array_merge($FROM_JOINS_VALUES, $ljoin->getParams());
             }
         }
 
@@ -4521,6 +4832,8 @@ final class SQLProvider implements SearchProviderInterface
                         );
                         $FROM .= $ljoin->getQuery() . ' ';
                         $FROM_VALUES = array_merge($FROM_VALUES, $ljoin->getParams());
+                        $FROM_JOINS .= $ljoin->getQuery() . ' ';
+                        $FROM_JOINS_VALUES = array_merge($FROM_JOINS_VALUES, $ljoin->getParams());
                     }
                 }
             }
@@ -4629,6 +4942,8 @@ final class SQLProvider implements SearchProviderInterface
             foreach ($adds['FROM'] as $add_from) {
                 $FROM .= $add_from->getQuery() . ' ';
                 $FROM_VALUES = array_merge($FROM_VALUES, $add_from->getParams());
+                $FROM_JOINS .= $add_from->getQuery() . ' ';
+                $FROM_JOINS_VALUES = array_merge($FROM_JOINS_VALUES, $add_from->getParams());
             }
             $data['meta_toview'] = $adds['meta_toview'];
         }
@@ -5012,6 +5327,47 @@ final class SQLProvider implements SearchProviderInterface
                 $WHERE_VALUES = array_merge($WHERE_VALUES, $system_criteria_sql->getParams());
             }
 
+            // Active-search pagination: apply a SQL LIMIT (+ a dedicated COUNT query) so paging
+            // happens in the DB instead of fetching everything. Relies on the minimal FROM
+            // covering the WHERE, which holds only without meta/all_search/`view`/`all`/HAVING;
+            // otherwise keep the legacy fetch-all behaviour.
+            $supports_sql_limit = empty($data['search']['all_search'])
+                && $HAVING === ''
+                && count($data['search']['metacriteria'] ?? []) === 0
+                && !self::hasMetaCriteria($data['search']['criteria'] ?? [])
+                && !self::criteriaReferenceAllColumns($data['search']['criteria'] ?? []);
+
+            $need_active_count = false;
+            if (
+                $supports_sql_limit
+                && empty($LIMIT)
+                && !$data['search']['export_all']
+                && (($data['search']['as_map'] ?? 0) != 1)
+            ) {
+                $LIMIT = " LIMIT " . (int) $data['search']['start'] . ", " . (int) $data['search']['list_limit'];
+                $data['sql']['has_sql_limit'] = true;
+                $need_active_count = true;
+            }
+
+            $can_defer = self::canUseDeferredJoin($data, $itemtable, $GROUPBY, $LIMIT, $ORDER, $HAVING, $sort_fields, $searchopt);
+
+            // Minimal FROM shared by the active COUNT query and the deferred inner subquery.
+            $minimal_from = null;
+            if ($can_defer || $need_active_count) {
+                $keep_forcegroupby_ids = self::collectFilterForcegroupbyIds($data['search']['criteria'], $searchopt);
+                $minimal_from = self::buildMinimalFrom($data, $itemtable, $searchopt, $blacklist_tables, $keep_forcegroupby_ids);
+                // The WHERE may reference a 1:N join via the itemtype visibility/default
+                // restriction (not just user criteria, e.g. KnowbaseItem). If the minimal FROM
+                // does not cover every alias the WHERE uses, fall back to the full query.
+                if (!self::minimalFromCoversWhere($minimal_from['query'], $WHERE)) {
+                    $can_defer         = false;
+                    $need_active_count = false;
+                    $minimal_from      = null;
+                    $LIMIT             = '';
+                    $data['sql']['has_sql_limit'] = false;
+                }
+            }
+
             $data['sql']['raw'] = [
                 'SELECT' => $SELECT,
                 'FROM' => $FROM,
@@ -5021,19 +5377,53 @@ final class SQLProvider implements SearchProviderInterface
                 'ORDER' => $ORDER,
                 'LIMIT' => $LIMIT,
             ];
-            $QUERY_VALUES = array_merge(
-                $SELECT_VALUES,
-                $FROM_VALUES,
-                $WHERE_VALUES,
-                $HAVING_VALUES
-            );
-            $QUERY = $SELECT
-                . $FROM
-                . $WHERE
-                . $GROUPBY
-                . $HAVING
-                . $ORDER
-                . $LIMIT;
+
+            if ($need_active_count && $minimal_from !== null) {
+                $data['sql']['count'][] = self::buildActiveCountQuery(
+                    $itemtable,
+                    $minimal_from,
+                    $WHERE,
+                    $WHERE_VALUES
+                );
+            }
+
+            if ($can_defer && $minimal_from !== null) {
+                // Two-phase: inner subquery picks the page of ids (no display 1:N joins), outer
+                // query attaches the display joins to just those ids.
+                $inner = self::buildDeferredInnerQuery(
+                    $itemtable,
+                    $minimal_from,
+                    $WHERE,
+                    $WHERE_VALUES,
+                    self::buildInnerOrderBy($itemtable, $sort_fields, $searchopt),
+                    $LIMIT
+                );
+
+                $QUERY = $SELECT
+                    . " FROM `" . $itemtable . "`"
+                    . " INNER JOIN (" . $inner->getQuery() . ") AS `deferred_page`"
+                    . " ON `" . $itemtable . "`.`id` = `deferred_page`.`id` "
+                    . $FROM_JOINS
+                    . $GROUPBY
+                    . $ORDER;
+                // Param order matches the `?` order: outer SELECT, inner subquery (its WHERE
+                // included), then outer display joins — inner WHERE BEFORE the joins here.
+                $QUERY_VALUES = array_merge($SELECT_VALUES, $inner->getParams(), $FROM_JOINS_VALUES);
+            } else {
+                $QUERY_VALUES = array_merge(
+                    $SELECT_VALUES,
+                    $FROM_VALUES,
+                    $WHERE_VALUES,
+                    $HAVING_VALUES
+                );
+                $QUERY = $SELECT
+                    . $FROM
+                    . $WHERE
+                    . $GROUPBY
+                    . $HAVING
+                    . $ORDER
+                    . $LIMIT;
+            }
         }
         $data['sql']['search'] = (new Select())
             ->setQuery($QUERY)
@@ -5457,27 +5847,24 @@ final class SQLProvider implements SearchProviderInterface
             }
 
             $data['data']['totalcount'] = 0;
-            // if real search or complete export : get numrows from request
-            if (
-                !$data['search']['no_search']
-                || $data['search']['export_all']
-            ) {
-                $data['data']['totalcount'] = $DBread->numrows($result);
-            } else {
-                if (
-                    !isset($data['sql']['count'])
-                    || (count($data['sql']['count']) == 0)
-                ) {
-                    $data['data']['totalcount'] = $DBread->numrows($result);
-                } else {
-                    foreach ($data['sql']['count'] as $sqlcount) {
-                        $stmt = $DBread->prepare($sqlcount->getQuery());
-                        $DBread->executeStatement($stmt, $sqlcount->getParams());
-                        if ($sqlcount_result = $stmt->get_result()) {
-                            $data['data']['totalcount'] += $DBread->result($sqlcount_result, 0, 0);
-                        }
+            // With a SQL LIMIT (no_search, or active search via has_sql_limit) the result is only
+            // the current page, so the total comes from the COUNT queries; otherwise numrows().
+            $use_count_queries = (
+                ($data['search']['no_search'] || ($data['sql']['has_sql_limit'] ?? false))
+                && !$data['search']['export_all']
+                && isset($data['sql']['count'])
+                && count($data['sql']['count']) > 0
+            );
+            if ($use_count_queries) {
+                foreach ($data['sql']['count'] as $sqlcount) {
+                    $stmt = $DBread->prepare($sqlcount->getQuery());
+                    $DBread->executeStatement($stmt, $sqlcount->getParams());
+                    if ($sqlcount_result = $stmt->get_result()) {
+                        $data['data']['totalcount'] += $DBread->result($sqlcount_result, 0, 0);
                     }
                 }
+            } else {
+                $data['data']['totalcount'] = $DBread->numrows($result);
             }
 
             if ($onlycount) {
@@ -5488,6 +5875,16 @@ final class SQLProvider implements SearchProviderInterface
 
             if ($data['search']['start'] > $data['data']['totalcount']) {
                 $data['search']['start'] = 0;
+                // A SQL LIMIT already fetched the (empty) out-of-range page; rebuild with the
+                // clamped start and re-run so the first page is returned, as before optimization.
+                if ($data['sql']['has_sql_limit'] ?? false) {
+                    self::constructSQL($data);
+                    $stmt = $DBread->prepare($data['sql']['search']->getQuery());
+                    $DBread->executeStatement($stmt, $data['sql']['search']->getParams());
+                    if ($rebuilt_result = $stmt->get_result()) {
+                        $result = $rebuilt_result;
+                    }
+                }
             }
 
             // Search case
@@ -5608,8 +6005,8 @@ final class SQLProvider implements SearchProviderInterface
 
             // Get rows
 
-            // if real search seek to begin of items to display (because of complete search)
-            if (!$data['search']['no_search']) {
+            // Seek to the page start, unless a SQL LIMIT already positioned the result there.
+            if (!$data['search']['no_search'] && !($data['sql']['has_sql_limit'] ?? false)) {
                 $DBread->dataSeek($result, $data['search']['start']);
             }
 
@@ -5626,6 +6023,10 @@ final class SQLProvider implements SearchProviderInterface
             Profiler::getInstance()->pause('SQLProvider::constructData - giveItem');
             while (($i < $data['data']['totalcount']) && ($i <= $data['data']['end'])) {
                 $row = $DBread->fetchAssoc($result);
+                if ($row === null || $row === false) {
+                    // Defensive: fewer rows than totalcount expects; don't parse a null row.
+                    break;
+                }
 
                 $newrow        = [];
                 $newrow['raw'] = $row;
