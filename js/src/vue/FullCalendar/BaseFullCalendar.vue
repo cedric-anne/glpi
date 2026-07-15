@@ -46,6 +46,7 @@
         nowIndicator: true,
         schedulerLicenseKey: "GPL-My-Project-Is-Open-Source",
         resourceAreaWidth: '15%',
+        resourceAreaHeaderContent: __('Resources'),
         slotMinTime: CFG_GLPI.planning_begin,
         slotMaxTime: CFG_GLPI.planning_end,
         eventDisplay: 'block',

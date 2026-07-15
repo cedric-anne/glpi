@@ -41,6 +41,15 @@ use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 
+use function Safe\file_put_contents;
+use function Safe\mktime;
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
+use function Safe\preg_replace;
+use function Safe\realpath;
+use function Safe\touch;
+use function Safe\unlink;
+
 class HtmlTest extends DbTestCase
 {
     public function testConvDate()
@@ -378,6 +387,21 @@ class HtmlTest extends DbTestCase
         $this->assertStringContainsString(GLPI_YEAR, $message);
     }
 
+    public function testGetPrefixedUrl(): void
+    {
+        global $CFG_GLPI;
+
+        // GLPI installed at domain root
+        $CFG_GLPI['root_doc'] = '';
+        $this->assertSame('/css/styles.css', \Html::getPrefixedUrl('css/styles.css'));
+        $this->assertSame('/css/styles.css', \Html::getPrefixedUrl('/css/styles.css'));
+
+        // GLPI installed in a subfolder
+        $CFG_GLPI['root_doc'] = '/subfolder';
+        $this->assertSame('/subfolder/css/styles.css', \Html::getPrefixedUrl('css/styles.css'));
+        $this->assertSame('/subfolder/css/styles.css', \Html::getPrefixedUrl('/css/styles.css'));
+    }
+
     public function testCss()
     {
         global $CFG_GLPI;
@@ -397,7 +421,7 @@ class HtmlTest extends DbTestCase
 
         //create test files
         foreach ($fake_files as $fake_file) {
-            $this->assertTrue(touch(GLPI_TMP_DIR . '/' . $fake_file));
+            touch(GLPI_TMP_DIR . '/' . $fake_file);
         }
 
         //expect minified file
@@ -983,7 +1007,7 @@ SCSS,
         $compiled_scss = @\Html::compileScss(['file' => '/plugins/tester/css/styles.scss']);
 
         // Strip comments to ease comparison.
-        $compiled_scss = \preg_replace('~/\*.*\*/~s', '', $compiled_scss);
+        $compiled_scss = preg_replace('~/\*.*\*/~s', '', $compiled_scss);
 
         $this->assertEquals(
             <<<CSS

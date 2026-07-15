@@ -51,7 +51,7 @@ export default function useScheduler() {
     function getResourceWeekView() {
         return {
             type: 'resourceTimeline',
-            buttonText: 'Timeline Week',
+            buttonText: __('Timeline Week'),
             duration: { weeks: 1 },
             slotLabelFormat: [
                 { week: 'short' },

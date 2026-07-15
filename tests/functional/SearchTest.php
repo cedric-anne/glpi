@@ -65,6 +65,11 @@ use TaskCategory;
 use Ticket;
 use User;
 
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
+use function Safe\preg_match;
+use function Safe\strtotime;
+
 class SearchTest extends DbTestCase
 {
     private function doSearch($itemtype, $params, array $forcedisplay = [])
@@ -1565,7 +1570,10 @@ class SearchTest extends DbTestCase
             ])
         );
 
-        $search = \Search::manageParams(Ticket::class, ['reset' => 1], true, false);
+        // SavedSearch::load() sets this session flag before redirecting to the search page
+        $_SESSION['glpi_loaded_savedsearch'] = $bk_id;
+
+        $search = \Search::manageParams(Ticket::class, ['reset' => 1, 'savedsearches_id' => $bk_id], true, false);
         $this->assertEquals(
             [
                 'reset'        => 1,
@@ -1589,6 +1597,24 @@ class SearchTest extends DbTestCase
             ],
             $search
         );
+
+        // no stale 'reset' flag must remain in session after loading a saved search
+        $this->assertEquals($bk_id, $_SESSION['glpi_loaded_savedsearch']);
+        $this->assertArrayNotHasKey('reset', $_SESSION['glpisearch']['Ticket']);
+
+        // saved search criteria must survive a subsequent unrelated request (sort/pagination)
+        \Search::manageParams('Ticket', ['sort' => 6, 'order' => 'ASC'], true, false);
+        $this->assertEquals(
+            [
+                0 => [
+                    'field' => '5',
+                    'searchtype' => 'equals',
+                    'value' => $uid,
+                ],
+            ],
+            $_SESSION['glpisearch']['Ticket']['criteria']
+        );
+        $this->assertEquals($bk_id, $_SESSION['glpi_loaded_savedsearch']);
 
         // let's test for Computers
         $search = \Search::manageParams(Computer::class, ['reset' => 1], false, false);
@@ -1641,7 +1667,10 @@ class SearchTest extends DbTestCase
             ])
         );
 
-        $search = \Search::manageParams(Computer::class, ['reset' => 1], true, false);
+        // SavedSearch::load() sets this session flag before redirecting to the search page
+        $_SESSION['glpi_loaded_savedsearch'] = $bk_id;
+
+        $search = \Search::manageParams(Computer::class, ['reset' => 1, 'savedsearches_id' => $bk_id], true, false);
         $this->assertEquals(
             [
                 'reset'        => 1,
@@ -1666,6 +1695,24 @@ class SearchTest extends DbTestCase
             ],
             $search
         );
+
+        // no stale 'reset' flag must remain in session after loading a saved search
+        $this->assertEquals($bk_id, $_SESSION['glpi_loaded_savedsearch']);
+        $this->assertArrayNotHasKey('reset', $_SESSION['glpisearch']['Computer']);
+
+        // saved search criteria must survive a subsequent unrelated request (sort/pagination)
+        \Search::manageParams('Computer', ['sort' => 1, 'order' => 'ASC'], true, false);
+        $this->assertEquals(
+            [
+                0 => [
+                    'field' => 'view',
+                    'searchtype' => 'contains',
+                    'value' => 'test',
+                ],
+            ],
+            $_SESSION['glpisearch']['Computer']['criteria']
+        );
+        $this->assertEquals($bk_id, $_SESSION['glpi_loaded_savedsearch']);
     }
 
     public static function addSelectProvider()

@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -6,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -31,10 +32,25 @@
  * ---------------------------------------------------------------------
  */
 
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.main';
+namespace tests\units\Glpi\Helpdesk\Tile;
 
-/* global __webpack_public_path__ */
-// eslint-disable-next-line no-global-assign
-__webpack_public_path__ = `${CFG_GLPI.root_doc}/lib/`;
+use Glpi\Helpdesk\Tile\ExternalPageTile;
+use Glpi\Tests\AbstractTileRightsTest;
 
-window.monaco = monaco;
+final class ExternalPageTileTest extends AbstractTileRightsTest
+{
+    protected function getTileClass(): string
+    {
+        return ExternalPageTile::class;
+    }
+
+    protected function getTileInput(): array
+    {
+        return [
+            'title'        => 'GLPI project',
+            'description'  => 'Link to GLPI project website',
+            'illustration' => 'request-service',
+            'url'          => 'https://glpi-project.org',
+        ];
+    }
+}
