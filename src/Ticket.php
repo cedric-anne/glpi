@@ -2528,7 +2528,7 @@ JAVASCRIPT;
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                         $ma->addMessage(
                             sprintf(
-                                __('Ticket %d and the selected problem do not belong to compatible entities.'),
+                                __s('Ticket %d and the selected problem do not belong to compatible entities.'),
                                 $id
                             )
                         );
