@@ -922,6 +922,86 @@ HTML,
         $this->assertEqualsCanonicalizing([$kb_cat_id1, $kb_cat_id2], $category_ids);
     }
 
+    public function testShowFullAddModeIgnoresUnknownCategory(): void
+    {
+        $this->login();
+
+        $item = new KnowbaseItem();
+        $item->getEmpty();
+        $html = (string) $item->showFull([
+            'mode'                      => 'add',
+            'display'                   => false,
+            'knowbaseitemcategories_id' => 999999,
+        ]);
+        $this->assertStringNotContainsString('data-glpi-kb-prefilled-category-id', $html);
+    }
+
+    public function testShowFullAddModeIgnoresNonNumericCategory(): void
+    {
+        $this->login();
+
+        $item = new KnowbaseItem();
+        $item->getEmpty();
+        $html = (string) $item->showFull([
+            'mode'                      => 'add',
+            'display'                   => false,
+            'knowbaseitemcategories_id' => 'abc',
+        ]);
+        $this->assertStringNotContainsString('data-glpi-kb-prefilled-category-id', $html);
+    }
+
+    public function testShowFullAddModeIgnoresCategoryFromUnreachableEntity(): void
+    {
+        $this->login();
+
+        $sibling_entity_id = (int) getItemByTypeName('Entity', '_test_child_1', true);
+        $cat = $this->createItem(\KnowbaseItemCategory::class, [
+            'name'                      => __FUNCTION__,
+            'knowbaseitemcategories_id' => 0,
+            'entities_id'               => $sibling_entity_id,
+            'is_recursive'              => 0,
+        ]);
+        $cat_id = $cat->getID();
+
+        // Restrict the active session to a sibling that cannot reach the category
+        $this->setEntity('_test_child_2', false);
+
+        $item = new KnowbaseItem();
+        $item->getEmpty();
+        $html = (string) $item->showFull([
+            'mode'                      => 'add',
+            'display'                   => false,
+            'knowbaseitemcategories_id' => $cat_id,
+        ]);
+        $this->assertStringNotContainsString('data-glpi-kb-prefilled-category-id', $html);
+    }
+
+    public function testShowFullAddModePrefillsCategoryFromOptions(): void
+    {
+        $this->login();
+
+        $cat = $this->createItem(\KnowbaseItemCategory::class, [
+            'name'                      => __FUNCTION__,
+            'knowbaseitemcategories_id' => 0,
+            'entities_id'               => $this->getTestRootEntity(only_id: true),
+            'is_recursive'              => 1,
+        ]);
+        $cat_id = $cat->getID();
+
+        $item = new KnowbaseItem();
+        $item->getEmpty();
+        $html = (string) $item->showFull([
+            'mode'                      => 'add',
+            'display'                   => false,
+            'knowbaseitemcategories_id' => $cat_id,
+        ]);
+
+        $this->assertStringContainsString(
+            'data-glpi-kb-prefilled-category-id="' . $cat_id . '"',
+            $html
+        );
+    }
+
     protected function testGetVisibilityCriteriaProvider(): iterable
     {
         yield from $this->testGetVisibilityCriteriaProvider_FAQ_public();
@@ -2070,5 +2150,34 @@ HTML,
                 'items_id'     => $kb->getID(),
             ])
         );
+    }
+
+    public function testGetReadablePrefilledCategoryIdRejectsZeroOrUnreadableIds(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(only_id: true);
+        $cat = $this->createItem(\KnowbaseItemCategory::class, [
+            'name' => 'Public static test cat',
+            'knowbaseitemcategories_id' => 0,
+            'entities_id' => $entity_id,
+            'is_recursive' => 1,
+        ]);
+
+        $this->assertSame(
+            $cat->getID(),
+            KnowbaseItem::getReadablePrefilledCategoryId($cat->getID())
+        );
+        $this->assertNull(KnowbaseItem::getReadablePrefilledCategoryId(0));
+        $this->assertNull(KnowbaseItem::getReadablePrefilledCategoryId(999999));
+    }
+
+    public function testGetFormOptionsFromUrlWhitelistsCategoryOnly(): void
+    {
+        $item = new KnowbaseItem();
+        $this->assertSame(
+            ['knowbaseitemcategories_id' => 5],
+            $item->getFormOptionsFromUrl(['knowbaseitemcategories_id' => 5, 'unrelated' => 'x'])
+        );
+        $this->assertSame([], $item->getFormOptionsFromUrl(['unrelated' => 'x']));
     }
 }

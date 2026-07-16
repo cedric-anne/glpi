@@ -97,9 +97,10 @@ final class KnowbaseItemController extends AbstractController
         $kbitem = new KnowbaseItem();
         if (!$kbitem->getFromDB($id)) {
             throw new NotFoundHttpException();
-        } elseif (!$kbitem->canViewItem()) {
+        } elseif (!$kbitem->can($id, READ)) {
             throw new AccessDeniedHttpException();
         }
+
         return new StreamedResponse(static function () use ($kbitem) {
             $kbitem->showFull();
         });

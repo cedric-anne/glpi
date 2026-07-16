@@ -306,6 +306,32 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         }
     }
 
+    /**
+     * Validate that the given category id can be used as a prefill for the
+     * current session: it must exist and belong to a reachable entity.
+     *
+     * @return int|null Category id when readable, null otherwise.
+     */
+    public static function getReadablePrefilledCategoryId(int $category_id): ?int
+    {
+        if ($category_id <= 0) {
+            return null;
+        }
+        $category = new KnowbaseItemCategory();
+        if (!$category->getFromDB($category_id)) {
+            return null;
+        }
+        if (
+            !Session::haveAccessToEntity(
+                (int) $category->fields['entities_id'],
+                (bool) $category->fields['is_recursive']
+            )
+        ) {
+            return null;
+        }
+        return $category_id;
+    }
+
     public function post_addItem()
     {
         // Handle rich-text images and uploaded documents
@@ -932,6 +958,19 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         NotificationEvent::raiseEvent('delete', $this);
     }
 
+    /**
+     * @param array<string, mixed> $query_params
+     * @return array<string, mixed>
+     */
+    public function getFormOptionsFromUrl(array $query_params): array
+    {
+        $options = [];
+        if (isset($query_params['knowbaseitemcategories_id'])) {
+            $options['knowbaseitemcategories_id'] = $query_params['knowbaseitemcategories_id'];
+        }
+        return $options;
+    }
+
     public function showForm($ID, array $options = []): bool
     {
         // show kb item form
@@ -944,7 +983,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             return false;
         }
 
-        $this->showFull(['mode' => 'add']);
+        $this->showFull(['mode' => 'add'] + $options);
         return true;
     }
 
@@ -1058,6 +1097,14 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         } elseif ($mode === "add") {
             $params['can_edit']     = $this->can(-1, CREATE);
             $params['illustration'] = '';
+
+            $raw_category_id = (int) ($options['knowbaseitemcategories_id'] ?? 0);
+            $prefilled_category_id = self::getReadablePrefilledCategoryId($raw_category_id);
+            if ($prefilled_category_id !== null) {
+                $params['prefilled_category'] = [
+                    'id' => $prefilled_category_id,
+                ];
+            }
         }
 
         $out = TemplateRenderer::getInstance()->render(
@@ -2885,6 +2932,7 @@ TWIG, $twig_params);
                 'favorites'           => $favorites,
                 'current_is_favorite' => $current_is_favorite,
                 'has_other_favorites' => $has_other_favorites,
+                'can_create'          => self::canCreate(),
                 'show_actions'        => $show_actions,
             ]
         );

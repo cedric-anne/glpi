@@ -85,6 +85,9 @@ export class GlpiKnowbaseArticleController
     /** @type {string|null} */
     #translation_language = null;
 
+    /** @type {number|null} Positive category ID when a category is staged, null otherwise. */
+    #staged_category_id = null;
+
     /** @type {string} */
     #default_language = '';
 
@@ -147,6 +150,12 @@ export class GlpiKnowbaseArticleController
             );
         }
         this.#item_id = parseInt(container.dataset.glpiKbItemId, 10) || null;
+        if (mode === 'add') {
+            const prefilled_id = Number(container.dataset.glpiKbPrefilledCategoryId);
+            if (Number.isInteger(prefilled_id) && prefilled_id > 0) {
+                this.#staged_category_id = prefilled_id;
+            }
+        }
         this.#initEventListeners();
         this.#initEditor();
         this.#initDiffListeners();
@@ -1169,6 +1178,20 @@ export class GlpiKnowbaseArticleController
             input.name = key;
             input.value = value;
             form.appendChild(input);
+        }
+
+        if (this.#staged_category_id !== null && this.#staged_category_id > 0) {
+            const defined_input = document.createElement('input');
+            defined_input.type = 'hidden';
+            defined_input.name = '__categories_defined';
+            defined_input.value = '1';
+            form.appendChild(defined_input);
+
+            const categories_input = document.createElement('input');
+            categories_input.type = 'hidden';
+            categories_input.name = '_categories[]';
+            categories_input.value = String(this.#staged_category_id);
+            form.appendChild(categories_input);
         }
 
         document.body.appendChild(form);
