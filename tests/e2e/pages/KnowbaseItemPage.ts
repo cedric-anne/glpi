@@ -354,7 +354,7 @@ export class KnowbaseItemPage extends GlpiPage
     public async doOpenVisibilityModal(): Promise<void>
     {
         await this.articleActionsMenu.click();
-        await this.getButton('Permissions and sharing').click();
+        await this.getButton('Permissions').click();
     }
 
     public getVisibilityModal(): Locator
@@ -453,30 +453,59 @@ export class KnowbaseItemPage extends GlpiPage
         await this.asideSearchClearButton.click();
     }
 
-    public async doOpenSharingTab(): Promise<Locator>
+    /**
+     * Open the header "Share" popover and wait for its lazily-loaded content
+     * to be ready.
+     */
+    public async openSharePopover(): Promise<void>
     {
-        await this.articleActionsMenu.click();
-        await this.getButton('Permissions and sharing').click();
-
-        const modal = this.page.getByRole('dialog');
-        await expect(modal).toBeVisible();
-
-        await modal.getByRole('tab', { name: 'Sharing' }).click();
-        return modal;
+        await this.getButton('Share').click();
+        await expect(this.publishSwitch()).toBeVisible();
     }
 
-    public async doCreateSharingLink(modal: Locator, name?: string): Promise<void>
+    public publishSwitch(): Locator
     {
-        await modal.getByRole('button', { name: 'Create a sharing link' }).click();
+        return this.page.getByRole('switch', { name: 'Publish to web' });
+    }
 
-        const name_input = modal.getByPlaceholder('Link name (optional)');
-        await expect(name_input).toBeVisible();
+    public shareLink(): Locator
+    {
+        return this.page.getByLabel('Public link');
+    }
 
-        if (name) {
-            await name_input.fill(name);
-        }
+    public copyLinkButton(): Locator
+    {
+        return this.page.getByRole('button', { name: 'Copy link' });
+    }
 
-        await name_input.press('Enter');
+    /**
+     * Read the full share URL (with secret) via the copy button. The field can be
+     * visually truncated, so the copy affordance is the reliable way to get the
+     * whole link. Requires the clipboard permissions on the browser context.
+     */
+    public async copiedShareUrl(): Promise<string>
+    {
+        // Clear first so we never read a stale value from a previous copy (the
+        // copy handler writes asynchronously, e.g. right after a regenerate).
+        await this.page.evaluate(() => navigator.clipboard.writeText(''));
+        await this.copyLinkButton().click();
+        await expect
+            .poll(() => this.page.evaluate(() => navigator.clipboard.readText()))
+            .toContain('/Share/');
+        return this.page.evaluate(() => navigator.clipboard.readText());
+    }
+
+    public regenerateButton(): Locator
+    {
+        return this.page.getByRole('button', { name: 'Regenerate link' });
+    }
+
+    /**
+     * Confirm the "Regenerate link" danger dialog opened by regenerateButton().
+     */
+    public async confirmRegenerate(): Promise<void>
+    {
+        await this.page.getByRole('button', { name: 'Regenerate', exact: true }).click();
     }
 }
 
