@@ -41,6 +41,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Error\ErrorHandler;
 use Glpi\Event;
+use Glpi\Security\SessionTracker;
 use Safe\Exceptions\FilesystemException;
 use Safe\Exceptions\InfoException;
 
@@ -1556,10 +1557,11 @@ TWIG, ['msg' => __('Last run list')]);
                     @unlink($filename);
                     ++$nb;
                 } catch (FilesystemException $e) {
-                    //mepty catch
+                    //empty catch
                 }
             }
         }
+        SessionTracker::revokeSessionsByAge($maxlifetime);
 
         // Clean expired remember me tokens
         $cookie_lifetime = time() + $CFG_GLPI['login_remember_time'];

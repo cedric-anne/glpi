@@ -50,6 +50,7 @@
         "league/oauth2-client": "^2.9",
         "league/oauth2-google": "^5.0",
         "league/oauth2-server": "^9.4",
+        "matomo/device-detector": "^6.5",
         "mexitek/phpcolors": "^1.0",
         "monolog/monolog": "^3.10",
         "paragonie/sodium_compat": "^2.5",
@@ -156,7 +157,8 @@
         "ext-ldap": "Used to provide LDAP authentication and synchronization",
         "ext-sodium": "Used to provide strong encryption for sensitive data in database",
         "ext-posix": "Used to detect scripts running as root",
-        "ext-exif": "Recommended for security"
+        "ext-exif": "Recommended for security",
+        "ext-redis": "Recommended for cache and session performance"
     },
     "config": {
         "optimize-autoloader": true,
