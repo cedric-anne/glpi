@@ -44,6 +44,12 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Session;
 use Symfony\Component\DomCrawler\Crawler;
 
+use function Safe\file_get_contents;
+use function Safe\file_put_contents;
+use function Safe\ob_end_clean;
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
+
 /* Test for inc/knowbaseitem.class.php */
 
 class KnowbaseItemTest extends DbTestCase
@@ -2179,5 +2185,59 @@ HTML,
             $item->getFormOptionsFromUrl(['knowbaseitemcategories_id' => 5, 'unrelated' => 'x'])
         );
         $this->assertSame([], $item->getFormOptionsFromUrl(['unrelated' => 'x']));
+    }
+
+    public function testGetServiceCatalogItemDescriptionWithDescriptionSet(): void
+    {
+        $this->login();
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__,
+            'answer'      => '<h1>Full procedure</h1><p>' . str_repeat('Lorem ipsum dolor sit amet. ', 30) . '</p>',
+            'description' => 'A short description for the tile',
+            'is_faq'      => 1,
+        ]);
+
+        $this->assertEquals(
+            'A short description for the tile',
+            $kb->getServiceCatalogItemDescription()
+        );
+    }
+
+    public function testGetServiceCatalogItemDescriptionFallsBackToAnswerExcerpt(): void
+    {
+        $this->login();
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__,
+            'answer' => '<h1>PROCESS</h1><p>Screenshot on an Android smartphone</p>'
+                . '<img src="https://example.org/screenshot.png">'
+                . '<p>' . str_repeat('Lorem ipsum dolor sit amet. ', 30) . '</p>',
+            'is_faq' => 1,
+        ]);
+
+        $description = $kb->getServiceCatalogItemDescription();
+
+        // No raw HTML leaking into the tile.
+        $this->assertStringNotContainsString('<h1>', $description);
+        $this->assertStringNotContainsString('<img', $description);
+        $this->assertStringNotContainsString('<p>', $description);
+
+        // Truncated to a fixed length.
+        $this->assertLessThanOrEqual(200 + mb_strlen('&nbsp;(...)'), mb_strlen($description));
+        $this->assertStringEndsWith('&nbsp;(...)', $description);
+    }
+
+    public function testGetServiceCatalogItemDescriptionFallsBackToShortAnswer(): void
+    {
+        $this->login();
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__,
+            'answer' => '<p>Short answer</p>',
+            'is_faq' => 1,
+        ]);
+
+        $this->assertEquals('Short answer', $kb->getServiceCatalogItemDescription());
     }
 }

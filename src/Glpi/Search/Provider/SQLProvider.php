@@ -6948,6 +6948,13 @@ final class SQLProvider implements SearchProviderInterface
                         if ($item->isField($slaField) && $item->fields[$slaField] != 0) { // Have SLA
                             $sla = new $sla_class();
                             $sla->getFromDB($item->fields[$slaField]);
+                            // "Use ticket calendar" is stored as calendars_id=0, must be resolved like in Ticket::getDatasToAddSLA()
+                            $sla->setTicketCalendar(Entity::getUsedConfig(
+                                'calendars_strategy',
+                                $item->fields['entities_id'],
+                                'calendars_id',
+                                0
+                            ));
                             $currenttime = $sla->getActiveTimeBetween(
                                 $item->fields['date'],
                                 date('Y-m-d H:i:s')
@@ -7416,7 +7423,7 @@ final class SQLProvider implements SearchProviderInterface
                             break;
                         }
                         return "<div class='badge_block' style='border-color: " . \htmlescape($color) . "'>
-                        <span style='background: " . \htmlescape($color) . "'></span>&nbsp;" . \htmlescape($date) . "
+                        <span style='background: " . \htmlescape($color) . "'></span>&nbsp;" . \htmlescape(Html::convDate($date)) . "
                        </div>";
                     }
                     break;
@@ -7425,7 +7432,7 @@ final class SQLProvider implements SearchProviderInterface
                         && ($data[$ID][0]['name'] < $_SESSION['glpi_currenttime'])
                     ) {
                         return "<div class='badge_block' style='border-color: #cf9b9b'>
-                        <span style='background: #cf9b9b'></span>&nbsp;" . \htmlescape($data[$ID][0]['name']) . "
+                        <span style='background: #cf9b9b'></span>&nbsp;" . \htmlescape(Html::convDate($data[$ID][0]['name'])) . "
                        </div>";
                     }
 

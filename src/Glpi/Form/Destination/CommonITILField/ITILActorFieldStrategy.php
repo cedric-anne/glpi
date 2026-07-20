@@ -412,6 +412,12 @@ enum ITILActorFieldStrategy: string
                 $actors_ids = [$actors_ids];
             }
 
+            // 0 means unset, not an actor with id 0
+            $actors_ids = array_filter($actors_ids, fn($actor_id) => (int) $actor_id > 0);
+            if ($actors_ids === []) {
+                continue;
+            }
+
             foreach ($actors_ids as $actor_id) {
                 $actors[] = [
                     'itemtype' => $itemtype,
