@@ -48,6 +48,7 @@ use Glpi\Dashboard\Filters\{
     StateFilter,
     TicketStatusFilter,
     TicketTypeFilter,
+    UserAssignedFilter,
     UserTechFilter,
 };
 use Glpi\Plugin\Hooks;
@@ -113,6 +114,7 @@ class Filter extends CommonDBChild
             GroupRequesterFilter::class,
             GroupTechFilter::class,
             UserTechFilter::class,
+            UserAssignedFilter::class,
             TicketStatusFilter::class,
         ];
 

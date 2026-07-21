@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -41,28 +40,31 @@ use Session;
 use Ticket;
 use User;
 
-class UserTechFilter extends AbstractFilter
+class UserAssignedFilter extends AbstractFilter
 {
     use AssignedITILUserFilterTrait;
 
     public static function getName(): string
     {
-        return __("Technician");
+        return __("User / Assigned user");
     }
 
     public static function getId(): string
     {
-        return "user_tech";
+        return "user_assigned";
     }
 
     public static function canBeApplied(string $table): bool
     {
         global $DB;
 
-        return $DB->fieldExists($table, 'users_id_tech')
-            || in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()]);
+        return $DB->fieldExists($table, 'users_id')
+            || in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()], true);
     }
 
+    /**
+     * @return array<string, array<string, mixed>>
+     */
     public static function getCriteria(string $table, $value): array
     {
         global $DB;
@@ -77,11 +79,11 @@ class UserTechFilter extends AbstractFilter
         }
 
         if ($users_id !== null) {
-            if ($DB->fieldExists($table, 'users_id_tech')) {
+            if ($DB->fieldExists($table, 'users_id')) {
                 $criteria["WHERE"] = [
-                    "$table.users_id_tech" => $users_id,
+                    "$table.users_id" => $users_id,
                 ];
-            } elseif (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()])) {
+            } elseif (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()], true)) {
                 $criteria = self::getAssignedITILUserCriteria($table, $users_id);
             }
         }
@@ -89,6 +91,9 @@ class UserTechFilter extends AbstractFilter
         return $criteria;
     }
 
+    /**
+     * @return list<array<string, mixed>>
+     */
     public static function getSearchCriteria(string $table, $value): array
     {
         global $DB;
@@ -96,17 +101,18 @@ class UserTechFilter extends AbstractFilter
         $criteria = [];
 
         if ((int) $value > 0 || $value === 'myself') {
-            if ($DB->fieldExists($table, 'users_id_tech')) {
+            if ($DB->fieldExists($table, 'users_id')) {
                 $criteria[] = [
                     'link'       => 'AND',
-                    'field'      => self::getSearchOptionID($table, 'users_id_tech', 'glpi_users'),
+                    'field'      => self::getSearchOptionID($table, 'users_id', 'glpi_users'),
                     'searchtype' => 'equals',
-                    'value'      =>  $value === 'myself' ? (int) Session::getLoginUserID() : (int) $value,
+                    'value'      => $value === 'myself' ? (int) Session::getLoginUserID() : (int) $value,
                 ];
-            } elseif (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()])) {
+            } elseif (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()], true)) {
                 $criteria[] = self::getAssignedITILUserSearchCriteria($value);
             }
         }
+
         return $criteria;
     }
 
@@ -115,14 +121,14 @@ class UserTechFilter extends AbstractFilter
         return self::displayList(
             self::getName(),
             is_string($value) ? $value : "",
-            'user_tech',
+            self::getId(),
             User::class,
             [
                 'right' => 'own_ticket',
                 'toadd' => [
                     [
-                        'id'    => 'myself',
-                        'text'  => __('Myself'),
+                        'id'   => 'myself',
+                        'text' => __('Myself'),
                     ],
                 ],
             ]
