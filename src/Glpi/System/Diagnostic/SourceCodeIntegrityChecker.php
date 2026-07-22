@@ -37,9 +37,9 @@ namespace Glpi\System\Diagnostic;
 
 use Exception;
 use FilesystemIterator;
+use Glpi\Toolbox\HttpClient;
 use Glpi\Toolbox\VersionParser;
 use GLPINetwork;
-use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -47,8 +47,8 @@ use RuntimeException;
 use Safe\Exceptions\FilesystemException;
 use SebastianBergmann\Diff\Differ;
 use SebastianBergmann\Diff\Output\StrictUnifiedDiffOutputBuilder;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 use Throwable;
-use Toolbox;
 
 use function Safe\file_get_contents;
 use function Safe\fileperms;
@@ -223,23 +223,17 @@ class SourceCodeIntegrityChecker
      */
     private function getGLPIRelease(array &$errors = []): ?string
     {
-        global $CFG_GLPI;
-
         $version_to_get = VersionParser::getNormalizedVersion(GLPI_VERSION);
         $gh_releases_endpoint = 'https://api.github.com/repos/glpi-project/glpi/releases/tags/' . $version_to_get;
 
-        $eopts = [
-            'connect_timeout' => 10, // 10 seconds timeout
-        ];
-        if (in_array(GLPINetwork::class, $CFG_GLPI['proxy_exclusions'])) {
-            $eopts['proxy_excluded'] = true;
-        }
-        $client = Toolbox::getGuzzleClient($eopts);
+        $client = new HttpClient(
+            context: GLPINetwork::class
+        );
 
         $dest = null;
         try {
             $response = $client->request('GET', $gh_releases_endpoint);
-            $release = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+            $release = json_decode((string) $response->getContent(), true, 512, JSON_THROW_ON_ERROR);
             foreach ($release['assets'] as $asset) {
                 if (str_starts_with($asset['name'], 'glpi-' . $version_to_get)) {
                     $dest = GLPI_TMP_DIR . '/' . $asset['name'];
@@ -252,7 +246,7 @@ class SourceCodeIntegrityChecker
                     break;
                 }
             }
-        } catch (GuzzleException $e) {
+        } catch (ExceptionInterface $e) {
             $errors[] = $e->getMessage();
         }
         return $dest;

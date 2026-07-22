@@ -35,15 +35,12 @@
 
 namespace Glpi\Marketplace\Api;
 
+use Glpi\Toolbox\HttpClient;
 use GLPINetwork;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Psr7\Message;
-use GuzzleHttp\Psr7\Response;
-use Psr\Http\Message\ResponseInterface;
 use Session;
-use Toolbox;
+use Symfony\Component\HttpClient\Response\MockResponse;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 use function Safe\json_decode;
 use function Safe\json_encode;
@@ -51,9 +48,9 @@ use function Safe\session_write_close;
 
 class Plugins
 {
-    protected ?Client $httpClient  = null;
-    /** @var ?array  */
-    protected ?array $last_error  = null;
+    protected ?HttpClient $httpClient = null;
+
+    protected bool $last_request_failed = false;
 
     public const COL_PAGE    = 200;
 
@@ -75,17 +72,12 @@ class Plugins
 
     public function __construct()
     {
-        global $CFG_GLPI;
-
-        $eopts = [
-            'base_uri'        => GLPI_MARKETPLACE_PLUGINS_API_URI,
-        ];
-        if (in_array(GLPINetwork::class, $CFG_GLPI['proxy_exclusions'])) {
-            $eopts['proxy_excluded'] = true;
-        }
-
-        // init guzzle client with base options
-        $this->httpClient = Toolbox::getGuzzleClient($eopts);
+        $this->httpClient = new HttpClient(
+            context: GLPINetwork::class,
+            options: [
+                'base_uri' => GLPI_MARKETPLACE_PLUGINS_API_URI,
+            ]
+        );
     }
 
 
@@ -106,7 +98,7 @@ class Plugins
     ) {
         if (!GLPINetwork::isRegistered()) {
             // Simulate empty response if registration key is not valid
-            return new Response(200, [], '[]');
+            return new MockResponse('[]', ['http_code' => 200]);
         }
 
         $options['headers'] = array_merge_recursive(
@@ -121,18 +113,15 @@ class Plugins
 
         try {
             $response = $this->httpClient->request($method, $endpoint, $options);
-            $this->last_error = null; // Reset error buffer
-        } catch (RequestException|ConnectException $e) {
-            $this->last_error = [
-                'title'     => "Plugins API error",
-                'exception' => $e->getMessage(),
-                'request'   => Message::toString($e->getRequest()),
-            ];
-            if ($e instanceof RequestException && $e->hasResponse()) {
-                $this->last_error['response'] = Message::toString($e->getResponse());
-            }
+            $this->last_request_failed = false;
+        } catch (ExceptionInterface $e) {
+            global $PHPLOGGER;
+            $PHPLOGGER->error(
+                "Plugins API error: {$e->getMessage()}",
+                ['exception' => $e]
+            );
 
-            Toolbox::logDebug($this->last_error);
+            $this->last_request_failed = true;
             return false;
         }
 
@@ -167,7 +156,7 @@ class Plugins
             ], $options);
             $response = $this->request($endpoint, $request_options, $method);
 
-            if ($response === false || !is_array($current = json_decode($response->getBody(), true))) {
+            if ($response === false || !is_array($current = json_decode($response->getContent(), true))) {
                 // retry on error or unexpected response
                 $attempt_no++;
                 continue;
@@ -213,7 +202,7 @@ class Plugins
 
             if ($plugins_colct === null) {
                 $plugins = $this->getPaginatedCollection('plugins');
-                $this->is_list_truncated = $this->last_error !== null;
+                $this->is_list_truncated = $this->last_request_failed;
 
                 // replace keys indexes by system names
                 $plugins_keys  = array_column($plugins, 'key');
@@ -226,7 +215,7 @@ class Plugins
                     );
                 }
 
-                if ($this->last_error === null) {
+                if ($this->last_request_failed === false) {
                     // Cache result only if self::getPaginatedCollection() did not returned an incomplete result due to an error
                     $GLPI_CACHE->set($cache_key, $plugins_colct, HOUR_TIMESTAMP);
                 }
@@ -257,7 +246,7 @@ class Plugins
 
         if ($tag_filter !== '') {
             $tagged_plugins = array_column($this->getPluginsForTag($tag_filter), 'key');
-            if ($this->last_error !== null) {
+            if ($this->last_request_failed) {
                 $this->is_list_truncated = true;
             }
             $plugins_colct  = array_intersect_key($plugins_colct, array_flip($tagged_plugins));
@@ -390,7 +379,7 @@ class Plugins
             return [];
         }
 
-        $toptags   = json_decode($response->getBody(), true);
+        $toptags   = json_decode($response->getContent(), true);
 
         return $toptags;
     }
@@ -415,7 +404,7 @@ class Plugins
         if (!count($plugins_colct)) {
             $plugins_colct = $this->getPaginatedCollection("tags/{$tag}/plugin");
 
-            if ($this->last_error === null) {
+            if ($this->last_request_failed === false) {
                 // Cache result only if self::getPaginatedCollection() did not returned an incomplete result due to an error
                 $GLPI_CACHE->set($cache_key, $plugins_colct, HOUR_TIMESTAMP);
             }
