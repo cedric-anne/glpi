@@ -31,12 +31,13 @@
  */
 
 /* global TiptapCore, TiptapStarterKit, TiptapImage, TiptapPlaceholder, TiptapBubbleMenu */
-/* global TableKit */
+/* global TableKit, TiptapPMTables */
 /* global TiptapFileHandler, glpi_toast_error */
 
 import { SlashCommands } from '/js/modules/TipTap/SlashCommandsExtension.js';
 import { Base64ImageHandler } from '/js/modules/TipTap/Base64ImageHandlerExtension.js';
 import { VideoEmbed } from '/js/modules/TipTap/VideoEmbedExtension.js';
+import { TableGrips } from '/js/modules/TipTap/TableGripsExtension.js';
 import { post } from '/js/modules/Ajax.js';
 import { FileUploader } from '/js/modules/FileUploader.js';
 
@@ -126,7 +127,10 @@ class KnowbaseEditor {
             TiptapBubbleMenu.configure({
                 element: this.#bubbleMenuElement,
                 appendTo: () => this.#element.closest('.kb-article') ?? document.body,
-                shouldShow: ({ editor, state }) => editor.isEditable && !state.selection.empty && !editor.isActive('image'),
+                shouldShow: ({ editor, state }) => editor.isEditable
+                    && !state.selection.empty
+                    && !editor.isActive('image')
+                    && !(state.selection instanceof TiptapPMTables.CellSelection),
                 options: {
                     placement: 'top',
                     offset: 8,
@@ -137,6 +141,7 @@ class KnowbaseEditor {
                     resizable: true,
                 }
             }),
+            TableGrips,
             VideoEmbed,
         ];
 
@@ -182,6 +187,26 @@ class KnowbaseEditor {
             extensions,
             content: this.#options.content,
             editable: this.#isEditable,
+            editorProps: {
+                // Chromium/Brave mis-place the caret when clicking inside a
+                // ProseMirror table cell (the caret drops into the block above
+                // the table). posAtCoords is correct, but native contenteditable
+                // placement ignores it; ProseMirror follows the wrong native
+                // position on a plain click. Force the selection to the
+                // PM-computed pos so the click lands in the clicked cell.
+                // Firefox already places it correctly, so this is idempotent there.
+                handleClick: (view, pos) => {
+                    const $pos = view.state.doc.resolve(pos);
+                    for (let depth = $pos.depth; depth > 0; depth--) {
+                        const name = $pos.node(depth).type.name;
+                        if (name === 'tableCell' || name === 'tableHeader') {
+                            this.#editor?.commands.setTextSelection(pos);
+                            return true;
+                        }
+                    }
+                    return false;
+                },
+            },
             onUpdate: ({ editor }) => {
                 if (typeof this.#options.onUpdate === 'function') {
                     this.#options.onUpdate(editor.getHTML());

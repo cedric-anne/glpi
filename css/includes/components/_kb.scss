@@ -41,6 +41,36 @@
     }
 }
 
+// Shared by editor and read view so a saved article renders as edited.
+.kb-editor-wrapper .ProseMirror table,
+.article-container table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+    margin-bottom: 0.75rem;
+
+    // Without its own border, the table-collapse perimeter falls back to
+    // currentColor instead of the translucent cell border color below.
+    border: 1px solid var(--tblr-border-color-translucent);
+
+    td,
+    th {
+        border: 1px solid var(--tblr-border-color-translucent);
+        padding: 0.5rem;
+        min-width: 100px;
+
+        // Keep read-view cell height in sync with the editor's `p` spacing.
+        p {
+            margin-block-end: 0.75rem;
+        }
+    }
+
+    th {
+        background: var(--tblr-bg-surface-secondary);
+        font-weight: 600;
+    }
+}
+
 .kb-sidepanel {
     background-color: var(--tblr-card-cap-bg);
     border-left: 1px solid #e1e4e8;
@@ -86,7 +116,9 @@
 
 .kb-illustration-preview {
     border: 1px solid transparent;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 
     // Only add spacing in edit mode, where the preview becomes an interactive
     // button (role="button") that can be hovered to pick an illustration.
@@ -184,14 +216,20 @@
 .kb-sidepanel [data-glpi-translation-revision-id],
 .kb-sidepanel [data-glpi-current-translation-language] {
     cursor: pointer;
-    transition: background-color 0.15s ease, box-shadow 0.15s ease;
+    transition:
+        background-color 0.15s ease,
+        box-shadow 0.15s ease;
 
     &:hover {
         background-color: var(--tblr-bg-surface-secondary);
     }
 
     &.kb-revision--selected {
-        background-color: color-mix(in srgb, var(--tblr-primary), transparent 90%);
+        background-color: color-mix(
+            in srgb,
+            var(--tblr-primary),
+            transparent 90%
+        );
         box-shadow: inset -3px 0 0 var(--tblr-primary);
     }
 }
@@ -208,7 +246,8 @@
         background-color: var(--tblr-primary) !important;
         color: var(--tblr-bg-surface) !important;
         border-color: var(--tblr-primary);
-        box-shadow: 0 2px 4px color-mix(in srgb, var(--tblr-primary), transparent 80%);
+        box-shadow: 0 2px 4px
+            color-mix(in srgb, var(--tblr-primary), transparent 80%);
 
         i {
             color: var(--tblr-bg-surface) !important;
@@ -219,10 +258,12 @@
 // KB permission owner footer (full-width, differentiated background)
 .kb-permission-owner {
     background-color: var(--tblr-body-bg);
-    margin: 0 calc(-1 * var(--tblr-modal-padding)) calc(-1 * var(--tblr-modal-padding));
+    margin: 0 calc(-1 * var(--tblr-modal-padding))
+        calc(-1 * var(--tblr-modal-padding));
     padding: var(--tblr-modal-padding);
     border-top: 1px solid var(--tblr-border-color);
-    border-radius: 0 0 var(--tblr-modal-inner-border-radius) var(--tblr-modal-inner-border-radius);
+    border-radius: 0 0 var(--tblr-modal-inner-border-radius)
+        var(--tblr-modal-inner-border-radius);
 }
 
 // KB permission visibility fields (AJAX-loaded from visibility.php)
@@ -361,7 +402,12 @@
         }
 
         // Typography
-        h1, h2, h3, h4, h5, h6 {
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
             margin-block: 1.5rem 0.75rem;
 
             &:first-child {
@@ -373,7 +419,8 @@
             margin-block-end: 0.75rem;
         }
 
-        ul, ol {
+        ul,
+        ol {
             padding-inline-start: 1.5rem;
             margin-block-end: 0.75rem;
         }
@@ -406,22 +453,245 @@
             }
         }
 
-        // Tables
+        // Editor-only: cells are the positioning context for grips + resize handle.
         table {
-            border-collapse: collapse;
-            margin-bottom: 0.75rem;
-            width: 100%;
-
-            td, th {
-                border: 1px solid var(--tblr-border-color);
-                padding: 0.5rem;
-                min-width: 100px;
-            }
-
+            td,
             th {
-                background: var(--tblr-bg-surface-secondary);
-                font-weight: 600;
+                position: relative;
             }
+        }
+
+        // prosemirror-tables: horizontal scroll for wide tables
+        .tableWrapper {
+            overflow-x: auto;
+            padding: 40px 16px 16px 40px; // grip gutters (top/left larger for the bars + insertion dots)
+        }
+
+        // Table grips: inert <a> hosts, visible shape drawn by ::after.
+        .table-grip-column,
+        .table-grip-row,
+        .table-grip,
+        .table-col-add,
+        .table-row-add {
+            position: absolute;
+            z-index: 15;
+            opacity: 0;
+            transition: opacity 0.12s ease;
+
+            &::after {
+                content: "";
+                position: absolute;
+                cursor: pointer;
+            }
+        }
+
+        .tableWrapper:hover {
+            .table-grip-column,
+            .table-grip-row,
+            .table-grip,
+            .table-col-add,
+            .table-row-add {
+                opacity: 1;
+            }
+        }
+
+        .table-grip-column.selected,
+        .table-grip-row.selected,
+        .table-grip.selected {
+            opacity: 1;
+        }
+
+        // Hide "+" inserts while the delete menu is open so they don't crowd the "−".
+        &.kb-table-menu-open {
+            .table-col-add,
+            .table-row-add {
+                opacity: 0 !important;
+                pointer-events: none;
+            }
+        }
+
+        // Zero-area host stretched along the cell edge so a %-sized ::after fits it.
+        .table-grip-column,
+        .table-col-add {
+            inset-block-start: 0;
+            inset-inline-start: 0;
+            width: 100%;
+            height: 0;
+        }
+
+        .table-grip-row,
+        .table-row-add {
+            inset-block-start: 0;
+            inset-inline-start: 0;
+            width: 0;
+            height: 100%;
+        }
+
+        .table-grip {
+            inset-block-start: 0;
+            inset-inline-start: 0;
+        }
+
+        // Selection grips: thin bars (column = top edge, row = left edge).
+        .table-grip-column,
+        .table-grip-row {
+            &::after {
+                background: var(--tblr-gray-400);
+            }
+
+            &.is-hovered::after {
+                background: var(--tblr-blue);
+            }
+
+            &.selected::after {
+                background: var(--tblr-blue);
+            }
+        }
+
+        .table-grip-column::after {
+            inset-block-start: 2px;
+            inset-inline-start: 0;
+            width: 100%;
+            height: 7px;
+            border-radius: 3px;
+        }
+
+        .table-grip-row::after {
+            inset-inline-start: 2px;
+            inset-block-start: 0;
+            width: 7px;
+            height: 100%;
+            border-radius: 3px;
+        }
+
+        // Real 16px hit box in the gutter (shared geometry above makes it 0-thick).
+        .table-grip-column {
+            inset-block-start: -16px;
+            height: 16px;
+        }
+
+        .table-grip-row {
+            inset-inline-start: -16px;
+            width: 16px;
+        }
+
+        // Corner grip: round dot that selects the whole table.
+        .table-grip::after {
+            inset-block-start: -18px;
+            inset-inline-start: -18px;
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: var(--tblr-gray-400);
+        }
+
+        .table-grip.is-hovered::after {
+            background: var(--tblr-blue);
+        }
+
+        .table-grip.selected::after {
+            background: var(--tblr-blue);
+        }
+
+        // ti-circle-plus glyph in a larger transparent hit area; blue on hover.
+        .table-col-add,
+        .table-row-add {
+            &::after {
+                content: "\ea69";
+                width: 22px;
+                height: 22px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: tabler-icons !important;
+                font-size: 18px;
+                line-height: 1;
+                color: var(--tblr-gray-400);
+            }
+
+            &.is-hovered::after {
+                color: var(--tblr-blue);
+            }
+        }
+
+        // 38px out so the 22px hit area clears the grip bar's hover zone.
+        .table-col-add::after {
+            inset-block-start: -38px;
+            inset-inline-start: calc(100% - 11px);
+        }
+
+        .table-col-add.first::after {
+            inset-inline-start: -11px;
+        }
+
+        // Row insertion: on the row's trailing boundary (top edge first).
+        .table-row-add::after {
+            inset-inline-start: -38px;
+            inset-block-start: calc(100% - 11px);
+        }
+
+        .table-row-add.first::after {
+            inset-block-start: -11px;
+        }
+
+        // Insertion guide; length from --kb-table-h/-w to avoid a stray scrollbar.
+        .table-col-add::before,
+        .table-row-add::before {
+            content: "";
+            position: absolute;
+            background: var(--tblr-blue);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .table-col-add.is-hovered::before,
+        .table-row-add.is-hovered::before {
+            opacity: 1;
+        }
+
+        // 3px to cover the collapsed table border so it doesn't peek past.
+        .table-col-add::before {
+            inset-block-start: 0;
+            inset-inline-start: 100%;
+            width: 3px;
+            height: var(--kb-table-h, 0);
+        }
+
+        .table-col-add.first::before {
+            inset-inline-start: -2px;
+        }
+
+        .table-row-add::before {
+            inset-block-start: 100%;
+            inset-inline-start: 0;
+            width: var(--kb-table-w, 0);
+            height: 3px;
+        }
+
+        .table-row-add.first::before {
+            inset-block-start: -2px;
+        }
+
+        // prosemirror-tables selection highlight; background-clip works around a Firefox border-paint bug.
+        .selectedCell {
+            background-color: rgb(var(--tblr-blue-rgb), 0.15);
+            background-clip: padding-box;
+        }
+
+        // prosemirror-tables: visible column resize handle on the cell's trailing edge
+        .column-resize-handle {
+            position: absolute;
+            inset-inline-end: -1px;
+            inset-block-start: 0;
+            inset-block-end: -1px;
+            width: 2px;
+            z-index: 20;
+            pointer-events: none;
+            background: var(--tblr-blue);
+        }
+
+        &.resize-cursor {
+            cursor: col-resize;
         }
 
         // Images
@@ -444,6 +714,21 @@
                 text-decoration: none;
             }
         }
+    }
+}
+
+// Read-only after Save: drop the gutter/grips so the table matches the read view.
+.kb-editor-wrapper:not(.is-editing) .ProseMirror {
+    .tableWrapper {
+        padding: 0;
+    }
+
+    .table-grip-column,
+    .table-grip-row,
+    .table-grip,
+    .table-col-add,
+    .table-row-add {
+        display: none;
     }
 }
 
@@ -538,6 +823,37 @@
     }
 }
 
+// Grip-triggered table delete control
+.kb-table-menu {
+    .kb-table-delete {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+        padding: 0;
+        border: none;
+        background: none;
+        cursor: pointer;
+        color: var(--tblr-gray-400);
+
+        &::before {
+            content: "\ea68";
+            font-family: tabler-icons !important;
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        &:hover {
+            color: var(--tblr-red);
+        }
+
+        &:focus {
+            outline: none;
+        }
+    }
+}
+
 // KB link item modal form
 .kb-link-item-form {
     .kb-link-item-dropdowns {
@@ -566,7 +882,8 @@
     .kb-link-item-footer {
         display: flex;
         justify-content: flex-end;
-        margin: var(--tblr-modal-padding) calc(-1 * var(--tblr-modal-padding)) calc(-1 * var(--tblr-modal-padding));
+        margin: var(--tblr-modal-padding) calc(-1 * var(--tblr-modal-padding))
+            calc(-1 * var(--tblr-modal-padding));
         padding: 0.75rem var(--tblr-modal-padding);
         border-top: var(--tblr-border-width) solid var(--tblr-border-color);
     }
@@ -825,13 +1142,13 @@
     }
 }
 
-.visibility-type-col .select2-selection  {
+.visibility-type-col .select2-selection {
     // Merge borders with dropdown to its right
     border-start-end-radius: 0 !important;
     border-end-end-radius: 0 !important;
 }
 
-.visibility-item-col .select2-selection  {
+.visibility-item-col .select2-selection {
     // Merge borders with dropdown to its left
     border-start-start-radius: 0 !important;
     border-end-start-radius: 0 !important;
@@ -841,7 +1158,8 @@
     max-width: 300px;
     background-color: #fff;
 
-    .node, .article {
+    .node,
+    .article {
         list-style: none;
     }
 
@@ -925,8 +1243,10 @@
         visibility: hidden;
     }
 
-    [data-glpi-kb-aside-category-header]:hover [data-glpi-kb-aside-category-add],
-    [data-glpi-kb-aside-category-header]:focus-within [data-glpi-kb-aside-category-add] {
+    [data-glpi-kb-aside-category-header]:hover
+        [data-glpi-kb-aside-category-add],
+    [data-glpi-kb-aside-category-header]:focus-within
+        [data-glpi-kb-aside-category-add] {
         visibility: visible;
     }
 
@@ -961,18 +1281,21 @@
                 &::before {
                     $gap: 0.25rem;
 
-                    content: '';
+                    content: "";
                     position: absolute;
                     left: -1rem;
                     top: 0;
-                    width: calc(1rem - #{$gap}); // leave a small gap before the content
+                    width: calc(
+                        1rem - #{$gap}
+                    ); // leave a small gap before the content
+
                     height: 0.625rem; // half of the 20px illustration = 10px
                     border-left: 1px solid var(--tblr-border-color);
                     border-bottom: 1px solid var(--tblr-border-color);
                 }
 
                 &:not(:last-child)::after {
-                    content: '';
+                    content: "";
                     position: absolute;
                     left: -1rem;
                     top: 0.625rem;
