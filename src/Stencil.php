@@ -202,7 +202,46 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
         // Limits the number of zones to the maximum allowed number of zones.
         $input['nb_zones'] = min($input['nb_zones'], $this->getMaxZoneNumber());
 
-        return $input;
+        return $this->prepareInput($input);
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        return $this->prepareInput($input);
+    }
+
+    /**
+     * Prepare common input for add and update.
+     *
+     * @param array<string, mixed> $input
+     * @return array<string, mixed>|false
+     */
+    protected function prepareInput(array $input): array|bool
+    {
+        $has_errors = false;
+
+        if (array_key_exists('zones', $input)) {
+            if (is_string($input['zones']) && json_validate($input['zones'])) {
+                // Received a JSON serialized string, must be decoded.
+                $input['zones'] = json_decode($input['zones'], associative: true);
+            }
+
+            if (!$this->validateZoneArray($input['zones'])) {
+                Session::addMessageAfterRedirect(
+                    htmlescape(sprintf(
+                        __('The following field has an incorrect value: "%s".'),
+                        __('Zone')
+                    )),
+                    false,
+                    ERROR
+                );
+                $has_errors = true;
+            } else {
+                $input['zones'] = json_encode($input['zones']);
+            }
+        }
+
+        return $has_errors ? false : $input;
     }
 
     /**
@@ -231,14 +270,14 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
 
         // Remove zones with id > $nbZones
         $zones = array_filter(
-            json_decode($this->fields['zones'] ?? '{}', true),
+            $this->getDecodedZonesField(),
             fn($id) => $id <= $nbZones,
             ARRAY_FILTER_USE_KEY
         );
 
         // Update the stencil
         $this->update(array_merge($input, [
-            'zones'    => json_encode($zones, JSON_FORCE_OBJECT),
+            'zones'    => $zones,
             'nb_zones' => $this->fields['nb_zones'] - ($input['nb-remove-zones'] ?? 1),
         ]));
     }
@@ -251,15 +290,14 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
      */
     public function resetZones(array $input): void
     {
-        // Decode the zones
-        $zones = json_decode($this->fields['zones'] ?? '{}', true);
+        $zones = $this->getDecodedZonesField();
 
         // Remove the zone corresponding to the given id
         unset($zones[$input['zone-id'] ?? null]);
 
         // Update the stencil
         $this->update(array_merge($input, [
-            'zones' => json_encode($zones, JSON_FORCE_OBJECT),
+            'zones' => $zones,
         ]));
     }
 
@@ -316,7 +354,7 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
         TemplateRenderer::getInstance()->display('stencil/view.html.twig', [
             'item'              => $item,
             'stencil'           => $this,
-            'zones'             => json_decode($model_stencil->fields['zones'] ?? '{}', true),
+            'zones'             => $model_stencil !== null ? $model_stencil->getDecodedZonesField() : [],
             'pictures'          => $pictures,
             'params'            => array_merge(
                 $this->getParams(false),
@@ -350,8 +388,7 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
             'itemtype'          => $item::class,
             'items_id'          => $item->getID(),
             'id'                => $self->fields['id'] ?? 0,
-            'zones_json'        => $self->fields['zones'] ?? '{}',
-            'zones'             => json_decode($self->fields['zones'] ?? '{}', true),
+            'zones'             => $this->getDecodedZonesField(),
             'nb_zones'          => $self->fields['nb_zones'] ?? 1,
             'pictures'          => $pictures,
             'params'            => array_merge(
@@ -385,5 +422,37 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
     public function getZonePopover(bool $editor, array $zone): string
     {
         return '';
+    }
+
+
+    /**
+     * Return the decoded value of the `zones` field.
+     *
+     * @return array<mixed, mixed>
+     */
+    protected function getDecodedZonesField(): array
+    {
+        $zones = @json_decode($this->fields['zones'] ?? '{}', associative: true);
+        if (!$this->validateZoneArray($zones)) {
+            trigger_error(
+                sprintf('Invalid `zones` value (`%s`).', $this->fields['zones']),
+                E_USER_WARNING
+            );
+            $this->fields['zones'] = '{}'; // prevent warning to be triggered on each method call
+            $zones = [];
+        }
+        return $zones;
+    }
+
+    /**
+     * Validate that the given zones array contains valid values.
+     *
+     * @param mixed $zones
+     * @return bool
+     */
+    protected function validateZoneArray(mixed $zones): bool
+    {
+        // Delegated to the concrete class.
+        return true;
     }
 }

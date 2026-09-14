@@ -131,4 +131,113 @@ class NetworkEquipmentModelStencil extends Stencil
 
         return $port;
     }
+
+    /**
+     * Validate that the given zones array contains valid values.
+     *
+     * @param mixed $zones
+     * @return bool
+     */
+    protected function validateZoneArray(mixed $zones): bool
+    {
+        if (!is_array($zones)) {
+            return false;
+        }
+
+        $expected_properties = [
+            'side',
+            'image',
+            'label',
+            'number',
+            'selection',
+            'x_percent',
+            'y_percent',
+            'width_percent',
+            'height_percent',
+        ];
+
+        $is_valid = true;
+
+        foreach ($zones as $zone_index => $zone_specs) {
+            if (!is_int($zone_index) && !ctype_digit($zone_index)) {
+                $is_valid = false;
+                break;
+            }
+
+            if (!is_array($zone_specs)) {
+                $is_valid = false;
+                break;
+            }
+
+            $actual_properties = array_keys($zone_specs);
+            if (
+                array_diff($actual_properties, $expected_properties) !== []
+                || array_diff($expected_properties, $actual_properties) !== []
+            ) {
+                // missing or unexpected properties
+                $is_valid = false;
+                break;
+            }
+
+            if (!in_array($zone_specs['side'], [Rack::FRONT, Rack::REAR], true)) {
+                $is_valid = false;
+                break;
+            }
+
+            if (
+                !is_array($zone_specs['image'])
+                || !array_is_list($zone_specs['image'])
+                || count($zone_specs['image']) !== 6
+                || count(array_filter($zone_specs['image'], fn($val) => !is_numeric($val))) > 0
+            ) {
+                // `image` is the transform matrix used by cropper.js and should contain a list of 6 numeric values
+                $is_valid = false;
+                break;
+            }
+
+            if (!is_string($zone_specs['label'])) {
+                $is_valid = false;
+                break;
+            }
+
+            if (!is_int($zone_specs['number']) && !ctype_digit($zone_specs['number'])) {
+                $is_valid = false;
+                break;
+            }
+
+            // `selection` should contain x, y, width and height int properties
+            $expected_selection_properties = ['x', 'y', 'width', 'height'];
+            $selection = is_array($zone_specs['selection'])
+                ? array_filter(
+                    $zone_specs['selection'],
+                    fn($key) => in_array($key, $expected_selection_properties, true),
+                    ARRAY_FILTER_USE_KEY
+                )
+                : [];
+
+            foreach ($expected_selection_properties as $key) {
+                if (
+                    !array_key_exists($key, $selection)
+                    || (!is_int($selection[$key]) && !ctype_digit($selection[$key]))
+                ) {
+                    $is_valid = false;
+                    break 2;
+                }
+            }
+
+            // `selection` should contain x, y, width and height numeric (int/float) properties
+            $expected_coord_properties = ['x_percent', 'y_percent', 'width_percent', 'height_percent'];
+            foreach ($expected_coord_properties as $key) {
+                if (
+                    !array_key_exists($key, $zone_specs)
+                    || !is_numeric($zone_specs[$key])
+                ) {
+                    $is_valid = false;
+                    break 2;
+                }
+            }
+        }
+
+        return $is_valid;
+    }
 }
