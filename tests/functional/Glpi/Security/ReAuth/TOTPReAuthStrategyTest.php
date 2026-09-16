@@ -133,7 +133,7 @@ class TOTPReAuthStrategyTest extends DbTestCase
     }
 
     /**
-     * Prompt form submission as the Mfa:CodeInput component sends it: one `totp_code[]`
+     * Prompt form submission as the `tfa_code_input` macro sends it: one `totp_code[]`
      * entry per digit, which verify() concatenates back into the full code.
      */
     private function makeTotpVerifyRequest(string $code): Request
